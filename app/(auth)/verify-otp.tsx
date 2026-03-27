@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Platform } from "react-native";
 import { useMutation } from "@apollo/client/react";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -13,31 +13,31 @@ import type {
     VerifyOtpMutationVariables,
 } from "@/gql/graphql";
 import
-    {
-        InputOTP,
-        InputOTPGroup,
-        InputOTPSlot,
-    } from "@/components/ui/InputOtp";
+{
+    InputOTP,
+    InputOTPGroup,
+    InputOTPSlot,
+} from "@/components/ui/InputOtp";
 import { Button } from "@/components/ui/Button";
 import { persistAuthTokens } from "@/lib/auth-cookies";
 import { parseAuthError, resolveAuthenticatedRoute } from "@/lib/session";
 import { useUserStore } from "@/store/userStore";
 import { useToastStore } from "@/store/toastStore";
 import
-    {
-        AuthKeyboardAvoiding,
-        AuthScrollView,
-        AuthContent,
-        AuthFooter,
-        AuthFooterLink,
-        AuthHeader,
-        AuthTitle,
-        AuthSubtitle,
-        BackButton,
-        BackButtonText,
-        OtpWrapper,
-        OtpEmailHighlight,
-    } from "@/styles";
+{
+    AuthKeyboardAvoiding,
+    AuthScrollView,
+    AuthContent,
+    AuthFooter,
+    AuthFooterLink,
+    AuthHeader,
+    AuthTitle,
+    AuthSubtitle,
+    BackButton,
+    BackButtonText,
+    OtpWrapper,
+    OtpEmailHighlight,
+} from "@/styles";
 
 const OTP_LENGTH = 6;
 
@@ -86,7 +86,7 @@ export default function VerifyOtp()
             ? "Enter the 6-digit verification code sent to"
             : "We sent a 6-digit code to";
 
-    async function handleVerify()
+    const handleVerify = useCallback(async () =>
     {
         if (otp.length < OTP_LENGTH)
         {
@@ -139,7 +139,7 @@ export default function VerifyOtp()
             });
             setOtp("");
         }
-    }
+    }, [email, otp, router, setUser, showToast, verifyMode, verifyOtp]);
 
     async function handleResend()
     {
@@ -204,7 +204,7 @@ export default function VerifyOtp()
         {
             void handleVerify();
         }
-    }, [otp, loading]);
+    }, [otp, loading, handleVerify]);
 
     return (
         <AuthKeyboardAvoiding behavior={Platform.OS === "ios" ? "padding" : "height"}>

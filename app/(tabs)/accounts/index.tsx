@@ -128,7 +128,6 @@ export default function AccountsScreen()
     const dashboard = dashboardData?.getProviderDashboardQuary;
     const vehicles = dashboard?.vehicles ?? [];
     const approvedKyc = String(dashboard?.kycStatus?.overallStatus ?? "").toLowerCase() === "verified";
-    const pendingKycCount = approvedKyc ? 0 : 1;
     const activeVehiclesCount = vehicles.filter((entry: any) => String(entry.status) === "ACTIVE").length;
     const isLoading = (profileLoading || dashboardLoading) && !profile && !dashboard;
 

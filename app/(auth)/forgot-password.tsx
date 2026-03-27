@@ -10,21 +10,23 @@ import { ForgotPasswordMutation, ForgotPasswordMutationVariables } from "@/gql/g
 import { FORGOT_PASSWORD_MUTATION } from "@/graphql";
 import { parseAuthError } from "@/lib/session";
 import { useToastStore } from "@/store/toastStore";
-import {
-  AuthContent,
-  AuthField,
-  AuthForm,
-  AuthHeader,
-  AuthKeyboardAvoiding,
-  AuthLabel,
-  AuthScrollView,
-  AuthSubtitle,
-  AuthTitle,
-  BackButton,
-  BackButtonText,
-} from "@/styles";
+import
+  {
+    AuthContent,
+    AuthField,
+    AuthForm,
+    AuthHeader,
+    AuthKeyboardAvoiding,
+    AuthLabel,
+    AuthScrollView,
+    AuthSubtitle,
+    AuthTitle,
+    BackButton,
+    BackButtonText,
+  } from "@/styles";
 
-export default function ForgotPassword() {
+export default function ForgotPassword()
+{
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const showToast = useToastStore((state) => state.showToast);
@@ -35,13 +37,16 @@ export default function ForgotPassword() {
     ForgotPasswordMutationVariables
   >(FORGOT_PASSWORD_MUTATION);
 
-  async function handleSubmit() {
-    if (!email.trim()) {
+  async function handleSubmit()
+  {
+    if (!email.trim())
+    {
       showToast({ message: "Enter your email address.", tone: "error" });
       return;
     }
 
-    try {
+    try
+    {
       const normalizedEmail = email.trim().toLowerCase();
       const { data } = await forgotPassword({
         variables: {
@@ -63,7 +68,8 @@ export default function ForgotPassword() {
           mode: "reset-password",
         },
       });
-    } catch (error) {
+    } catch (error)
+    {
       showToast({
         message: parseAuthError(error, "We could not send a reset code."),
         tone: "error",
@@ -81,7 +87,7 @@ export default function ForgotPassword() {
 
           <AuthHeader>
             <AuthTitle>Reset your password</AuthTitle>
-            <AuthSubtitle>Enter your email and we'll send you a 6-digit reset code.</AuthSubtitle>
+            <AuthSubtitle>Enter your email and we&apos;ll send you a 6-digit reset code.</AuthSubtitle>
           </AuthHeader>
 
           <AuthForm>

@@ -135,7 +135,7 @@ export default function LoginWithPassword()
                     </AuthFooter>
 
                     <AuthFooter>
-                        <AuthFooterText>Don't have an account? </AuthFooterText>
+                        <AuthFooterText>Don&apos;t have an account? </AuthFooterText>
                         <AuthFooterLink
                             onPress={() => router.push("/(auth)/register?type=user")}
                         >

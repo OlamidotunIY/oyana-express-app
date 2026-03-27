@@ -82,7 +82,7 @@ export default function LoginWithOtp()
                     <AuthHeader>
                         <AuthTitle>Sign in with OTP</AuthTitle>
                         <AuthSubtitle>
-                            Enter your email and we'll send you a one-time code
+                            Enter your email and we&apos;ll send you a one-time code
                         </AuthSubtitle>
                     </AuthHeader>
 
