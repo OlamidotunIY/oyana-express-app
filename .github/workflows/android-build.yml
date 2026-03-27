@@ -12,7 +12,7 @@ jobs:
     permissions:
       contents: read
     env:
-      EXPO_ANDROID_PACKAGE: ${{ vars.EXPO_ANDROID_PACKAGE }}
+      EXPO_ANDROID_PACKAGE: ${{ vars.EXPO_ANDROID_PACKAGE != '' && vars.EXPO_ANDROID_PACKAGE || secrets.EXPO_ANDROID_PACKAGE }}
 
     steps:
       - name: Checkout repository
@@ -33,7 +33,7 @@ jobs:
       - name: Validate Android package configuration
         run: |
           if [ -z "$EXPO_ANDROID_PACKAGE" ]; then
-            echo "EXPO_ANDROID_PACKAGE is not set. Add it as a GitHub Actions repository variable and make it match the Firebase Android app package name."
+            echo "EXPO_ANDROID_PACKAGE is not set. Add it as either a GitHub Actions repository variable or secret and make it match the Firebase Android app package name."
             exit 1
           fi
 
