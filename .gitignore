@@ -38,7 +38,6 @@ yarn-error.*
 *.tsbuildinfo
 
 # local scratch artifacts
-dispatch-alert-uri.txt
 test-write.txt
 
 app-example
