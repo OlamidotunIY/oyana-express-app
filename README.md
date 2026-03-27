@@ -57,6 +57,12 @@ Required GitHub repository secrets:
 - `FIREBASE_SERVICE_ACCOUNT`
 - `FIREBASE_APP_DISTRIBUTION_GROUPS`
 
+Required GitHub repository variables:
+
+- `EXPO_ANDROID_PACKAGE`
+
+`EXPO_ANDROID_PACKAGE` must exactly match the Android package name registered in Firebase App Distribution. The Android build workflow injects this value into Expo before `expo prebuild`, so the generated APK uses the same package identifier as the Firebase app.
+
 Current scope:
 
 - Android is configured first

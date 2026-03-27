@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      EXPO_ANDROID_PACKAGE: ${{ vars.EXPO_ANDROID_PACKAGE }}
 
     steps:
       - name: Checkout repository
@@ -27,6 +29,13 @@ jobs:
 
       - name: Lint app
         run: npm run lint
+
+      - name: Validate Android package configuration
+        run: |
+          if [ -z "$EXPO_ANDROID_PACKAGE" ]; then
+            echo "EXPO_ANDROID_PACKAGE is not set. Add it as a GitHub Actions repository variable and make it match the Firebase Android app package name."
+            exit 1
+          fi
 
       - name: Generate Android project
         run: npx expo prebuild --platform android --non-interactive
