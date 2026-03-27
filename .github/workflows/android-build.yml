@@ -38,7 +38,9 @@ jobs:
           fi
 
       - name: Generate Android project
-        run: npx expo prebuild --platform android --non-interactive
+        env:
+          CI: "1"
+        run: npx expo prebuild --platform android
 
       - name: Setup Java
         uses: actions/setup-java@v4
