@@ -7,26 +7,26 @@ import { useRouter } from "expo-router";
 import { ScreenShell } from "@/components/ui/ScreenShell";
 import { Card, CardContent, Spinner } from "@/components/ui";
 import
-    {
-        GetProviderDashboardQuaryQuery,
-        GetProviderDashboardQuaryQueryVariables,
-    } from "@/gql/graphql";
+{
+    GetProviderDashboardQuaryQuery,
+    GetProviderDashboardQuaryQueryVariables,
+} from "@/gql/graphql";
 import { GET_PROVIDER_DASHBOARD_QUARY } from "@/graphql";
 import { useBackendErrorToast } from "@/hooks/use-backend-error-toast";
 import { formatEnumLabel } from "@/utils/format";
 import
-    {
-        StyledManageVehiclesFloatingButton,
-        StyledManageVehiclesHint,
-        StyledManageVehiclesList,
-        StyledManageVehiclesListRow,
-        StyledManageVehiclesLoadingWrap,
-        StyledManageVehiclesRoot,
-        StyledManageVehiclesScreen,
-        StyledManageVehiclesSection,
-        StyledManageVehiclesSectionLabel,
-        StyledManageVehiclesTitle,
-    } from "@/styles/tabs/accounts";
+{
+    StyledManageVehiclesFloatingButton,
+    StyledManageVehiclesHint,
+    StyledManageVehiclesList,
+    StyledManageVehiclesListRow,
+    StyledManageVehiclesLoadingWrap,
+    StyledManageVehiclesRoot,
+    StyledManageVehiclesScreen,
+    StyledManageVehiclesSection,
+    StyledManageVehiclesSectionLabel,
+    StyledManageVehiclesTitle,
+} from "@/styles/tabs/accounts";
 
 export default function ManageVehiclesScreen()
 {
@@ -92,7 +92,7 @@ export default function ManageVehiclesScreen()
 
             <StyledManageVehiclesFloatingButton
                 accessibilityLabel="Create vehicle"
-                onPress={() => router.push("/account/create-vehicle" as never)}
+                onPress={() => router.push("/accounts/create-vehicle" as never)}
                 $bottom={tabBarHeight + 12}
             >
                 <MaterialIcons name="add" size={24} color="#F8FAFC" />

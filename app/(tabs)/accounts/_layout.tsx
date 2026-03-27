@@ -16,19 +16,19 @@ export default function AccountLayout()
             id: "account-settings",
             label: "Settings",
             iconName: "settings",
-            onPress: () => router.push("/account/settings" as never),
+            onPress: () => router.push("/accounts/settings" as never),
         },
         {
             id: "account-edit-profile",
             label: "Edit profile",
             iconName: "edit",
-            onPress: () => router.push("/account/edit-profile" as never),
+            onPress: () => router.push("/accounts/edit-profile" as never),
         },
         {
             id: "account-upload-profile-image",
             label: "Upload profile image",
             iconName: "add-a-photo",
-            onPress: () => router.push("/account/upload-profile-image" as never),
+            onPress: () => router.push("/accounts/upload-profile-image" as never),
         },
     ];
 

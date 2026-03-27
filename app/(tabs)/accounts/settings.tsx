@@ -7,35 +7,35 @@ import { useTheme } from "styled-components/native";
 import { ScreenShell } from "@/components/ui/ScreenShell";
 import { Button, Card, CardContent, Spinner } from "@/components/ui";
 import
-    {
-        MeQuery,
-        MeQueryVariables,
-        SetProviderAvailabilityMutation,
-        SetProviderAvailabilityMutationVariables,
-        UserType,
-    } from "@/gql/graphql";
+{
+    MeQuery,
+    MeQueryVariables,
+    SetProviderAvailabilityMutation,
+    SetProviderAvailabilityMutationVariables,
+    UserType,
+} from "@/gql/graphql";
 import { ME_QUERY, SET_PROVIDER_AVAILABILITY_MUTATION } from "@/graphql";
 import { useBackendErrorToast } from "@/hooks/use-backend-error-toast";
 import { showBackendErrorToast, showToast } from "@/lib/toast";
 import { useUserStore } from "@/store/userStore";
 import
-    {
-        StyledSettingsAvailabilityBadge,
-        StyledSettingsAvailabilityDescription,
-        StyledSettingsAvailabilityHeader,
-        StyledSettingsAvailabilityMeta,
-        StyledSettingsAvailabilityPanel,
-        StyledSettingsAvailabilityTitle,
-        StyledSettingsItemButton,
-        StyledSettingsItemDescription,
-        StyledSettingsItemIconWrap,
-        StyledSettingsItemLead,
-        StyledSettingsItemTextGroup,
-        StyledSettingsItemTitle,
-        StyledSettingsRoot,
-        StyledSettingsSection,
-        StyledSettingsSectionLabel,
-    } from "@/styles/tabs/accounts";
+{
+    StyledSettingsAvailabilityBadge,
+    StyledSettingsAvailabilityDescription,
+    StyledSettingsAvailabilityHeader,
+    StyledSettingsAvailabilityMeta,
+    StyledSettingsAvailabilityPanel,
+    StyledSettingsAvailabilityTitle,
+    StyledSettingsItemButton,
+    StyledSettingsItemDescription,
+    StyledSettingsItemIconWrap,
+    StyledSettingsItemLead,
+    StyledSettingsItemTextGroup,
+    StyledSettingsItemTitle,
+    StyledSettingsRoot,
+    StyledSettingsSection,
+    StyledSettingsSectionLabel,
+} from "@/styles/tabs/accounts";
 
 type SettingsItemProps = {
     iconName: React.ComponentProps<typeof MaterialIcons>["name"];
@@ -181,13 +181,13 @@ export default function SettingsScreen()
                                 iconName="person"
                                 title="Profile"
                                 description="Update personal profile details and avatar."
-                                onPress={() => router.push("/account/edit-profile" as never)}
+                                onPress={() => router.push("/accounts/edit-profile" as never)}
                             />
                             <SettingsItem
                                 iconName="verified"
                                 title="Verify phone"
                                 description={profile?.phoneVerified ? "Your phone number is verified." : "Add and verify your phone number for account actions."}
-                                onPress={() => router.push("/account/verify-phone" as never)}
+                                onPress={() => router.push("/accounts/verify-phone" as never)}
                             />
                             <SettingsItem
                                 iconName="account-balance-wallet"
@@ -199,13 +199,13 @@ export default function SettingsScreen()
                                 iconName="badge"
                                 title="KYC"
                                 description="Continue verification and track compliance status."
-                                onPress={() => router.push("/account/kyc-upload" as never)}
+                                onPress={() => router.push("/accounts/kyc-upload" as never)}
                             />
                             <SettingsItem
                                 iconName="directions-car"
                                 title="Fleet"
                                 description="Manage provider vehicles and dispatch readiness."
-                                onPress={() => router.push("/account/manage-vehicles" as never)}
+                                onPress={() => router.push("/accounts/manage-vehicles" as never)}
                             />
                         </StyledSettingsSection>
                     </CardContent>
@@ -219,13 +219,13 @@ export default function SettingsScreen()
                                 iconName="support-agent"
                                 title="Support"
                                 description="Open support resources and assistance channels."
-                                onPress={() => router.push("/account/support-stack" as never)}
+                                onPress={() => router.push("/accounts/support-stack" as never)}
                             />
                             <SettingsItem
                                 iconName="policy"
                                 title="Legal"
                                 description="Read terms, privacy policy, and platform notices."
-                                onPress={() => router.push("/account/legal" as never)}
+                                onPress={() => router.push("/accounts/legal" as never)}
                             />
                         </StyledSettingsSection>
                     </CardContent>

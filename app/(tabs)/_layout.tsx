@@ -28,7 +28,7 @@ export default function TabsLayout()
                     id: "kyc-status",
                     label: "KYC status",
                     iconName: "verified-user" as const,
-                    onPress: () => router.push("/"),
+                    onPress: () => router.push("/accounts/kyc-status" as never),
                 },
             ];
         }

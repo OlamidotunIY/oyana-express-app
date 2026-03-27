@@ -6,38 +6,38 @@ import { useRouter } from "expo-router";
 import { ScreenShell } from "@/components/ui/ScreenShell";
 import { Button, Card, CardContent, Input } from "@/components/ui";
 import
-    {
-        CreateKycUploadUrlMutation,
-        CreateKycUploadUrlMutationVariables,
-        MyKycStatusQuery,
-        MyKycStatusQueryVariables,
-        StartNinFaceVerificationMutation,
-        StartNinFaceVerificationMutationVariables,
-        StartPhoneVerificationMutation,
-        StartPhoneVerificationMutationVariables,
-        StartVehiclePlateVerificationMutation,
-        StartVehiclePlateVerificationMutationVariables,
-        StartVehicleVinVerificationMutation,
-        StartVehicleVinVerificationMutationVariables,
-    } from "@/gql/graphql";
+{
+    CreateKycUploadUrlMutation,
+    CreateKycUploadUrlMutationVariables,
+    MyKycStatusQuery,
+    MyKycStatusQueryVariables,
+    StartNinFaceVerificationMutation,
+    StartNinFaceVerificationMutationVariables,
+    StartPhoneVerificationMutation,
+    StartPhoneVerificationMutationVariables,
+    StartVehiclePlateVerificationMutation,
+    StartVehiclePlateVerificationMutationVariables,
+    StartVehicleVinVerificationMutation,
+    StartVehicleVinVerificationMutationVariables,
+} from "@/gql/graphql";
 import
-    {
-        CREATE_KYC_UPLOAD_URL_MUTATION,
-        MY_KYC_STATUS_QUERY,
-        START_NIN_FACE_VERIFICATION_MUTATION,
-        START_PHONE_VERIFICATION_MUTATION,
-        START_VEHICLE_PLATE_VERIFICATION_MUTATION,
-        START_VEHICLE_VIN_VERIFICATION_MUTATION,
-    } from "@/graphql";
+{
+    CREATE_KYC_UPLOAD_URL_MUTATION,
+    MY_KYC_STATUS_QUERY,
+    START_NIN_FACE_VERIFICATION_MUTATION,
+    START_PHONE_VERIFICATION_MUTATION,
+    START_VEHICLE_PLATE_VERIFICATION_MUTATION,
+    START_VEHICLE_VIN_VERIFICATION_MUTATION,
+} from "@/graphql";
 import { showBackendErrorToast, showErrorToast, showToast } from "@/lib/toast";
 import { formatEnumLabel } from "@/utils/format";
 import
-    {
-        StyledKycUploadHint,
-        StyledKycUploadRoot,
-        StyledKycUploadSection,
-        StyledKycUploadSectionLabel,
-    } from "@/styles/tabs/accounts";
+{
+    StyledKycUploadHint,
+    StyledKycUploadRoot,
+    StyledKycUploadSection,
+    StyledKycUploadSectionLabel,
+} from "@/styles/tabs/accounts";
 
 type SelfieAsset = {
     uri: string;
@@ -358,7 +358,7 @@ export default function KycUploadScreen()
                             <Button
                                 fullWidth
                                 variant="outline"
-                                onPress={() => router.push("/account/kyc-status" as never)}
+                                onPress={() => router.push("/accounts/kyc-status" as never)}
                             >
                                 Open KYC status
                             </Button>

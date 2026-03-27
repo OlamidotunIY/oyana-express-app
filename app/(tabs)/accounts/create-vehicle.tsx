@@ -5,23 +5,23 @@ import { useRouter } from "expo-router";
 import { ScreenShell } from "@/components/ui/ScreenShell";
 import { Button, Card, CardContent, Input } from "@/components/ui";
 import
-    {
-        CreateVehicleMutation,
-        CreateVehicleMutationVariables,
-        VehicleCategory,
-    } from "@/gql/graphql";
+{
+    CreateVehicleMutation,
+    CreateVehicleMutationVariables,
+    VehicleCategory,
+} from "@/gql/graphql";
 import { CREATE_VEHICLE_MUTATION, GET_PROVIDER_DASHBOARD_QUARY } from "@/graphql";
 import { showBackendErrorToast, showErrorToast, showToast } from "@/lib/toast";
 import
-    {
-        StyledCreateVehicleCategoryOption,
-        StyledCreateVehicleCategoryOptionText,
-        StyledCreateVehicleCategoryRow,
-        StyledCreateVehicleForm,
-        StyledCreateVehicleLabel,
-        StyledCreateVehicleRoot,
-        StyledCreateVehicleSectionLabel,
-    } from "@/styles/tabs/accounts";
+{
+    StyledCreateVehicleCategoryOption,
+    StyledCreateVehicleCategoryOptionText,
+    StyledCreateVehicleCategoryRow,
+    StyledCreateVehicleForm,
+    StyledCreateVehicleLabel,
+    StyledCreateVehicleRoot,
+    StyledCreateVehicleSectionLabel,
+} from "@/styles/tabs/accounts";
 
 const VEHICLE_OPTIONS = [
     { label: "Bike", value: VehicleCategory.Bike },
@@ -93,7 +93,7 @@ export default function CreateVehicleScreen()
                 dedupeKey: "account-create-vehicle-success",
             });
 
-            router.replace("/account/manage-vehicles" as never);
+            router.replace("/accounts/manage-vehicles" as never);
         } catch (error)
         {
             showBackendErrorToast(error, "Unable to create vehicle.", {

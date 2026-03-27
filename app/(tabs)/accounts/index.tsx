@@ -206,15 +206,15 @@ export default function AccountsScreen()
                         <MaterialIcons name={isOnline ? "wifi" : "wifi-off"} size={22} color={isOnline ? "#FF6A00" : "rgba(241,245,249,0.82)"} />
                         <StyledAccountQuickActionLabel>{isOnline ? "Online" : "Offline"}</StyledAccountQuickActionLabel>
                     </StyledAccountQuickActionItem>
-                    <StyledAccountQuickActionItem onPress={() => router.push("/account/manage-vehicles" as never)}>
+                    <StyledAccountQuickActionItem onPress={() => router.push("/accounts/manage-vehicles" as never)}>
                         <MaterialIcons name="directions-car" size={22} color="rgba(241,245,249,0.82)" />
                         <StyledAccountQuickActionLabel>Vehicles</StyledAccountQuickActionLabel>
                     </StyledAccountQuickActionItem>
-                    <StyledAccountQuickActionItem onPress={() => router.push("/account/kyc-upload" as never)}>
+                    <StyledAccountQuickActionItem onPress={() => router.push("/accounts/kyc-upload" as never)}>
                         <MaterialIcons name="badge" size={22} color="rgba(241,245,249,0.82)" />
                         <StyledAccountQuickActionLabel>KYC</StyledAccountQuickActionLabel>
                     </StyledAccountQuickActionItem>
-                    <StyledAccountQuickActionItem onPress={() => router.push("/account/settings" as never)}>
+                    <StyledAccountQuickActionItem onPress={() => router.push("/accounts/settings" as never)}>
                         <MaterialIcons name="settings" size={22} color="rgba(241,245,249,0.82)" />
                         <StyledAccountQuickActionLabel>Settings</StyledAccountQuickActionLabel>
                     </StyledAccountQuickActionItem>
@@ -227,25 +227,25 @@ export default function AccountsScreen()
                             iconName="settings"
                             title="Settings"
                             description="Open provider settings and account controls."
-                            onPress={() => router.push("/account/settings" as never)}
+                            onPress={() => router.push("/accounts/settings" as never)}
                         />
                         <NavigationRow
                             iconName="directions-car"
                             title="Manage vehicles"
                             description="Register and maintain your active fleet records."
-                            onPress={() => router.push("/account/manage-vehicles" as never)}
+                            onPress={() => router.push("/accounts/manage-vehicles" as never)}
                         />
                         <NavigationRow
                             iconName="badge"
                             title="KYC docs"
                             description="Open verification flow and upload required documents."
-                            onPress={() => router.push("/account/kyc-upload" as never)}
+                            onPress={() => router.push("/accounts/kyc-upload" as never)}
                         />
                         <NavigationRow
                             iconName="verified-user"
                             title="KYC status"
                             description="Track approvals, rejections, and pending actions."
-                            onPress={() => router.push("/account/kyc-status" as never)}
+                            onPress={() => router.push("/accounts/kyc-status" as never)}
                         />
                     </StyledAccountNavigationList>
                 </StyledAccountSurfaceCard>
@@ -257,13 +257,13 @@ export default function AccountsScreen()
                             iconName="support-agent"
                             title="Support"
                             description="Reach out to support channels and help resources."
-                            onPress={() => router.push("/account/support-stack" as never)}
+                            onPress={() => router.push("/accounts/support-stack" as never)}
                         />
                         <NavigationRow
                             iconName="policy"
                             title="Legal / Policies"
                             description="Terms, privacy policy, and platform legal notices."
-                            onPress={() => router.push("/account/legal" as never)}
+                            onPress={() => router.push("/accounts/legal" as never)}
                         />
                     </StyledAccountNavigationList>
                 </StyledAccountSurfaceCard>
