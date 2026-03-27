@@ -1,0 +1,72 @@
+import
+{
+    HeaderMenuItem,
+    PageHeader,
+    TabHeader,
+    resolveHeaderTitle,
+} from "@/components/NavigationHeader";
+import { Stack, useRouter } from "expo-router";
+
+export default function AccountLayout()
+{
+    const router = useRouter();
+
+    const accountMenuItems: HeaderMenuItem[] = [
+        {
+            id: "account-settings",
+            label: "Settings",
+            iconName: "settings",
+            onPress: () => router.push("/account/settings" as never),
+        },
+        {
+            id: "account-edit-profile",
+            label: "Edit profile",
+            iconName: "edit",
+            onPress: () => router.push("/account/edit-profile" as never),
+        },
+        {
+            id: "account-upload-profile-image",
+            label: "Upload profile image",
+            iconName: "add-a-photo",
+            onPress: () => router.push("/account/upload-profile-image" as never),
+        },
+    ];
+
+    return (
+        <Stack
+            screenOptions={{
+                header: ({ options, route, navigation, back }) => (
+                    <PageHeader
+                        canGoBack={Boolean(back)}
+                        onBackPress={() => navigation.goBack()}
+                        title={resolveHeaderTitle(route.name, options.title)}
+                    />
+                ),
+            }}
+        >
+            <Stack.Screen
+                name="index"
+                options={{
+                    title: "Account",
+                    header: ({ options, route }) => (
+                        <TabHeader
+                            title={resolveHeaderTitle(route.name, options.title)}
+                            menuItems={accountMenuItems}
+                            backgroundColor="#0f2742"
+                        />
+                    ),
+                }}
+            />
+            <Stack.Screen name="edit-profile" options={{ title: "Edit Profile" }} />
+            <Stack.Screen name="verify-phone" options={{ title: "Verify Phone" }} />
+            <Stack.Screen name="settings" options={{ title: "Settings" }} />
+            <Stack.Screen name="upload-profile-image" options={{ title: "Upload Profile Image" }} />
+            <Stack.Screen name="manage-vehicles" options={{ title: "Manage Vehicles" }} />
+            <Stack.Screen name="create-vehicle" options={{ title: "Create Vehicle" }} />
+            <Stack.Screen name="kyc-upload" options={{ title: "KYC Upload" }} />
+            <Stack.Screen name="kyc-status" options={{ title: "KYC Status" }} />
+            <Stack.Screen name="support-stack" options={{ title: "Support" }} />
+            <Stack.Screen name="legal" options={{ title: "Legal & Policies" }} />
+        </Stack>
+    );
+}
