@@ -37,7 +37,7 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-# local scratch artifacts
+# local scratch artifact
 test-write.txt
 
 app-example
