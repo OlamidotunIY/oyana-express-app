@@ -60,8 +60,15 @@ Required GitHub repository secrets:
 Required GitHub repository variables or secrets:
 
 - `EXPO_ANDROID_PACKAGE`
+- `EXPO_PUBLIC_API_URL`
+- `EXPO_PUBLIC_GRAPHQL_WS_URL`
 
 `EXPO_ANDROID_PACKAGE` must exactly match the Android package name registered in Firebase App Distribution. The Android build workflow injects this value into Expo before `expo prebuild`, so the generated APK uses the same package identifier as the Firebase app. The workflow accepts this value from either a repository variable or a repository secret.
+
+`EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_GRAPHQL_WS_URL` are also injected during the Android build so the generated app points to the deployed backend instead of relying on a local `.env` file. Example values:
+
+- `EXPO_PUBLIC_API_URL=https://oyana-backend-lf75.onrender.com`
+- `EXPO_PUBLIC_GRAPHQL_WS_URL=wss://oyana-backend-lf75.onrender.com/graphql`
 
 Current scope:
 
