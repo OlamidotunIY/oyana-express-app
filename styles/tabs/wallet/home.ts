@@ -9,7 +9,7 @@ export const StyledBalanceHero = styled.View`
   overflow: hidden;
   border-bottom-left-radius: 28px;
   border-bottom-right-radius: 28px;
-  background-color: #0f2742;
+  background-color: ${({ theme }) => theme.colors.heroSurface};
   padding-top: ${({ theme }) => theme.spacing.lg}px;
   padding-bottom: ${({ theme }) => theme.spacing.xl}px;
   padding-horizontal: ${({ theme }) => theme.spacing.xl}px;
@@ -54,9 +54,9 @@ export const StyledWalletSectionLabel = styled.Text`
 export const StyledHeroChip = styled.Text`
   border-radius: ${({ theme }) => theme.radii.full}px;
   border-width: ${({ theme }) => theme.borderWidths.thin}px;
-  border-color: rgba(226, 232, 240, 0.24);
-  background-color: rgba(226, 232, 240, 0.14);
-  color: #e2e8f0;
+  border-color: ${({ theme }) => theme.colors.heroChipBorder};
+  background-color: ${({ theme }) => theme.colors.heroChipBackground};
+  color: ${({ theme }) => theme.colors.heroChipForeground};
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -65,13 +65,13 @@ export const StyledHeroChip = styled.Text`
 `;
 
 export const StyledBalanceAmount = styled.Text`
-  color: #ffffff;
+  color: ${({ theme }) => theme.colors.heroForeground};
   font-size: ${({ theme }) => theme.typography.xxl + 4}px;
   font-weight: 800;
 `;
 
 export const StyledHeroHint = styled.Text`
-  color: rgba(241, 245, 249, 0.88);
+  color: ${({ theme }) => theme.colors.heroMutedForeground};
   font-size: ${({ theme }) => theme.typography.sm}px;
 `;
 
@@ -84,20 +84,20 @@ export const StyledHeroStatTile = styled.View`
   flex: 1;
   border-radius: ${({ theme }) => theme.radii.md}px;
   border-width: ${({ theme }) => theme.borderWidths.thin}px;
-  border-color: rgba(255, 255, 255, 0.16);
-  background-color: rgba(255, 255, 255, 0.1);
+  border-color: ${({ theme }) => theme.colors.heroTileBorder};
+  background-color: ${({ theme }) => theme.colors.heroTileBackground};
   padding: ${({ theme }) => theme.spacing.sm}px;
   gap: ${({ theme }) => theme.spacing.xs}px;
 `;
 
 export const StyledHeroStatValue = styled.Text`
-  color: #ffffff;
+  color: ${({ theme }) => theme.colors.heroTileForeground};
   font-size: ${({ theme }) => theme.typography.md}px;
   font-weight: 700;
 `;
 
 export const StyledHeroStatLabel = styled.Text`
-  color: rgba(241, 245, 249, 0.82);
+  color: ${({ theme }) => theme.colors.heroTileMutedForeground};
   font-size: ${({ theme }) => theme.typography.xs}px;
 `;
 
@@ -242,8 +242,8 @@ export const StyledWalletStatBoxRow = styled.View`
   flex-direction: row;
   border-radius: ${({ theme }) => theme.radii.lg}px;
   border-width: 1px;
-  border-color: rgba(255, 255, 255, 0.16);
-  background-color: rgba(255, 255, 255, 0.08);
+  border-color: ${({ theme }) => theme.colors.heroTileBorder};
+  background-color: ${({ theme }) => theme.colors.heroTileBackground};
   overflow: hidden;
 `;
 
@@ -255,7 +255,7 @@ export const StyledWalletStatBox = styled.View`
 
 export const StyledWalletStatBoxDivider = styled.View`
   width: 1px;
-  background-color: rgba(255, 255, 255, 0.18);
+  background-color: ${({ theme }) => theme.colors.heroTileBorder};
   margin-vertical: 10px;
 `;
 
@@ -263,20 +263,20 @@ export const StyledWalletStatBoxIconWrap = styled.View`
   width: 22px;
   height: 22px;
   border-radius: 11px;
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: ${({ theme }) => theme.colors.heroChipBackground};
   align-items: center;
   justify-content: center;
   margin-bottom: 4px;
 `;
 
 export const StyledWalletStatBoxValue = styled.Text`
-  color: #ffffff;
+  color: ${({ theme }) => theme.colors.heroTileForeground};
   font-size: ${({ theme }) => theme.typography.lg}px;
   font-weight: 700;
 `;
 
 export const StyledWalletStatBoxLabel = styled.Text`
-  color: rgba(241, 245, 249, 0.7);
+  color: ${({ theme }) => theme.colors.heroTileMutedForeground};
   font-size: ${({ theme }) => theme.typography.xs}px;
 `;
 
@@ -292,9 +292,9 @@ export const StyledWalletActionItem = styled.Pressable`
   padding-vertical: ${({ theme }) => theme.spacing.lg}px;
   padding-horizontal: ${({ theme }) => theme.spacing.xs}px;
   border-radius: ${({ theme }) => theme.radii.lg}px;
-  background-color: rgba(255, 255, 255, 0.07);
+  background-color: ${({ theme }) => theme.colors.heroActionBackground};
   border-width: 1px;
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: ${({ theme }) => theme.colors.heroActionBorder};
   gap: ${({ theme }) => theme.spacing.xs}px;
 `;
 
@@ -304,7 +304,7 @@ export const StyledWalletActionCircle = styled.View`
 `;
 
 export const StyledWalletActionLabel = styled.Text`
-  color: rgba(241, 245, 249, 0.82);
+  color: ${({ theme }) => theme.colors.heroActionForeground};
   font-size: 12px;
   font-weight: 600;
   text-align: center;

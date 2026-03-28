@@ -23,6 +23,21 @@ export interface AppTheme {
     success: string;
     warning: string;
     overlay: string;
+    heroSurface: string;
+    heroForeground: string;
+    heroMutedForeground: string;
+    heroChipBackground: string;
+    heroChipBorder: string;
+    heroChipForeground: string;
+    heroTileBackground: string;
+    heroTileBorder: string;
+    heroTileForeground: string;
+    heroTileMutedForeground: string;
+    heroActionBackground: string;
+    heroActionBorder: string;
+    heroActionForeground: string;
+    heroActionActiveBackground: string;
+    heroActionActiveBorder: string;
   };
   radii: {
     sm: number;

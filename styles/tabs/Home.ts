@@ -9,7 +9,7 @@ export const StyledHeroCard = styled.View`
   overflow: hidden;
   border-bottom-left-radius: 28px;
   border-bottom-right-radius: 28px;
-  background-color: #0f2742;
+  background-color: ${({ theme }) => theme.colors.heroSurface};
   padding-top: ${({ theme }) => theme.spacing.lg}px;
   padding-bottom: ${({ theme }) => theme.spacing.xl}px;
   padding-horizontal: ${({ theme }) => theme.spacing.xl}px;
@@ -58,7 +58,8 @@ export const StyledStatusPill = styled.View<{ isOnline: boolean }>`
 `;
 
 export const StyledStatusPillText = styled.Text<{ isOnline: boolean }>`
-  color: ${({ isOnline }) => (isOnline ? "#D1FAE5" : "#FEE2E2")};
+  color: ${({ theme, isOnline }) =>
+    isOnline ? theme.colors.success : theme.colors.destructive};
   font-size: ${({ theme }) => theme.typography.xs}px;
   font-weight: 700;
   text-transform: uppercase;
@@ -71,26 +72,26 @@ export const StyledLivePill = styled.View`
   gap: ${({ theme }) => theme.spacing.xs}px;
   border-radius: ${({ theme }) => theme.radii.full}px;
   border-width: ${({ theme }) => theme.borderWidths.thin}px;
-  border-color: rgba(255, 255, 255, 0.18);
-  background-color: rgba(255, 255, 255, 0.1);
+  border-color: ${({ theme }) => theme.colors.heroChipBorder};
+  background-color: ${({ theme }) => theme.colors.heroChipBackground};
   padding-vertical: ${({ theme }) => theme.spacing.xs}px;
   padding-horizontal: ${({ theme }) => theme.spacing.md}px;
 `;
 
 export const StyledLivePillText = styled.Text`
-  color: rgba(248, 250, 252, 0.9);
+  color: ${({ theme }) => theme.colors.heroChipForeground};
   font-size: ${({ theme }) => theme.typography.xs}px;
   font-weight: 600;
 `;
 
 export const StyledHeroTitle = styled.Text`
-  color: #f8fafc;
+  color: ${({ theme }) => theme.colors.heroForeground};
   font-size: ${({ theme }) => theme.typography.xl + 2}px;
   font-weight: 700;
 `;
 
 export const StyledHeroDescription = styled.Text`
-  color: rgba(241, 245, 249, 0.86);
+  color: ${({ theme }) => theme.colors.heroMutedForeground};
   font-size: ${({ theme }) => theme.typography.sm}px;
   line-height: 20px;
 `;
@@ -103,21 +104,21 @@ export const StyledHeroMetricsRow = styled.View`
 export const StyledHeroMetricTile = styled.View`
   flex: 1;
   border-radius: ${({ theme }) => theme.radii.md}px;
-  background-color: rgba(255, 255, 255, 0.14);
+  background-color: ${({ theme }) => theme.colors.heroTileBackground};
   border-width: ${({ theme }) => theme.borderWidths.thin}px;
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: ${({ theme }) => theme.colors.heroTileBorder};
   padding: ${({ theme }) => theme.spacing.md}px;
   gap: ${({ theme }) => theme.spacing.xs}px;
 `;
 
 export const StyledHeroMetricValue = styled.Text`
-  color: #ffffff;
+  color: ${({ theme }) => theme.colors.heroTileForeground};
   font-size: ${({ theme }) => theme.typography.lg}px;
   font-weight: 700;
 `;
 
 export const StyledHeroMetricLabel = styled.Text`
-  color: rgba(241, 245, 249, 0.86);
+  color: ${({ theme }) => theme.colors.heroTileMutedForeground};
   font-size: ${({ theme }) => theme.typography.xs}px;
 `;
 
@@ -266,7 +267,7 @@ export const StyledEmptyStateText = styled.Text`
 `;
 
 export const StyledHeroBalanceLabel = styled.Text`
-  color: rgba(241, 245, 249, 0.6);
+  color: ${({ theme }) => theme.colors.heroMutedForeground};
   font-size: ${({ theme }) => theme.typography.xs}px;
   font-weight: 600;
   text-transform: uppercase;
@@ -274,7 +275,7 @@ export const StyledHeroBalanceLabel = styled.Text`
 `;
 
 export const StyledHeroBalance = styled.Text`
-  color: #ffffff;
+  color: ${({ theme }) => theme.colors.heroForeground};
   font-size: 32px;
   font-weight: 800;
   letter-spacing: -0.5px;
@@ -374,7 +375,8 @@ export const StyledKycBadge = styled.View<{ verified: boolean }>`
 `;
 
 export const StyledKycBadgeText = styled.Text<{ verified: boolean }>`
-  color: ${({ verified }) => (verified ? "#D1FAE5" : "#FEF3C7")};
+  color: ${({ theme, verified }) =>
+    verified ? theme.colors.success : theme.colors.warning};
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -385,8 +387,8 @@ export const StyledHeroStatBoxRow = styled.View`
   flex-direction: row;
   border-radius: ${({ theme }) => theme.radii.lg}px;
   border-width: 1px;
-  border-color: rgba(255, 255, 255, 0.16);
-  background-color: rgba(255, 255, 255, 0.08);
+  border-color: ${({ theme }) => theme.colors.heroTileBorder};
+  background-color: ${({ theme }) => theme.colors.heroTileBackground};
   overflow: hidden;
 `;
 
@@ -398,7 +400,7 @@ export const StyledHeroStatBox = styled.View`
 
 export const StyledHeroStatBoxDivider = styled.View`
   width: 1px;
-  background-color: rgba(255, 255, 255, 0.18);
+  background-color: ${({ theme }) => theme.colors.heroTileBorder};
   margin-vertical: 10px;
 `;
 
@@ -406,20 +408,20 @@ export const StyledHeroStatBoxIconWrap = styled.View`
   width: 22px;
   height: 22px;
   border-radius: 11px;
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: ${({ theme }) => theme.colors.heroChipBackground};
   align-items: center;
   justify-content: center;
   margin-bottom: 4px;
 `;
 
 export const StyledHeroStatBoxValue = styled.Text`
-  color: #ffffff;
+  color: ${({ theme }) => theme.colors.heroTileForeground};
   font-size: ${({ theme }) => theme.typography.lg}px;
   font-weight: 700;
 `;
 
 export const StyledHeroStatBoxLabel = styled.Text`
-  color: rgba(241, 245, 249, 0.7);
+  color: ${({ theme }) => theme.colors.heroTileMutedForeground};
   font-size: ${({ theme }) => theme.typography.xs}px;
 `;
 
@@ -435,9 +437,9 @@ export const StyledHomeActionItem = styled.Pressable`
   padding-vertical: ${({ theme }) => theme.spacing.lg}px;
   padding-horizontal: ${({ theme }) => theme.spacing.xs}px;
   border-radius: ${({ theme }) => theme.radii.lg}px;
-  background-color: rgba(255, 255, 255, 0.07);
+  background-color: ${({ theme }) => theme.colors.heroActionBackground};
   border-width: 1px;
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: ${({ theme }) => theme.colors.heroActionBorder};
   gap: ${({ theme }) => theme.spacing.xs}px;
 `;
 
@@ -447,7 +449,7 @@ export const StyledHomeActionCircle = styled.View<{ $active?: boolean }>`
 `;
 
 export const StyledHomeActionLabel = styled.Text`
-  color: rgba(241, 245, 249, 0.82);
+  color: ${({ theme }) => theme.colors.heroActionForeground};
   font-size: 12px;
   font-weight: 600;
   text-align: center;

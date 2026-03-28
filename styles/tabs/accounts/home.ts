@@ -9,7 +9,7 @@ export const StyledAccountProfileHero = styled.View`
   overflow: hidden;
   border-bottom-left-radius: 28px;
   border-bottom-right-radius: 28px;
-  background-color: #0f2742;
+  background-color: ${({ theme }) => theme.colors.heroSurface};
   padding-top: ${({ theme }) => theme.spacing.lg}px;
   padding-bottom: ${({ theme }) => theme.spacing.xl}px;
   padding-horizontal: ${({ theme }) => theme.spacing.xl}px;
@@ -54,9 +54,9 @@ export const StyledAccountHeroLabel = styled.Text`
 export const StyledAccountHeroChip = styled.Text`
   border-radius: ${({ theme }) => theme.radii.full}px;
   border-width: ${({ theme }) => theme.borderWidths.thin}px;
-  border-color: rgba(226, 232, 240, 0.24);
-  background-color: rgba(226, 232, 240, 0.12);
-  color: #e2e8f0;
+  border-color: ${({ theme }) => theme.colors.heroChipBorder};
+  background-color: ${({ theme }) => theme.colors.heroChipBackground};
+  color: ${({ theme }) => theme.colors.heroChipForeground};
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -81,14 +81,14 @@ export const StyledAccountAvatar = styled.View`
   height: 52px;
   border-radius: ${({ theme }) => theme.radii.full}px;
   border-width: ${({ theme }) => theme.borderWidths.thin}px;
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: ${({ theme }) => theme.colors.heroTileBorder};
   background-color: rgba(255, 106, 0, 0.9);
   align-items: center;
   justify-content: center;
 `;
 
 export const StyledAccountAvatarText = styled.Text`
-  color: #ffffff;
+  color: ${({ theme }) => theme.colors.primaryForeground};
   font-size: ${({ theme }) => theme.typography.md}px;
   font-weight: 700;
 `;
@@ -99,13 +99,13 @@ export const StyledAccountIdentityTextGroup = styled.View`
 `;
 
 export const StyledAccountProfileName = styled.Text`
-  color: #ffffff;
+  color: ${({ theme }) => theme.colors.heroForeground};
   font-size: ${({ theme }) => theme.typography.lg}px;
   font-weight: 700;
 `;
 
 export const StyledAccountProfileMeta = styled.Text`
-  color: rgba(241, 245, 249, 0.82);
+  color: ${({ theme }) => theme.colors.heroMutedForeground};
   font-size: ${({ theme }) => theme.typography.xs}px;
 `;
 
@@ -118,19 +118,19 @@ export const StyledAccountInfoPill = styled.View`
   flex: 1;
   border-radius: ${({ theme }) => theme.radii.md}px;
   border-width: ${({ theme }) => theme.borderWidths.thin}px;
-  border-color: rgba(255, 255, 255, 0.18);
-  background-color: rgba(255, 255, 255, 0.12);
+  border-color: ${({ theme }) => theme.colors.heroTileBorder};
+  background-color: ${({ theme }) => theme.colors.heroTileBackground};
   padding: ${({ theme }) => theme.spacing.sm}px;
   gap: ${({ theme }) => theme.spacing.xxs}px;
 `;
 
 export const StyledAccountInfoPillLabel = styled.Text`
-  color: rgba(241, 245, 249, 0.84);
+  color: ${({ theme }) => theme.colors.heroTileMutedForeground};
   font-size: ${({ theme }) => theme.typography.xs}px;
 `;
 
 export const StyledAccountInfoPillValue = styled.Text`
-  color: #ffffff;
+  color: ${({ theme }) => theme.colors.heroTileForeground};
   font-size: ${({ theme }) => theme.typography.sm}px;
   font-weight: 700;
 `;
@@ -144,27 +144,27 @@ export const StyledAccountKpiTile = styled.View`
   flex: 1;
   border-radius: ${({ theme }) => theme.radii.md}px;
   border-width: ${({ theme }) => theme.borderWidths.thin}px;
-  border-color: rgba(255, 255, 255, 0.2);
-  background-color: rgba(255, 255, 255, 0.14);
+  border-color: ${({ theme }) => theme.colors.heroTileBorder};
+  background-color: ${({ theme }) => theme.colors.heroTileBackground};
   padding: ${({ theme }) => theme.spacing.sm}px;
   gap: ${({ theme }) => theme.spacing.xxs}px;
 `;
 
 export const StyledAccountKpiValue = styled.Text`
-  color: #ffffff;
+  color: ${({ theme }) => theme.colors.heroTileForeground};
   font-size: ${({ theme }) => theme.typography.md}px;
   font-weight: 700;
 `;
 
 export const StyledAccountKpiLabel = styled.Text`
-  color: rgba(241, 245, 249, 0.84);
+  color: ${({ theme }) => theme.colors.heroTileMutedForeground};
   font-size: ${({ theme }) => theme.typography.xs}px;
   text-transform: uppercase;
   font-weight: 700;
 `;
 
 export const StyledAccountKpiHint = styled.Text`
-  color: rgba(241, 245, 249, 0.82);
+  color: ${({ theme }) => theme.colors.heroMutedForeground};
   font-size: ${({ theme }) => theme.typography.xs}px;
 `;
 
@@ -231,8 +231,8 @@ export const StyledAccountStatBoxRow = styled.View`
   flex-direction: row;
   border-radius: ${({ theme }) => theme.radii.lg}px;
   border-width: 1px;
-  border-color: rgba(255, 255, 255, 0.16);
-  background-color: rgba(255, 255, 255, 0.08);
+  border-color: ${({ theme }) => theme.colors.heroTileBorder};
+  background-color: ${({ theme }) => theme.colors.heroTileBackground};
   overflow: hidden;
 `;
 
@@ -244,7 +244,7 @@ export const StyledAccountStatBox = styled.View`
 
 export const StyledAccountStatBoxDivider = styled.View`
   width: 1px;
-  background-color: rgba(255, 255, 255, 0.18);
+  background-color: ${({ theme }) => theme.colors.heroTileBorder};
   margin-vertical: 10px;
 `;
 
@@ -252,20 +252,20 @@ export const StyledAccountStatBoxIconWrap = styled.View`
   width: 22px;
   height: 22px;
   border-radius: 11px;
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: ${({ theme }) => theme.colors.heroChipBackground};
   align-items: center;
   justify-content: center;
   margin-bottom: 4px;
 `;
 
 export const StyledAccountStatBoxValue = styled.Text`
-  color: #ffffff;
+  color: ${({ theme }) => theme.colors.heroTileForeground};
   font-size: ${({ theme }) => theme.typography.lg}px;
   font-weight: 700;
 `;
 
 export const StyledAccountStatBoxLabel = styled.Text`
-  color: rgba(241, 245, 249, 0.7);
+  color: ${({ theme }) => theme.colors.heroTileMutedForeground};
   font-size: ${({ theme }) => theme.typography.xs}px;
 `;
 
@@ -284,10 +284,14 @@ export const StyledAccountQuickActionItem = styled.Pressable<{
   padding-horizontal: ${({ theme }) => theme.spacing.xs}px;
   border-radius: ${({ theme }) => theme.radii.lg}px;
   background-color: ${({ $active }) =>
-    $active ? "rgba(255, 106, 0, 0.15)" : "rgba(255, 255, 255, 0.07)"};
+    $active
+      ? ({ theme }: { theme: any }) => theme.colors.heroActionActiveBackground
+      : ({ theme }: { theme: any }) => theme.colors.heroActionBackground};
   border-width: 1px;
   border-color: ${({ $active }) =>
-    $active ? "rgba(255, 106, 0, 0.4)" : "rgba(255, 255, 255, 0.1)"};
+    $active
+      ? ({ theme }: { theme: any }) => theme.colors.heroActionActiveBorder
+      : ({ theme }: { theme: any }) => theme.colors.heroActionBorder};
   gap: ${({ theme }) => theme.spacing.xs}px;
 `;
 
@@ -299,7 +303,7 @@ export const StyledAccountQuickActionCircle = styled.View<{
 `;
 
 export const StyledAccountQuickActionLabel = styled.Text`
-  color: rgba(241, 245, 249, 0.82);
+  color: ${({ theme }) => theme.colors.heroActionForeground};
   font-size: 12px;
   font-weight: 600;
   text-align: center;
