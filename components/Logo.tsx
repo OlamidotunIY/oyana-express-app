@@ -12,7 +12,7 @@ export default function Logo()
 
     return (
         <LogoImage
-            source={colorScheme === "light" ? logos.dark : logos.light}
+            source={colorScheme === "dark" ? logos.dark : logos.light}
             resizeMode="contain"
         />
     );

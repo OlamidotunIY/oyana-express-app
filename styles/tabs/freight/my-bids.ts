@@ -37,7 +37,7 @@ export const StyledMyBidsRoot = styled.View`
 export const StyledMyBidsHero = styled.View`
   border-bottom-left-radius: 28px;
   border-bottom-right-radius: 28px;
-  background-color: #0f2742;
+  background-color: ${({ theme }) => theme.colors.heroSurface};
   padding-top: ${({ theme }) => theme.spacing.lg}px;
   padding-bottom: ${({ theme }) => theme.spacing.xl}px;
   padding-horizontal: ${({ theme }) => theme.spacing.xl}px;
@@ -68,7 +68,7 @@ export const StyledMyBidsDescription = styled.Text`
 `;
 
 export const StyledMyBidsHeroDescription = styled.Text`
-  color: rgba(241, 245, 249, 0.82);
+  color: ${({ theme }) => theme.colors.heroMutedForeground};
   font-size: ${({ theme }) => theme.typography.sm}px;
   line-height: 20px;
 `;
@@ -84,20 +84,20 @@ export const StyledMyBidsStatTile = styled.View`
   min-width: 110px;
   border-radius: ${({ theme }) => theme.radii.md}px;
   border-width: ${({ theme }) => theme.borderWidths.thin}px;
-  border-color: rgba(255, 255, 255, 0.12);
-  background-color: rgba(255, 255, 255, 0.08);
+  border-color: ${({ theme }) => theme.colors.heroTileBorder};
+  background-color: ${({ theme }) => theme.colors.heroTileBackground};
   padding: ${({ theme }) => theme.spacing.md}px;
   gap: 2px;
 `;
 
 export const StyledMyBidsStatValue = styled.Text`
-  color: #ffffff;
+  color: ${({ theme }) => theme.colors.heroTileForeground};
   font-size: ${({ theme }) => theme.typography.lg}px;
   font-weight: 700;
 `;
 
 export const StyledMyBidsStatLabel = styled.Text`
-  color: rgba(241, 245, 249, 0.78);
+  color: ${({ theme }) => theme.colors.heroTileMutedForeground};
   font-size: ${({ theme }) => theme.typography.xs}px;
   text-transform: uppercase;
   letter-spacing: 0.4px;

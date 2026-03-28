@@ -1,9 +1,11 @@
 import { PageHeader, TabHeader, resolveHeaderTitle } from "@/components/NavigationHeader";
 import { Stack, useRouter } from "expo-router";
+import { useTheme } from "styled-components/native";
 
 export default function WalletLayout()
 {
     const router = useRouter();
+    const theme = useTheme();
 
     return (
         <Stack>
@@ -14,7 +16,7 @@ export default function WalletLayout()
                     header: ({ options, route }) => (
                         <TabHeader
                             title={resolveHeaderTitle(route.name, options.title)}
-                            backgroundColor="#0f2742"
+                            backgroundColor={theme.colors.heroSurface}
                         />
                     ),
                 }}

@@ -35,9 +35,9 @@ export const StyledBackButton = styled.Pressable<{
   justify-content: center;
   border-width: 1px;
   border-color: ${({ theme, $colored }) =>
-    $colored ? "rgba(226, 232, 240, 0.24)" : theme.colors.border};
+    $colored ? theme.colors.heroChipBorder : theme.colors.border};
   background-color: ${({ theme, $colored }) =>
-    $colored ? "rgba(226, 232, 240, 0.12)" : theme.colors.muted};
+    $colored ? theme.colors.heroChipBackground : theme.colors.muted};
   opacity: ${({ $disabled }) => ($disabled ? 0.45 : 1)};
 `;
 
@@ -61,7 +61,7 @@ export const StyledMenuButton = styled(StyledBackButton)<{
 export const StyledHeaderTitle = styled.Text<{ $colored?: boolean }>`
   flex: 1;
   color: ${({ theme, $colored }) =>
-    $colored ? "#ffffff" : theme.colors.foreground};
+    $colored ? theme.colors.heroForeground : theme.colors.foreground};
   font-size: ${({ theme }) => theme.typography.md + 1}px;
   font-weight: 700;
   text-align: left;
@@ -94,14 +94,14 @@ export const StyledProfileText = styled.View`
 `;
 
 export const StyledProfileGreeting = styled.Text`
-  color: ${({ theme }) => theme.colors.mutedForeground};
+  color: ${({ theme }) => theme.colors.heroMutedForeground};
   font-size: 12px;
   line-height: 16px;
   font-weight: 500;
 `;
 
 export const StyledProfileName = styled.Text`
-  color: ${({ theme }) => theme.colors.foreground};
+  color: ${({ theme }) => theme.colors.heroForeground};
   font-size: ${({ theme }) => theme.typography.md}px;
   line-height: 20px;
   font-weight: 700;

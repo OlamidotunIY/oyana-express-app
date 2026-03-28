@@ -87,6 +87,7 @@ function NavigationRow({ iconName, title, description, onPress }: NavigationRowP
 export default function AccountsScreen()
 {
     const router = useRouter();
+    const theme = useTheme();
 
     const {
         data: profileData,
@@ -176,7 +177,11 @@ export default function AccountsScreen()
                 <StyledAccountStatBoxRow>
                     <StyledAccountStatBox>
                         <StyledAccountStatBoxIconWrap>
-                            <MaterialIcons name="verified-user" size={12} color="rgba(241,245,249,0.8)" />
+                            <MaterialIcons
+                                name="verified-user"
+                                size={12}
+                                color={theme.colors.heroChipForeground}
+                            />
                         </StyledAccountStatBoxIconWrap>
                         <StyledAccountStatBoxValue>{approvedKyc ? "Verified" : "Pending"}</StyledAccountStatBoxValue>
                         <StyledAccountStatBoxLabel>KYC status</StyledAccountStatBoxLabel>
@@ -184,7 +189,11 @@ export default function AccountsScreen()
                     <StyledAccountStatBoxDivider />
                     <StyledAccountStatBox>
                         <StyledAccountStatBoxIconWrap>
-                            <MaterialIcons name="directions-car" size={12} color="rgba(241,245,249,0.8)" />
+                            <MaterialIcons
+                                name="directions-car"
+                                size={12}
+                                color={theme.colors.heroChipForeground}
+                            />
                         </StyledAccountStatBoxIconWrap>
                         <StyledAccountStatBoxValue>{vehicles.length}</StyledAccountStatBoxValue>
                         <StyledAccountStatBoxLabel>{activeVehiclesCount} active</StyledAccountStatBoxLabel>
@@ -194,6 +203,12 @@ export default function AccountsScreen()
                 <StyledAccountSurfaceCard>
                     <StyledAccountSectionLabel>Operations</StyledAccountSectionLabel>
                     <StyledAccountNavigationList>
+                        <NavigationRow
+                            iconName="location-on"
+                            title="Manage addresses"
+                            description="Add and manage saved addresses for your shipments."
+                            onPress={() => router.push("/accounts/manage-addresses" as never)}
+                        />
                         <NavigationRow
                             iconName="settings"
                             title="Settings"

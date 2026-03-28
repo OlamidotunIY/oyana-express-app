@@ -70,7 +70,7 @@ export default function HomeScreen()
 {
   const router = useRouter();
   const theme = useTheme();
-  const { data, loading, error } = useQuery<GetProviderDashboardQuaryQuery>(
+  const { data, error } = useQuery<GetProviderDashboardQuaryQuery>(
     GET_PROVIDER_DASHBOARD_QUARY,
     {
       fetchPolicy: "cache-and-network",
@@ -192,7 +192,11 @@ export default function HomeScreen()
           <StyledHeroStatBoxRow>
             <StyledHeroStatBox>
               <StyledHeroStatBoxIconWrap>
-                <MaterialIcons name="work" size={12} color="rgba(241,245,249,0.8)" />
+                <MaterialIcons
+                  name="work"
+                  size={12}
+                  color={theme.colors.heroChipForeground}
+                />
               </StyledHeroStatBoxIconWrap>
               <StyledHeroStatBoxValue>{activeAssignmentsCount}</StyledHeroStatBoxValue>
               <StyledHeroStatBoxLabel>Active jobs</StyledHeroStatBoxLabel>
@@ -200,7 +204,11 @@ export default function HomeScreen()
             <StyledHeroStatBoxDivider />
             <StyledHeroStatBox>
               <StyledHeroStatBoxIconWrap>
-                <MaterialIcons name="payments" size={12} color="rgba(241,245,249,0.8)" />
+                <MaterialIcons
+                  name="payments"
+                  size={12}
+                  color={theme.colors.heroChipForeground}
+                />
               </StyledHeroStatBoxIconWrap>
               <StyledHeroStatBoxValue>
                 {formatMinorCurrency(todayEarningsMinor, earningsCurrency)}
@@ -347,7 +355,7 @@ export default function HomeScreen()
             <StyledKycBadge verified={!hasKycPending}>
               <MaterialIcons
                 name={hasKycPending ? "hourglass-empty" : "check-circle"}
-                color={hasKycPending ? "#FEF3C7" : "#D1FAE5"}
+                color={hasKycPending ? theme.colors.warning : theme.colors.success}
                 size={11}
               />
               <StyledKycBadgeText verified={!hasKycPending}>

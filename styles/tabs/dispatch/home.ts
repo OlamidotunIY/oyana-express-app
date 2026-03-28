@@ -45,8 +45,8 @@ export const StyledDispatchHeroCard = styled.View`
   overflow: hidden;
   border-radius: ${({ theme }) => theme.radii.xl + 6}px;
   border-width: ${({ theme }) => theme.borderWidths.thin}px;
-  border-color: rgba(255, 255, 255, 0.12);
-  background-color: #082f49;
+  border-color: ${({ theme }) => theme.colors.heroTileBorder};
+  background-color: ${({ theme }) => theme.colors.heroSurface};
   padding: ${({ theme }) => theme.spacing.lg}px;
   gap: ${({ theme }) => theme.spacing.md}px;
 `;
@@ -89,9 +89,9 @@ export const StyledDispatchSectionLabel = styled.Text`
 export const StyledDispatchSectionChip = styled.Text`
   border-radius: ${({ theme }) => theme.radii.full}px;
   border-width: ${({ theme }) => theme.borderWidths.thin}px;
-  border-color: rgba(241, 245, 249, 0.24);
-  background-color: rgba(241, 245, 249, 0.12);
-  color: #e2e8f0;
+  border-color: ${({ theme }) => theme.colors.heroChipBorder};
+  background-color: ${({ theme }) => theme.colors.heroChipBackground};
+  color: ${({ theme }) => theme.colors.heroChipForeground};
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -100,13 +100,13 @@ export const StyledDispatchSectionChip = styled.Text`
 `;
 
 export const StyledDispatchHeroTitle = styled.Text`
-  color: #f8fafc;
+  color: ${({ theme }) => theme.colors.heroForeground};
   font-size: ${({ theme }) => theme.typography.xl + 1}px;
   font-weight: 700;
 `;
 
 export const StyledDispatchHeroDescription = styled.Text`
-  color: rgba(241, 245, 249, 0.88);
+  color: ${({ theme }) => theme.colors.heroMutedForeground};
   font-size: ${({ theme }) => theme.typography.sm}px;
   line-height: 20px;
 `;
@@ -120,20 +120,20 @@ export const StyledDispatchHeroStatTile = styled.View`
   flex: 1;
   border-radius: ${({ theme }) => theme.radii.md}px;
   border-width: ${({ theme }) => theme.borderWidths.thin}px;
-  border-color: rgba(255, 255, 255, 0.16);
-  background-color: rgba(255, 255, 255, 0.1);
+  border-color: ${({ theme }) => theme.colors.heroTileBorder};
+  background-color: ${({ theme }) => theme.colors.heroTileBackground};
   padding: ${({ theme }) => theme.spacing.md}px;
   gap: ${({ theme }) => theme.spacing.xs}px;
 `;
 
 export const StyledDispatchHeroStatValue = styled.Text`
-  color: #ffffff;
+  color: ${({ theme }) => theme.colors.heroTileForeground};
   font-size: ${({ theme }) => theme.typography.lg}px;
   font-weight: 700;
 `;
 
 export const StyledDispatchHeroStatLabel = styled.Text`
-  color: rgba(241, 245, 249, 0.86);
+  color: ${({ theme }) => theme.colors.heroTileMutedForeground};
   font-size: ${({ theme }) => theme.typography.xs}px;
 `;
 

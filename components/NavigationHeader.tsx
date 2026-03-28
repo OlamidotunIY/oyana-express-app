@@ -85,11 +85,6 @@ function BaseHeader({
             .join(" ");
         return fullName || fallback;
     }, [user?.email, user?.firstName, user?.lastName]);
-    const greetingName = React.useMemo(() =>
-    {
-        const name = user?.firstName?.trim();
-        return name && name.length > 0 ? name : "there";
-    }, [user?.firstName]);
     const initials = React.useMemo(() =>
     {
         const firstInitial = user?.firstName?.trim().charAt(0) ?? "";
@@ -119,7 +114,7 @@ function BaseHeader({
                             $disabled={disableBack}
                         >
                             <MaterialIcons
-                                color={backgroundColor ? "#ffffff" : theme.colors.foreground}
+                                color={backgroundColor ? theme.colors.heroForeground : theme.colors.foreground}
                                 name="arrow-back-ios-new"
                                 size={16}
                             />
@@ -152,7 +147,11 @@ function BaseHeader({
                                 $colored={!!backgroundColor}
                                 onPress={onNotificationsPress}
                             >
-                                <MaterialIcons color={backgroundColor ? "#ffffff" : theme.colors.foreground} name="notifications-none" size={backgroundColor ? 24 : 18} />
+                                <MaterialIcons
+                                    color={backgroundColor ? theme.colors.heroForeground : theme.colors.foreground}
+                                    name="notifications-none"
+                                    size={backgroundColor ? 24 : 18}
+                                />
                             </StyledMenuButton>
                             {notificationCount != null && notificationCount > 0 ? (
                                 <StyledNotificationBadge>
@@ -170,7 +169,11 @@ function BaseHeader({
                             $colored={!!backgroundColor}
                             onPress={onRefresh}
                         >
-                            <MaterialIcons color={backgroundColor ? "#ffffff" : theme.colors.foreground} name="refresh" size={backgroundColor ? 24 : 18} />
+                            <MaterialIcons
+                                color={backgroundColor ? theme.colors.heroForeground : theme.colors.foreground}
+                                name="refresh"
+                                size={backgroundColor ? 24 : 18}
+                            />
                         </StyledMenuButton>
                     </StyledHeaderActions>
                 ) : menuItems?.length ? (
@@ -187,7 +190,7 @@ function BaseHeader({
                             >
                                 {item.iconName ? (
                                     <MaterialIcons
-                                        color={backgroundColor ? "#ffffff" : theme.colors.foreground}
+                                        color={backgroundColor ? theme.colors.heroForeground : theme.colors.foreground}
                                         name={item.iconName}
                                         size={backgroundColor ? 24 : 18}
                                     />

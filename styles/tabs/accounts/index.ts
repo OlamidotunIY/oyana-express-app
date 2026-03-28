@@ -4,6 +4,7 @@ export * from "./edit-profile";
 export * from "./kyc-status";
 export * from "./kyc-upload";
 export * from "./legal";
+export * from "./manage-addresses";
 export * from "./manage-vehicles";
 export * from "./settings";
 export * from "./support-stack";

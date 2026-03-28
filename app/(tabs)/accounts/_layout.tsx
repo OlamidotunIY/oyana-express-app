@@ -6,10 +6,12 @@ import
     resolveHeaderTitle,
 } from "@/components/NavigationHeader";
 import { Stack, useRouter } from "expo-router";
+import { useTheme } from "styled-components/native";
 
 export default function AccountLayout()
 {
     const router = useRouter();
+    const theme = useTheme();
 
     const accountMenuItems: HeaderMenuItem[] = [
         {
@@ -52,7 +54,7 @@ export default function AccountLayout()
                         <TabHeader
                             title={resolveHeaderTitle(route.name, options.title)}
                             menuItems={accountMenuItems}
-                            backgroundColor="#0f2742"
+                            backgroundColor={theme.colors.heroSurface}
                         />
                     ),
                 }}

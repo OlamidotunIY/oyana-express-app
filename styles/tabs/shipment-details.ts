@@ -95,13 +95,13 @@ export const StyledShipmentMapVisual = styled.View`
   min-height: 220px;
   overflow: hidden;
   border-radius: ${({ theme }) => theme.radii.xl}px;
-  background-color: #dbeafe;
+  background-color: ${({ theme }) => theme.colors.heroSurface};
 `;
 
 export const StyledShipmentMapRouteLine = styled.View`
   height: 4px;
   border-radius: 999px;
-  background-color: rgba(255, 255, 255, 0.25);
+  background-color: ${({ theme }) => theme.colors.heroChipBorder};
   overflow: hidden;
 `;
 
@@ -110,7 +110,7 @@ export const StyledShipmentMapRouteProgress = styled.View<{
 }>`
   width: ${({ $widthPercent }) => `${$widthPercent}%`};
   height: 100%;
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.colors.heroTileForeground};
 `;
 
 export const StyledShipmentMapPinsRow = styled.View`
@@ -127,8 +127,9 @@ export const StyledShipmentMapPin = styled.View<{
   height: 18px;
   border-radius: 9px;
   border-width: 3px;
-  border-color: ${({ $tone }) => ($tone === "pickup" ? "#22c55e" : "#fb7185")};
-  background-color: #ffffff;
+  border-color: ${({ theme, $tone }) =>
+    $tone === "pickup" ? theme.colors.success : theme.colors.warning};
+  background-color: ${({ theme }) => theme.colors.background};
 `;
 
 export const StyledShipmentAddressStack = styled.View`

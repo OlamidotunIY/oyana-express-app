@@ -283,15 +283,15 @@ export const StyledAccountQuickActionItem = styled.Pressable<{
   padding-vertical: ${({ theme }) => theme.spacing.lg}px;
   padding-horizontal: ${({ theme }) => theme.spacing.xs}px;
   border-radius: ${({ theme }) => theme.radii.lg}px;
-  background-color: ${({ $active }) =>
+  background-color: ${({ theme, $active }) =>
     $active
-      ? ({ theme }: { theme: any }) => theme.colors.heroActionActiveBackground
-      : ({ theme }: { theme: any }) => theme.colors.heroActionBackground};
+      ? theme.colors.heroActionActiveBackground
+      : theme.colors.heroActionBackground};
   border-width: 1px;
-  border-color: ${({ $active }) =>
+  border-color: ${({ theme, $active }) =>
     $active
-      ? ({ theme }: { theme: any }) => theme.colors.heroActionActiveBorder
-      : ({ theme }: { theme: any }) => theme.colors.heroActionBorder};
+      ? theme.colors.heroActionActiveBorder
+      : theme.colors.heroActionBorder};
   gap: ${({ theme }) => theme.spacing.xs}px;
 `;
 

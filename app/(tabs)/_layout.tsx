@@ -50,8 +50,8 @@ export default function TabsLayout()
                     {
                         const title = resolveHeaderTitle(route.name, options.title);
                         const heroBg =
-                            route.name === "index" ? "#0f2742" :
-                                route.name === "wallet" ? "#0f2742" :
+                            route.name === "index" ? theme.colors.heroSurface :
+                                route.name === "wallet" ? theme.colors.heroSurface :
                                     undefined;
                         return (
                             <TabHeader

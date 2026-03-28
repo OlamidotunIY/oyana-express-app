@@ -483,7 +483,7 @@ export default function FreightScreen()
                     setActiveAddress(saved as SavedAddress);
                 }
             }
-            catch (_) { /* handled by Apollo */ }
+            catch { /* handled by Apollo */ }
             setAddressPickerOpen(false);
             setAddressSearchText("");
         },
@@ -584,14 +584,18 @@ export default function FreightScreen()
                 title="Freight"
                 titleContent={
                     <StyledFreightAddressBar onPress={() => setAddressPickerOpen(true)}>
-                        <MaterialIcons name="location-on" size={16} color="#ffffff" />
+                        <MaterialIcons name="location-on" size={16} color={theme.colors.heroForeground} />
                         <StyledFreightAddressText numberOfLines={1}>
                             {activeAddress?.address ?? "Select your location"}
                         </StyledFreightAddressText>
-                        <MaterialIcons name="keyboard-arrow-down" size={18} color="rgba(241,245,249,0.7)" />
+                        <MaterialIcons
+                            name="keyboard-arrow-down"
+                            size={18}
+                            color={theme.colors.heroMutedForeground}
+                        />
                     </StyledFreightAddressBar>
                 }
-                backgroundColor="#0f2742"
+                backgroundColor={theme.colors.heroSurface}
                 menuItems={[
                     {
                         id: "filters",

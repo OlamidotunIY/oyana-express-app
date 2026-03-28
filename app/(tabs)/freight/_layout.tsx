@@ -6,10 +6,12 @@ import
 } from "@/components/NavigationHeader";
 import { useFreightHeaderStore } from "@/store/freightHeaderStore";
 import { Stack, useRouter } from "expo-router";
+import { useTheme } from "styled-components/native";
 
 export default function FreightLayout()
 {
     const router = useRouter();
+    const theme = useTheme();
     const triggerBidsRefresh = useFreightHeaderStore((state) => state.triggerBidsRefresh);
     const freightMenuItems: HeaderMenuItem[] = [
         {
@@ -41,7 +43,7 @@ export default function FreightLayout()
 
                         return (
                             <PageHeader
-                                backgroundColor={isMyBidsRoute ? "#0f2742" : undefined}
+                                backgroundColor={isMyBidsRoute ? theme.colors.heroSurface : undefined}
                                 canGoBack={Boolean(back)}
                                 menuItems={menuItems}
                                 onBackPress={() =>
