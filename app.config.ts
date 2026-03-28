@@ -11,7 +11,7 @@ const config: ExpoConfig = {
   icon: "./assets/images/icon.png",
   scheme: "oyanaexpressapp",
   userInterfaceStyle: "automatic",
-  newArchEnabled: true,
+  newArchEnabled: false,
   ios: {
     supportsTablet: true,
     ...(iosBundleIdentifier ? { bundleIdentifier: iosBundleIdentifier } : {}),
@@ -19,7 +19,8 @@ const config: ExpoConfig = {
   android: {
     adaptiveIcon: {
       foregroundImage: "./assets/images/icon.png",
-      backgroundColor: "#ffffff",
+      backgroundColor: "#E6F4FE",
+      monochromeImage: "./assets/images/icon.png",
     },
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
@@ -32,18 +33,25 @@ const config: ExpoConfig = {
   },
   plugins: [
     "expo-router",
+    "expo-notifications",
+    "@react-native-community/datetimepicker",
+    "expo-secure-store",
     [
       "expo-splash-screen",
       {
-        image: "./assets/images/icon.png",
+        image: "./assets/images/splash-icon.png",
         imageWidth: 200,
         resizeMode: "contain",
         backgroundColor: "#ffffff",
+        dark: {
+          backgroundColor: "#000000",
+        },
       },
     ],
   ],
   experiments: {
     typedRoutes: true,
+    reactCompiler: true,
   },
 };
 
