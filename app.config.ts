@@ -6,7 +6,7 @@ const iosBundleIdentifier = process.env.EXPO_IOS_BUNDLE_IDENTIFIER;
 const config: ExpoConfig = {
   name: "Oyana Express",
   slug: "oyana-express-app",
-  version: "1.0.1",
+  version: "1.0.0",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "oyanaexpressapp",
@@ -17,6 +17,7 @@ const config: ExpoConfig = {
     ...(iosBundleIdentifier ? { bundleIdentifier: iosBundleIdentifier } : {}),
   },
   android: {
+    versionCode: 2,
     adaptiveIcon: {
       foregroundImage: "./assets/images/icon.png",
       backgroundColor: "#E6F4FE",
