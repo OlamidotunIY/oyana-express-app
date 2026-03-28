@@ -62,11 +62,11 @@ jobs:
           java-version: 17
           cache: gradle
 
-      - name: Build Android debug APK
+      - name: Build Android debug APK with embedded bundle
         working-directory: android
         env:
           NODE_ENV: production
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDebug -PbundleInDebug=true
 
       - name: Upload Android artifact
         uses: actions/upload-artifact@v4
