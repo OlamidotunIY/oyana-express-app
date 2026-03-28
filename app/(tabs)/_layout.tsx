@@ -20,6 +20,14 @@ export default function TabsLayout()
     const user = useUserStore((state) => state.user);
     const showFreightTab = isProviderUser(user);
 
+    React.useEffect(() =>
+    {
+        if (user !== null && !isProviderUser(user))
+        {
+            router.replace("/(auth)/customer-not-supported");
+        }
+    }, [user]);
+
     const getTabMenuItems = React.useCallback((routeName: string): HeaderMenuItem[] =>
     {
         if (routeName === "accounts")
