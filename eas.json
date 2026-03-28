@@ -1,14 +1,16 @@
 {
   "cli": {
-    "version": ">= 16.0.0",
-    "appVersionSource": "remote"
+    "version": "18.4.0",
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "NODE_ENV": "development"
+        "NODE_ENV": "development",
+        "EXPO_PUBLIC_API_URL": "https://oyana-backend-lf75.onrender.com",
+        "EXPO_PUBLIC_GRAPHQL_WS_URL": "wss://oyana-backend-lf75.onrender.com/graphql"
       },
       "android": {
         "buildType": "apk"
@@ -17,7 +19,9 @@
     "preview": {
       "distribution": "internal",
       "env": {
-        "NODE_ENV": "production"
+        "NODE_ENV": "production",
+        "EXPO_PUBLIC_API_URL": "https://oyana-backend-lf75.onrender.com",
+        "EXPO_PUBLIC_GRAPHQL_WS_URL": "wss://oyana-backend-lf75.onrender.com/graphql"
       },
       "android": {
         "buildType": "apk"
@@ -25,7 +29,9 @@
     },
     "production": {
       "env": {
-        "NODE_ENV": "production"
+        "NODE_ENV": "production",
+        "EXPO_PUBLIC_API_URL": "https://oyana-backend-lf75.onrender.com",
+        "EXPO_PUBLIC_GRAPHQL_WS_URL": "wss://oyana-backend-lf75.onrender.com/graphql"
       },
       "android": {
         "buildType": "app-bundle"

@@ -1,38 +1,42 @@
 import React, { useState } from "react";
-import { Platform } from "react-native";
+import { Platform, View } from "react-native";
 import { useMutation } from "@apollo/client/react";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Constants from "expo-constants";
 
 import { Button } from "@/components/ui/Button";
-import {
-  MeQuery,
-  UpdateNotificationSettingsMutation,
-  UpdateNotificationSettingsMutationVariables,
-  UpsertPushDeviceMutation,
-  UpsertPushDeviceMutationVariables,
-} from "@/gql/graphql";
-import {
-  ME_QUERY,
-  UPDATE_NOTIFICATION_SETTINGS_MUTATION,
-  UPSERT_PUSH_DEVICE_MUTATION,
-} from "@/graphql";
+import
+  {
+    MeQuery,
+    UpdateNotificationSettingsMutation,
+    UpdateNotificationSettingsMutationVariables,
+    UpsertPushDeviceMutation,
+    UpsertPushDeviceMutationVariables,
+  } from "@/gql/graphql";
+import
+  {
+    ME_QUERY,
+    UPDATE_NOTIFICATION_SETTINGS_MUTATION,
+    UPSERT_PUSH_DEVICE_MUTATION,
+  } from "@/graphql";
 import { client } from "@/lib/apolloClient";
 import { registerForPushNotificationsAsync } from "@/lib/push-notifications";
 import { parseAuthError } from "@/lib/session";
 import { useToastStore } from "@/store/toastStore";
 import { useUserStore } from "@/store/userStore";
-import {
-  AuthContent,
-  AuthHeader,
-  AuthKeyboardAvoiding,
-  AuthScrollView,
-  AuthSubtitle,
-  AuthTitle,
-} from "@/styles";
+import
+  {
+    AuthContent,
+    AuthHeader,
+    AuthKeyboardAvoiding,
+    AuthScrollView,
+    AuthSubtitle,
+    AuthTitle,
+  } from "@/styles";
 
-export default function NotificationPermissionScreen() {
+export default function NotificationPermissionScreen()
+{
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const showToast = useToastStore((state) => state.showToast);
@@ -49,23 +53,27 @@ export default function NotificationPermissionScreen() {
     UpsertPushDeviceMutationVariables
   >(UPSERT_PUSH_DEVICE_MUTATION);
 
-  async function syncUserAndContinue() {
+  async function syncUserAndContinue()
+  {
     const { data } = await client.query<MeQuery>({
       query: ME_QUERY,
       fetchPolicy: "no-cache",
     });
 
-    if (data?.me) {
+    if (data?.me)
+    {
       setUser(data.me);
     }
 
     router.replace("/(tabs)");
   }
 
-  async function handleSkip() {
+  async function handleSkip()
+  {
     setBusy(true);
 
-    try {
+    try
+    {
       await updateNotificationSettings({
         variables: {
           input: {
@@ -79,23 +87,28 @@ export default function NotificationPermissionScreen() {
 
       showToast({ message: "Notifications left off for now.", tone: "success" });
       await syncUserAndContinue();
-    } catch (error) {
+    } catch (error)
+    {
       showToast({
         message: parseAuthError(error, "Unable to save your notification preference."),
         tone: "error",
       });
-    } finally {
+    } finally
+    {
       setBusy(false);
     }
   }
 
-  async function handleEnable() {
+  async function handleEnable()
+  {
     setBusy(true);
 
-    try {
+    try
+    {
       const { status, token } = await registerForPushNotificationsAsync();
 
-      if (status !== "granted" || !token) {
+      if (status !== "granted" || !token)
+      {
         await updateNotificationSettings({
           variables: {
             input: {
@@ -140,12 +153,14 @@ export default function NotificationPermissionScreen() {
 
       showToast({ message: "Notifications enabled.", tone: "success" });
       await syncUserAndContinue();
-    } catch (error) {
+    } catch (error)
+    {
       showToast({
         message: parseAuthError(error, "Unable to enable notifications."),
         tone: "error",
       });
-    } finally {
+    } finally
+    {
       setBusy(false);
     }
   }
@@ -161,13 +176,15 @@ export default function NotificationPermissionScreen() {
             </AuthSubtitle>
           </AuthHeader>
 
-          <Button fullWidth onPress={() => void handleEnable()} disabled={busy}>
-            {busy ? "Saving…" : "Enable notifications"}
-          </Button>
+          <View style={{ gap: 16 }}>
+            <Button fullWidth onPress={() => void handleEnable()} disabled={busy}>
+              {busy ? "Saving…" : "Enable notifications"}
+            </Button>
 
-          <Button fullWidth variant="outline" onPress={() => void handleSkip()} disabled={busy}>
-            Not now
-          </Button>
+            <Button fullWidth variant="outline" onPress={() => void handleSkip()} disabled={busy}>
+              Not now
+            </Button>
+          </View>
         </AuthContent>
       </AuthScrollView>
     </AuthKeyboardAvoiding>
