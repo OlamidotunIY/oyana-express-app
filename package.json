@@ -3,7 +3,12 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
+    "eas": "eas",
+    "build:android:dev": "eas build --platform android --profile development",
+    "build:android:preview": "eas build --platform android --profile preview",
     "start": "expo start",
+    "start:dev": "expo start --dev-client",
+    "start:android:dev": "expo start --dev-client --android",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
@@ -24,6 +29,7 @@
     "expo": "~54.0.33",
     "expo-av": "^16.0.8",
     "expo-constants": "~18.0.13",
+    "expo-dev-client": "~6.0.20",
     "expo-font": "~14.0.11",
     "expo-haptics": "~15.0.8",
     "expo-image": "~3.0.11",
@@ -52,6 +58,7 @@
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
+    "eas-cli": "^18.4.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "typescript": "~5.9.2"

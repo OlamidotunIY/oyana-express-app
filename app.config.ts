@@ -1,6 +1,6 @@
 import type { ExpoConfig } from "expo/config";
 
-const androidPackage = process.env.EXPO_ANDROID_PACKAGE;
+const androidPackage = process.env.EXPO_ANDROID_PACKAGE ?? "com.express.oyana";
 const iosBundleIdentifier = process.env.EXPO_IOS_BUNDLE_IDENTIFIER;
 
 const config: ExpoConfig = {
@@ -25,15 +25,26 @@ const config: ExpoConfig = {
     },
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
-    ...(androidPackage ? { package: androidPackage } : {}),
+    package: androidPackage,
   },
   web: {
     bundler: "metro",
     output: "static",
     favicon: "./assets/images/favicon.png",
   },
+  extra: {
+    eas: {
+      projectId: "f277e6a4-b0a6-4ca6-a1f6-45397b993fe6",
+    },
+  },
   plugins: [
     "expo-router",
+    [
+      "expo-dev-client",
+      {
+        launchMode: "launcher",
+      },
+    ],
     "expo-notifications",
     "@react-native-community/datetimepicker",
     "expo-secure-store",

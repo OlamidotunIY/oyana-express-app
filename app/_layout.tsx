@@ -1,3 +1,4 @@
+import "expo-dev-client";
 import { ToastHost } from "@/components/ui";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { client } from "@/lib/apolloClient";
