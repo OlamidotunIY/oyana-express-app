@@ -89,6 +89,7 @@ import
     StyledStatusText
 } from "@/styles/tabs";
 import { formatMinorCurrency, formatShipmentStatus } from "@/utils/format";
+import { useUserStore } from "@/store/userStore";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -367,6 +368,7 @@ export default function FreightScreen()
     const tabBarHeight = useBottomTabBarHeight();
 
     // ── Address picker ────────────────────────────────────────
+    const activeAddressId = useUserStore((s) => s.activeAddressId);
     const [activeAddress, setActiveAddress] = React.useState<SavedAddress | null>(null);
     const [addressPickerOpen, setAddressPickerOpen] = React.useState(false);
     const [addressSearchText, setAddressSearchText] = React.useState("");
@@ -450,6 +452,17 @@ export default function FreightScreen()
     const savedAddresses = savedAddressesData?.myUserAddresses ?? [];
     const addressSuggestions = addressSearchData?.searchAddresses ?? [];
     const showSearchResults = addressSearchText.trim().length > 1;
+
+    // Sync active address from store whenever saved addresses load
+    React.useEffect(() =>
+    {
+        if (!activeAddressId || savedAddresses.length === 0) return;
+        const match = savedAddresses.find((a) => a.id === activeAddressId);
+        if (match && activeAddress?.id !== match.id)
+        {
+            setActiveAddress(match as SavedAddress);
+        }
+    }, [activeAddressId, savedAddresses]);
 
     // ── Handlers ──────────────────────────────────────────────
     const handleAddressSearch = React.useCallback(

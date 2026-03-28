@@ -163,3 +163,86 @@ export const StyledManageAddressesActions = styled.View`
   flex-direction: row;
   gap: ${({ theme }) => theme.spacing.sm}px;
 `;
+
+// ── Active address row ────────────────────────────────────────────────────────
+export const StyledManageAddressesListRowTouchable = styled.Pressable<{
+  $active: boolean;
+}>`
+  border-width: ${({ theme }) => theme.borderWidths.thin}px;
+  border-color: ${({ theme, $active }) =>
+    $active ? theme.colors.primary : theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.md}px;
+  padding: ${({ theme }) => theme.spacing.md}px;
+  gap: ${({ theme }) => theme.spacing.xs}px;
+  background-color: ${({ theme, $active }) =>
+    $active ? theme.colors.muted : "transparent"};
+`;
+
+export const StyledManageAddressesListRowHeader = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.sm}px;
+`;
+
+export const StyledManageAddressesListRowInfo = styled.View`
+  flex: 1;
+  gap: ${({ theme }) => theme.spacing.xs}px;
+`;
+
+export const StyledManageAddressesActiveBadge = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  background-color: ${({ theme }) => theme.colors.primary};
+  border-radius: ${({ theme }) => theme.radii.sm}px;
+  padding-horizontal: ${({ theme }) => theme.spacing.xs}px;
+  padding-vertical: 2px;
+`;
+
+export const StyledManageAddressesActiveBadgeText = styled.Text`
+  color: ${({ theme }) => theme.colors.primaryForeground};
+  font-size: ${({ theme }) => theme.typography.xs}px;
+  font-weight: 700;
+`;
+
+export const StyledManageAddressesSetActiveBtn = styled.Pressable`
+  align-self: flex-start;
+  margin-top: ${({ theme }) => theme.spacing.xs}px;
+`;
+
+export const StyledManageAddressesSetActiveBtnText = styled.Text`
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: ${({ theme }) => theme.typography.xs}px;
+  font-weight: 600;
+`;
+
+// ── Bottom sheet modal ────────────────────────────────────────────────────────
+export const StyledManageAddressesSheetOverlay = styled.Pressable`
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.45);
+  justify-content: flex-end;
+`;
+
+export const StyledManageAddressesSheet = styled.View`
+  background-color: ${({ theme }) => theme.colors.background};
+  border-top-left-radius: ${({ theme }) => theme.radii.xl}px;
+  border-top-right-radius: ${({ theme }) => theme.radii.xl}px;
+  padding: ${({ theme }) => theme.spacing.lg}px;
+  gap: ${({ theme }) => theme.spacing.md}px;
+`;
+
+export const StyledManageAddressesSheetHandle = styled.View`
+  width: 40px;
+  height: 4px;
+  border-radius: ${({ theme }) => theme.radii.full}px;
+  background-color: ${({ theme }) => theme.colors.border};
+  align-self: center;
+  margin-bottom: ${({ theme }) => theme.spacing.sm}px;
+`;
+
+export const StyledManageAddressesSheetTitle = styled.Text`
+  color: ${({ theme }) => theme.colors.foreground};
+  font-size: ${({ theme }) => theme.typography.md}px;
+  font-weight: 700;
+`;

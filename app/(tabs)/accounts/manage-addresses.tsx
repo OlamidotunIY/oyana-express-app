@@ -1,4 +1,5 @@
 import React from "react";
+import { KeyboardAvoidingView, Modal, Platform, ScrollView } from "react-native";
 import { useMutation, useQuery } from "@apollo/client/react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -23,8 +24,11 @@ import
 } from "@/graphql";
 import { useBackendErrorToast } from "@/hooks/use-backend-error-toast";
 import { showBackendErrorToast, showToast } from "@/lib/toast";
+import { useUserStore } from "@/store/userStore";
 import
 {
+    StyledManageAddressesActiveBadge,
+    StyledManageAddressesActiveBadgeText,
     StyledManageAddressesActions,
     StyledManageAddressesFieldLabel,
     StyledManageAddressesFloatingButton,
@@ -34,7 +38,9 @@ import
     StyledManageAddressesLabel,
     StyledManageAddressesLabelInput,
     StyledManageAddressesList,
-    StyledManageAddressesListRow,
+    StyledManageAddressesListRowHeader,
+    StyledManageAddressesListRowInfo,
+    StyledManageAddressesListRowTouchable,
     StyledManageAddressesLoadingWrap,
     StyledManageAddressesRoot,
     StyledManageAddressesScreen,
@@ -44,6 +50,12 @@ import
     StyledManageAddressesSelectedRow,
     StyledManageAddressesSelectedSub,
     StyledManageAddressesSelectedTitle,
+    StyledManageAddressesSetActiveBtn,
+    StyledManageAddressesSetActiveBtnText,
+    StyledManageAddressesSheet,
+    StyledManageAddressesSheetHandle,
+    StyledManageAddressesSheetOverlay,
+    StyledManageAddressesSheetTitle,
     StyledManageAddressesSuggestionList,
     StyledManageAddressesSuggestionMain,
     StyledManageAddressesSuggestionRow,
@@ -63,11 +75,14 @@ export default function ManageAddressesScreen()
     const theme = useTheme();
     const tabBarHeight = useBottomTabBarHeight();
 
-    const [showForm, setShowForm] = React.useState(false);
+    const [showSheet, setShowSheet] = React.useState(false);
     const [searchQuery, setSearchQuery] = React.useState("");
     const [labelInput, setLabelInput] = React.useState("");
     const [selectedPlace, setSelectedPlace] = React.useState<SelectedPlace | null>(null);
     const [saving, setSaving] = React.useState(false);
+
+    const activeAddressId = useUserStore((s) => s.activeAddressId);
+    const setActiveAddressId = useUserStore((s) => s.setActiveAddressId);
 
     const { data, loading, error, refetch } = useQuery<
         MyUserAddressesQuery,
@@ -104,7 +119,7 @@ export default function ManageAddressesScreen()
         setSearchQuery("");
         setLabelInput("");
         setSelectedPlace(null);
-        setShowForm(false);
+        setShowSheet(false);
     }
 
     async function handleSave()
@@ -168,132 +183,177 @@ export default function ManageAddressesScreen()
                             </StyledManageAddressesHint>
                         ) : (
                             <StyledManageAddressesList>
-                                {addresses.map((addr) => (
-                                    <StyledManageAddressesListRow key={addr.id}>
-                                        {addr.label ? (
-                                            <StyledManageAddressesLabel>{addr.label}</StyledManageAddressesLabel>
-                                        ) : null}
-                                        <StyledManageAddressesTitle numberOfLines={2}>
-                                            {addr.address}
-                                        </StyledManageAddressesTitle>
-                                        <StyledManageAddressesHint>
-                                            {[addr.city, addr.state, addr.countryCode]
-                                                .filter(Boolean)
-                                                .join(", ")}
-                                        </StyledManageAddressesHint>
-                                    </StyledManageAddressesListRow>
-                                ))}
+                                {addresses.map((addr) =>
+                                {
+                                    const isActive = activeAddressId === addr.id;
+
+                                    return (
+                                        <StyledManageAddressesListRowTouchable
+                                            key={addr.id}
+                                            $active={isActive}
+                                            onPress={() => {/* no-op — tap "Set as active" below */ }}
+                                        >
+                                            <StyledManageAddressesListRowHeader>
+                                                <StyledManageAddressesListRowInfo>
+                                                    {addr.label ? (
+                                                        <StyledManageAddressesLabel>{addr.label}</StyledManageAddressesLabel>
+                                                    ) : null}
+                                                    <StyledManageAddressesTitle numberOfLines={2}>
+                                                        {addr.address}
+                                                    </StyledManageAddressesTitle>
+                                                    <StyledManageAddressesHint>
+                                                        {[addr.city, addr.state, addr.countryCode]
+                                                            .filter(Boolean)
+                                                            .join(", ")}
+                                                    </StyledManageAddressesHint>
+                                                </StyledManageAddressesListRowInfo>
+                                                {isActive ? (
+                                                    <StyledManageAddressesActiveBadge>
+                                                        <MaterialIcons name="check" size={10} color={theme.colors.primaryForeground} />
+                                                        <StyledManageAddressesActiveBadgeText>Active</StyledManageAddressesActiveBadgeText>
+                                                    </StyledManageAddressesActiveBadge>
+                                                ) : null}
+                                            </StyledManageAddressesListRowHeader>
+                                            {!isActive ? (
+                                                <StyledManageAddressesSetActiveBtn
+                                                    onPress={() => setActiveAddressId(addr.id)}
+                                                >
+                                                    <StyledManageAddressesSetActiveBtnText>
+                                                        Set as active
+                                                    </StyledManageAddressesSetActiveBtnText>
+                                                </StyledManageAddressesSetActiveBtn>
+                                            ) : null}
+                                        </StyledManageAddressesListRowTouchable>
+                                    );
+                                })}
                             </StyledManageAddressesList>
                         )}
                     </StyledManageAddressesSection>
 
-                    {/* ── ADD ADDRESS FORM ────────────────────────── */}
-                    {showForm ? (
-                        <StyledManageAddressesSection>
-                            <StyledManageAddressesSectionLabel>Add new address</StyledManageAddressesSectionLabel>
-
-                            <StyledManageAddressesFormSection>
-                                <StyledManageAddressesSearchBox>
-                                    <StyledManageAddressesFieldLabel>Search location</StyledManageAddressesFieldLabel>
-                                    <StyledManageAddressesInput
-                                        placeholder="Start typing an address…"
-                                        placeholderTextColor={theme.colors.mutedForeground}
-                                        value={searchQuery}
-                                        onChangeText={(text) =>
-                                        {
-                                            setSearchQuery(text);
-                                            setSelectedPlace(null);
-                                        }}
-                                        autoCorrect={false}
-                                        autoCapitalize="none"
-                                    />
-                                    {searchLoading ? (
-                                        <StyledManageAddressesLoadingWrap>
-                                            <Spinner size="small" />
-                                        </StyledManageAddressesLoadingWrap>
-                                    ) : null}
-                                    {suggestions.length > 0 && !selectedPlace ? (
-                                        <StyledManageAddressesSuggestionList>
-                                            {suggestions.map((s) => (
-                                                <StyledManageAddressesSuggestionRow
-                                                    key={s.placeId}
-                                                    onPress={() =>
-                                                    {
-                                                        setSelectedPlace({
-                                                            placeId: s.placeId,
-                                                            description: s.description,
-                                                            mainText: s.mainText ?? "",
-                                                            secondaryText: s.secondaryText ?? "",
-                                                        });
-                                                        setSearchQuery(s.description);
-                                                    }}
-                                                >
-                                                    <StyledManageAddressesSuggestionMain>
-                                                        {s.mainText}
-                                                    </StyledManageAddressesSuggestionMain>
-                                                    <StyledManageAddressesSuggestionSub>
-                                                        {s.secondaryText}
-                                                    </StyledManageAddressesSuggestionSub>
-                                                </StyledManageAddressesSuggestionRow>
-                                            ))}
-                                        </StyledManageAddressesSuggestionList>
-                                    ) : null}
-                                    {selectedPlace ? (
-                                        <StyledManageAddressesSelectedRow>
-                                            <StyledManageAddressesSelectedTitle>
-                                                {selectedPlace.mainText}
-                                            </StyledManageAddressesSelectedTitle>
-                                            <StyledManageAddressesSelectedSub>
-                                                {selectedPlace.secondaryText}
-                                            </StyledManageAddressesSelectedSub>
-                                        </StyledManageAddressesSelectedRow>
-                                    ) : null}
-                                </StyledManageAddressesSearchBox>
-
-                                <StyledManageAddressesSearchBox>
-                                    <StyledManageAddressesFieldLabel>
-                                        Label (optional)
-                                    </StyledManageAddressesFieldLabel>
-                                    <StyledManageAddressesLabelInput
-                                        placeholder="e.g. Home, Office…"
-                                        placeholderTextColor={theme.colors.mutedForeground}
-                                        value={labelInput}
-                                        onChangeText={setLabelInput}
-                                        autoCapitalize="words"
-                                    />
-                                </StyledManageAddressesSearchBox>
-
-                                <StyledManageAddressesActions>
-                                    <Button
-                                        variant="outline"
-                                        onPress={resetForm}
-                                        disabled={saving}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        onPress={() => void handleSave()}
-                                        disabled={!selectedPlace || saving}
-                                    >
-                                        {saving ? "Saving…" : "Save address"}
-                                    </Button>
-                                </StyledManageAddressesActions>
-                            </StyledManageAddressesFormSection>
-                        </StyledManageAddressesSection>
-                    ) : null}
-
                 </StyledManageAddressesRoot>
             </ScreenShell>
 
-            {!showForm ? (
-                <StyledManageAddressesFloatingButton
-                    accessibilityLabel="Add address"
-                    onPress={() => setShowForm(true)}
-                    $bottom={tabBarHeight + 12}
+            {/* ── FLOATING ADD BUTTON ───────────────────────── */}
+            <StyledManageAddressesFloatingButton
+                accessibilityLabel="Add address"
+                onPress={() => setShowSheet(true)}
+                $bottom={tabBarHeight + 12}
+            >
+                <MaterialIcons name="add" size={24} color="#F8FAFC" />
+            </StyledManageAddressesFloatingButton>
+
+            {/* ── ADD ADDRESS BOTTOM SHEET ──────────────────── */}
+            <Modal
+                visible={showSheet}
+                transparent
+                animationType="slide"
+                onRequestClose={resetForm}
+            >
+                <KeyboardAvoidingView
+                    style={{ flex: 1 }}
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
                 >
-                    <MaterialIcons name="add" size={24} color="#F8FAFC" />
-                </StyledManageAddressesFloatingButton>
-            ) : null}
+                    <StyledManageAddressesSheetOverlay onPress={resetForm}>
+                        <StyledManageAddressesSheet onStartShouldSetResponder={() => true}>
+                            <StyledManageAddressesSheetHandle />
+                            <StyledManageAddressesSheetTitle>Add new address</StyledManageAddressesSheetTitle>
+
+                            <ScrollView
+                                keyboardShouldPersistTaps="handled"
+                                showsVerticalScrollIndicator={false}
+                            >
+                                <StyledManageAddressesFormSection>
+                                    <StyledManageAddressesSearchBox>
+                                        <StyledManageAddressesFieldLabel>Search location</StyledManageAddressesFieldLabel>
+                                        <StyledManageAddressesInput
+                                            placeholder="Start typing an address…"
+                                            placeholderTextColor={theme.colors.mutedForeground}
+                                            value={searchQuery}
+                                            onChangeText={(text) =>
+                                            {
+                                                setSearchQuery(text);
+                                                setSelectedPlace(null);
+                                            }}
+                                            autoCorrect={false}
+                                            autoCapitalize="none"
+                                        />
+                                        {searchLoading ? (
+                                            <StyledManageAddressesLoadingWrap>
+                                                <Spinner size="small" />
+                                            </StyledManageAddressesLoadingWrap>
+                                        ) : null}
+                                        {suggestions.length > 0 && !selectedPlace ? (
+                                            <StyledManageAddressesSuggestionList>
+                                                {suggestions.map((s) => (
+                                                    <StyledManageAddressesSuggestionRow
+                                                        key={s.placeId}
+                                                        onPress={() =>
+                                                        {
+                                                            setSelectedPlace({
+                                                                placeId: s.placeId,
+                                                                description: s.description,
+                                                                mainText: s.mainText ?? "",
+                                                                secondaryText: s.secondaryText ?? "",
+                                                            });
+                                                            setSearchQuery(s.description);
+                                                        }}
+                                                    >
+                                                        <StyledManageAddressesSuggestionMain>
+                                                            {s.mainText}
+                                                        </StyledManageAddressesSuggestionMain>
+                                                        <StyledManageAddressesSuggestionSub>
+                                                            {s.secondaryText}
+                                                        </StyledManageAddressesSuggestionSub>
+                                                    </StyledManageAddressesSuggestionRow>
+                                                ))}
+                                            </StyledManageAddressesSuggestionList>
+                                        ) : null}
+                                        {selectedPlace ? (
+                                            <StyledManageAddressesSelectedRow>
+                                                <StyledManageAddressesSelectedTitle>
+                                                    {selectedPlace.mainText}
+                                                </StyledManageAddressesSelectedTitle>
+                                                <StyledManageAddressesSelectedSub>
+                                                    {selectedPlace.secondaryText}
+                                                </StyledManageAddressesSelectedSub>
+                                            </StyledManageAddressesSelectedRow>
+                                        ) : null}
+                                    </StyledManageAddressesSearchBox>
+
+                                    <StyledManageAddressesSearchBox>
+                                        <StyledManageAddressesFieldLabel>
+                                            Label (optional)
+                                        </StyledManageAddressesFieldLabel>
+                                        <StyledManageAddressesLabelInput
+                                            placeholder="e.g. Home, Office…"
+                                            placeholderTextColor={theme.colors.mutedForeground}
+                                            value={labelInput}
+                                            onChangeText={setLabelInput}
+                                            autoCapitalize="words"
+                                        />
+                                    </StyledManageAddressesSearchBox>
+
+                                    <StyledManageAddressesActions>
+                                        <Button
+                                            variant="outline"
+                                            onPress={resetForm}
+                                            disabled={saving}
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            onPress={() => void handleSave()}
+                                            disabled={!selectedPlace || saving}
+                                        >
+                                            {saving ? "Saving…" : "Save address"}
+                                        </Button>
+                                    </StyledManageAddressesActions>
+                                </StyledManageAddressesFormSection>
+                            </ScrollView>
+                        </StyledManageAddressesSheet>
+                    </StyledManageAddressesSheetOverlay>
+                </KeyboardAvoidingView>
+            </Modal>
         </StyledManageAddressesScreen>
     );
 }

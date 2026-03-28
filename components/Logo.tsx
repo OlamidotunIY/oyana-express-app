@@ -1,18 +1,21 @@
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useColorScheme } from "react-native";
 import { LogoImage } from "@/styles/components/Logo";
+import { usePreferencesStore } from "@/store/preferencesStore";
 
 const logos = {
-    light: require("../assets/images/logoBlack.png"),
-    dark: require("../assets/images/logoWhite.png"),
+    light: require("../assets/images/logoWhite.png"),
+    dark: require("../assets/images/logoBlack.png"),
 };
 
 export default function Logo()
 {
-    const colorScheme = useColorScheme();
+    const themePreference = usePreferencesStore((s) => s.themePreference);
+    const systemScheme = useColorScheme();
+    const effectiveScheme = themePreference === "system" ? systemScheme : themePreference;
 
     return (
         <LogoImage
-            source={colorScheme === "dark" ? logos.dark : logos.light}
+            source={effectiveScheme === "dark" ? logos.dark : logos.light}
             resizeMode="contain"
         />
     );

@@ -3,6 +3,9 @@ import { ScreenShell } from "@/components/ui/ScreenShell";
 import { MeQuery, MeQueryVariables } from "@/gql/graphql";
 import { GET_PROVIDER_DASHBOARD_QUARY, ME_QUERY } from "@/graphql";
 import { useBackendErrorToast } from "@/hooks/use-backend-error-toast";
+import { clearAuthTokens } from "@/lib/auth-cookies";
+import { client } from "@/lib/apolloClient";
+import { useUserStore } from "@/store/userStore";
 import
 {
     StyledAccountAvatar,
@@ -88,6 +91,15 @@ export default function AccountsScreen()
 {
     const router = useRouter();
     const theme = useTheme();
+    const clearUser = useUserStore((s) => s.clearUser);
+
+    async function handleLogout()
+    {
+        clearAuthTokens();
+        clearUser();
+        await client.clearStore();
+        router.replace("/(auth)/onboarding" as never);
+    }
 
     const {
         data: profileData,
@@ -245,6 +257,26 @@ export default function AccountsScreen()
                             description="Terms, privacy policy, and platform legal notices."
                             onPress={() => router.push("/accounts/legal" as never)}
                         />
+                    </StyledAccountNavigationList>
+                </StyledAccountSurfaceCard>
+
+                <StyledAccountSurfaceCard>
+                    <StyledAccountNavigationList>
+                        <StyledAccountNavigationRow onPress={() => void handleLogout()}>
+                            <StyledAccountNavigationLead>
+                                <StyledAccountNavigationIconWrap>
+                                    <MaterialIcons name="logout" size={16} color={theme.colors.destructive} />
+                                </StyledAccountNavigationIconWrap>
+                                <StyledAccountNavigationTextGroup>
+                                    <StyledAccountNavigationTitle style={{ color: theme.colors.destructive }}>
+                                        Sign out
+                                    </StyledAccountNavigationTitle>
+                                    <StyledAccountNavigationDescription>
+                                        Sign out of your provider account.
+                                    </StyledAccountNavigationDescription>
+                                </StyledAccountNavigationTextGroup>
+                            </StyledAccountNavigationLead>
+                        </StyledAccountNavigationRow>
                     </StyledAccountNavigationList>
                 </StyledAccountSurfaceCard>
             </StyledAccountRoot>

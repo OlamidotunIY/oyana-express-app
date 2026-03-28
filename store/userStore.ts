@@ -17,19 +17,24 @@ const expoSecureStorage = {
 
 interface UserStore {
   user: Profile | null;
+  activeAddressId: string | null;
   setUser: (user: Profile | null) => void;
   clearUser: () => void;
+  setActiveAddressId: (id: string | null) => void;
 }
 
 export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
       user: null,
+      activeAddressId: null,
       setUser: (user) => set({ user }),
       clearUser: () =>
         set({
           user: null,
+          activeAddressId: null,
         }),
+      setActiveAddressId: (activeAddressId) => set({ activeAddressId }),
     }),
     {
       name: "oyana-user-storage",

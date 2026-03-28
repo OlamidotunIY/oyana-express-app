@@ -2,6 +2,7 @@ import type { ExpoConfig } from "expo/config";
 
 const androidPackage = process.env.EXPO_ANDROID_PACKAGE ?? "com.express.oyana";
 const iosBundleIdentifier = process.env.EXPO_IOS_BUNDLE_IDENTIFIER;
+const googleMapsApiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 const config: ExpoConfig = {
   name: "Oyana Express",
@@ -14,6 +15,13 @@ const config: ExpoConfig = {
   newArchEnabled: true,
   ios: {
     supportsTablet: true,
+    ...(googleMapsApiKey
+      ? {
+          config: {
+            googleMapsApiKey,
+          },
+        }
+      : {}),
     ...(iosBundleIdentifier ? { bundleIdentifier: iosBundleIdentifier } : {}),
   },
   android: {
@@ -26,6 +34,15 @@ const config: ExpoConfig = {
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: androidPackage,
+    ...(googleMapsApiKey
+      ? {
+          config: {
+            googleMaps: {
+              apiKey: googleMapsApiKey,
+            },
+          },
+        }
+      : {}),
   },
   web: {
     bundler: "metro",
