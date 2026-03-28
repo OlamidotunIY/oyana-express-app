@@ -76,6 +76,10 @@ export const StyledAccountIdentityRow = styled.View`
   gap: ${({ theme }) => theme.spacing.sm}px;
 `;
 
+export const StyledAccountAvatarButton = styled.Pressable`
+  position: relative;
+`;
+
 export const StyledAccountAvatar = styled.View`
   width: 52px;
   height: 52px;
@@ -85,12 +89,32 @@ export const StyledAccountAvatar = styled.View`
   background-color: rgba(255, 106, 0, 0.9);
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+`;
+
+export const StyledAccountAvatarImage = styled.Image`
+  width: 100%;
+  height: 100%;
 `;
 
 export const StyledAccountAvatarText = styled.Text`
   color: ${({ theme }) => theme.colors.primaryForeground};
   font-size: ${({ theme }) => theme.typography.md}px;
   font-weight: 700;
+`;
+
+export const StyledAccountAvatarCameraBadge = styled.View`
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 22px;
+  height: 22px;
+  border-radius: ${({ theme }) => theme.radii.full}px;
+  border-width: ${({ theme }) => theme.borderWidths.thin}px;
+  border-color: ${({ theme }) => theme.colors.heroSurface};
+  background-color: ${({ theme }) => theme.colors.primary};
+  align-items: center;
+  justify-content: center;
 `;
 
 export const StyledAccountIdentityTextGroup = styled.View`

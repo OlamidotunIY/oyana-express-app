@@ -2,6 +2,7 @@ import React from "react";
 
 import { ScreenShell } from "@/components/ui/ScreenShell";
 import { Button, Card, CardContent } from "@/components/ui";
+import { useProfileImageUpload } from "@/hooks/use-profile-image-upload";
 import
     {
         StyledUploadProfileImageHint,
@@ -13,6 +14,8 @@ import
 
 export default function UploadProfileImageScreen()
 {
+    const { isUploading, pickAndUploadProfileImage } = useProfileImageUpload();
+
     return (
         <ScreenShell contentJustify="flex-start">
             <StyledUploadProfileImageRoot>
@@ -22,11 +25,16 @@ export default function UploadProfileImageScreen()
                             <StyledUploadProfileImageSectionLabel>Profile image</StyledUploadProfileImageSectionLabel>
                             <StyledUploadProfileImageTitle>Upload profile image</StyledUploadProfileImageTitle>
                             <StyledUploadProfileImageHint>
-                                Profile image upload action is wired to this screen. You can connect your file
-                                picker or camera flow here.
+                                Select an image from your library and we will upload it, save it to your
+                                profile, and refresh the local account state automatically.
                             </StyledUploadProfileImageHint>
-                            <Button fullWidth variant="outline" disabled>
-                                Choose image (coming soon)
+                            <Button
+                                fullWidth
+                                variant="outline"
+                                onPress={() => void pickAndUploadProfileImage()}
+                                disabled={isUploading}
+                            >
+                                {isUploading ? "Uploading..." : "Choose image"}
                             </Button>
                         </StyledUploadProfileImageSection>
                     </CardContent>

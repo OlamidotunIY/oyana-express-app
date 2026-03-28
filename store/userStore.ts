@@ -16,12 +16,16 @@ const expoSecureStorage = {
 };
 
 interface UserStore {
-  user: Profile | null;
+  user: StoredUser | null;
   activeAddressId: string | null;
-  setUser: (user: Profile | null) => void;
+  setUser: (user: StoredUser | null) => void;
   clearUser: () => void;
   setActiveAddressId: (id: string | null) => void;
 }
+
+export type StoredUser = Profile & {
+  profileImageUrl?: string | null;
+};
 
 export const useUserStore = create<UserStore>()(
   persist(

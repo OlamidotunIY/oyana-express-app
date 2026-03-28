@@ -1,13 +1,14 @@
 import React from "react";
+import { Pressable, TextInput } from "react-native";
 import
-    {
-        StyledInputOTP,
-        StyledInputOTPGroup,
-        StyledInputOTPHiddenInput,
-        StyledInputOTPSeparator,
-        StyledInputOTPSlot,
-        StyledInputOTPSlotText,
-    } from "@/styles";
+{
+    StyledInputOTP,
+    StyledInputOTPGroup,
+    StyledInputOTPHiddenInput,
+    StyledInputOTPSeparator,
+    StyledInputOTPSlot,
+    StyledInputOTPSlotText,
+} from "@/styles";
 
 const OTPContext = React.createContext<{
     value: string;
@@ -29,19 +30,23 @@ export function InputOTP({
 } & React.ComponentProps<typeof StyledInputOTP>)
 {
     const [activeIndex, setActiveIndex] = React.useState(0);
+    const inputRef = React.useRef<TextInput>(null);
 
     return (
-        <StyledInputOTP {...props}>
-            <StyledInputOTPHiddenInput
-                keyboardType="number-pad"
-                value={value}
-                autoFocus
-                maxLength={maxLength}
-                onChangeText={(text) => onChange(text.replace(/[^0-9a-zA-Z]/g, "").slice(0, maxLength))}
-                onSelectionChange={(event) => setActiveIndex(event.nativeEvent.selection.start)}
-            />
-            <OTPContext.Provider value={{ value, activeIndex }}>{children}</OTPContext.Provider>
-        </StyledInputOTP>
+        <Pressable onPress={() => inputRef.current?.focus()}>
+            <StyledInputOTP {...props}>
+                <StyledInputOTPHiddenInput
+                    ref={inputRef}
+                    keyboardType="number-pad"
+                    value={value}
+                    autoFocus
+                    maxLength={maxLength}
+                    onChangeText={(text) => onChange(text.replace(/[^0-9a-zA-Z]/g, "").slice(0, maxLength))}
+                    onSelectionChange={(event) => setActiveIndex(event.nativeEvent.selection.start)}
+                />
+                <OTPContext.Provider value={{ value, activeIndex }}>{children}</OTPContext.Provider>
+            </StyledInputOTP>
+        </Pressable>
     );
 }
 

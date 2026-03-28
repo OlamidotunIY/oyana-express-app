@@ -3,12 +3,16 @@ import { ScreenShell } from "@/components/ui/ScreenShell";
 import { MeQuery, MeQueryVariables } from "@/gql/graphql";
 import { GET_PROVIDER_DASHBOARD_QUARY, ME_QUERY } from "@/graphql";
 import { useBackendErrorToast } from "@/hooks/use-backend-error-toast";
+import { useProfileImageUpload } from "@/hooks/use-profile-image-upload";
 import { clearAuthTokens } from "@/lib/auth-cookies";
 import { client } from "@/lib/apolloClient";
 import { useUserStore } from "@/store/userStore";
 import
 {
     StyledAccountAvatar,
+    StyledAccountAvatarButton,
+    StyledAccountAvatarCameraBadge,
+    StyledAccountAvatarImage,
     StyledAccountAvatarText,
     StyledAccountHeroChip,
     StyledAccountHeroHeaderRow,
@@ -91,7 +95,9 @@ export default function AccountsScreen()
 {
     const router = useRouter();
     const theme = useTheme();
+    const storedUser = useUserStore((s) => s.user);
     const clearUser = useUserStore((s) => s.clearUser);
+    const { isUploading, pickAndUploadProfileImage } = useProfileImageUpload();
 
     async function handleLogout()
     {
@@ -144,6 +150,7 @@ export default function AccountsScreen()
         profile?.roles?.map((role: any) => formatEnum(role)).join(" / ") || "-";
     const initials =
         `${profile?.firstName?.[0] ?? ""}${profile?.lastName?.[0] ?? ""}`.trim().toUpperCase() || "OP";
+    const profileImageUrl = storedUser?.profileImageUrl ?? null;
 
     return (
         <ScreenShell
@@ -162,9 +169,31 @@ export default function AccountsScreen()
                     ) : null}
 
                     <StyledAccountIdentityRow>
-                        <StyledAccountAvatar>
-                            <StyledAccountAvatarText>{initials}</StyledAccountAvatarText>
-                        </StyledAccountAvatar>
+                        <StyledAccountAvatarButton
+                            accessibilityLabel="Change profile image"
+                            accessibilityRole="button"
+                            disabled={isUploading}
+                            hitSlop={10}
+                            onPress={() => void pickAndUploadProfileImage()}
+                        >
+                            <StyledAccountAvatar>
+                                {profileImageUrl ? (
+                                    <StyledAccountAvatarImage
+                                        source={{ uri: profileImageUrl }}
+                                        resizeMode="cover"
+                                    />
+                                ) : (
+                                    <StyledAccountAvatarText>{initials}</StyledAccountAvatarText>
+                                )}
+                            </StyledAccountAvatar>
+                            <StyledAccountAvatarCameraBadge>
+                                <MaterialIcons
+                                    name={isUploading ? "hourglass-empty" : "photo-camera"}
+                                    size={12}
+                                    color={theme.colors.primaryForeground}
+                                />
+                            </StyledAccountAvatarCameraBadge>
+                        </StyledAccountAvatarButton>
                         <StyledAccountIdentityTextGroup>
                             <StyledAccountProfileName numberOfLines={1}>{displayName}</StyledAccountProfileName>
                             <StyledAccountProfileMeta numberOfLines={1}>{profile?.email ?? "-"}</StyledAccountProfileMeta>

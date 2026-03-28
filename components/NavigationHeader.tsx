@@ -12,6 +12,7 @@ import
     StyledNotificationBadgeText,
     StyledNotificationWrapper,
     StyledProfileAvatar,
+    StyledProfileAvatarImage,
     StyledProfileAvatarText,
     StyledProfileCard,
     StyledProfileGreeting,
@@ -92,6 +93,7 @@ function BaseHeader({
         const combined = `${firstInitial}${lastInitial}`.toUpperCase();
         return combined || "OP";
     }, [user?.firstName, user?.lastName]);
+    const profileImageUrl = user?.profileImageUrl ?? null;
 
     return (
         <StyledHeaderContainer $bg={backgroundColor}>
@@ -125,7 +127,14 @@ function BaseHeader({
                     ) : showProfileCard ? (
                         <StyledProfileCard>
                             <StyledProfileAvatar>
-                                <StyledProfileAvatarText>{initials}</StyledProfileAvatarText>
+                                {profileImageUrl ? (
+                                    <StyledProfileAvatarImage
+                                        source={{ uri: profileImageUrl }}
+                                        resizeMode="cover"
+                                    />
+                                ) : (
+                                    <StyledProfileAvatarText>{initials}</StyledProfileAvatarText>
+                                )}
                             </StyledProfileAvatar>
                             <StyledProfileText>
                                 <StyledProfileGreeting numberOfLines={1}>{greeting}</StyledProfileGreeting>

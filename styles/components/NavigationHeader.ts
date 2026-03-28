@@ -80,6 +80,12 @@ export const StyledProfileAvatar = styled.View`
   background-color: ${({ theme }) => theme.colors.primary};
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+`;
+
+export const StyledProfileAvatarImage = styled.Image`
+  width: 100%;
+  height: 100%;
 `;
 
 export const StyledProfileAvatarText = styled.Text`
