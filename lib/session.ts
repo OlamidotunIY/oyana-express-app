@@ -20,7 +20,8 @@ export type BootResolution =
   | { route: "verify-email"; email: string }
   | { route: "notification-permission"; profile: Profile }
   | { route: "tabs"; profile: Profile }
-  | { route: "app-status"; statusType: AppStatusType };
+  | { route: "app-status"; statusType: AppStatusType }
+  | { route: "customer-not-supported"; profile: Profile };
 
 export function isForceUpdateEnabled() {
   return process.env.EXPO_PUBLIC_FORCE_UPDATE === "true";
@@ -93,9 +94,8 @@ export async function resolveBootRoute(): Promise<BootResolution> {
     }
 
     if (!isProviderUser(profile)) {
-      clearAuthTokens();
-      useUserStore.getState().clearUser();
-      return { route: "auth", reason: "not-provider" };
+      useUserStore.getState().setUser(profile);
+      return { route: "customer-not-supported", profile };
     }
 
     useUserStore.getState().setUser(profile);

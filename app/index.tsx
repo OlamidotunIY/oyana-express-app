@@ -28,6 +28,9 @@ export default function Index()
         if (resolution.route === "tabs")
         {
           router.replace("/(tabs)");
+        } else if (resolution.route === "customer-not-supported")
+        {
+          router.replace("/(auth)/customer-not-supported");
         } else if (resolution.route === "verify-email")
         {
           router.replace({

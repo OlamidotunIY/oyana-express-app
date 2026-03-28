@@ -1,13 +1,13 @@
 import { Stack, usePathname, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import
-    {
-        AuthLayoutRoot,
-        AuthTabBar,
-        AuthTab,
-        AuthTabText,
-        AuthTabIndicator,
-    } from "@/styles";
+{
+    AuthLayoutRoot,
+    AuthTabBar,
+    AuthTab,
+    AuthTabText,
+    AuthTabIndicator,
+} from "@/styles";
 
 function LoginTabBar()
 {
@@ -51,9 +51,10 @@ export default function AuthLayout()
                 <Stack.Screen name="login-with-otp" />
                 <Stack.Screen name="register" />
                 <Stack.Screen name="verify-otp" />
-                        <Stack.Screen name="forgot-password" />
-                        <Stack.Screen name="reset-password" />
-                        <Stack.Screen name="notification-permission" />
+                <Stack.Screen name="forgot-password" />
+                <Stack.Screen name="reset-password" />
+                <Stack.Screen name="notification-permission" />
+                <Stack.Screen name="customer-not-supported" />
             </Stack>
             {showLoginTabs && <LoginTabBar />}
         </AuthLayoutRoot>
