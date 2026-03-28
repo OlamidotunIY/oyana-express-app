@@ -15,31 +15,35 @@ import { errorLink } from "./links/errorLink";
 import { createLoadingLink } from "./links/loadingLink";
 import { uploadLink } from "./links/uploadLink";
 
-loadErrorMessages();
-loadDevMessages();
+if (__DEV__) {
+  loadErrorMessages();
+  loadDevMessages();
+}
 
-const wsLink = new GraphQLWsLink(
-  createClient({
-    url: WS_URL,
-    lazy: true,
-    retryAttempts: 5,
-    shouldRetry: () => true,
-    connectionParams: async () => {
-      await ensureAuthCookiesLoaded();
+const wsLink = WS_URL
+  ? new GraphQLWsLink(
+      createClient({
+        url: WS_URL,
+        lazy: true,
+        retryAttempts: 5,
+        shouldRetry: () => true,
+        connectionParams: async () => {
+          await ensureAuthCookiesLoaded();
 
-      const accessToken = getAccessTokenCookie();
-      const cookieHeader = buildAuthCookieHeader();
-      const version = process.env.EXPO_PUBLIC_APP_VERSION ?? "mobile-unknown";
+          const accessToken = getAccessTokenCookie();
+          const cookieHeader = buildAuthCookieHeader();
+          const version = process.env.EXPO_PUBLIC_APP_VERSION ?? "mobile-unknown";
 
-      return {
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-        ...(cookieHeader ? { Cookie: cookieHeader } : {}),
-        "x-oyana-client-platform": "mobile",
-        "x-oyana-client-version": version,
-      };
-    },
-  }),
-);
+          return {
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+            ...(cookieHeader ? { Cookie: cookieHeader } : {}),
+            "x-oyana-client-platform": "mobile",
+            "x-oyana-client-version": version,
+          };
+        },
+      }),
+    )
+  : ApolloLink.empty();
 
 const httpLink = ApolloLink.from([authLink, uploadLink]);
 

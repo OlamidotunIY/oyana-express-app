@@ -13,28 +13,52 @@ export default function Index()
 
   useEffect(() =>
   {
-    resolveBootRoute().then((resolution) =>
+    let isActive = true;
+
+    const boot = async () =>
     {
-      if (resolution.route === "tabs")
+      try
       {
-        router.replace("/(tabs)");
-      } else if (resolution.route === "verify-email")
+        const resolution = await resolveBootRoute();
+        if (!isActive)
+        {
+          return;
+        }
+
+        if (resolution.route === "tabs")
+        {
+          router.replace("/(tabs)");
+        } else if (resolution.route === "verify-email")
+        {
+          router.replace({
+            pathname: "/(auth)/verify-otp",
+            params: {
+              email: resolution.email,
+              mode: "email-verification",
+            },
+          });
+        } else if (resolution.route === "notification-permission")
+        {
+          router.replace("/(auth)/notification-permission");
+        } else
+        {
+          router.replace("/(auth)/onboarding");
+        }
+      } catch
       {
-        router.replace({
-          pathname: "/(auth)/verify-otp",
-          params: {
-            email: resolution.email,
-            mode: "email-verification",
-          },
-        });
-      } else if (resolution.route === "notification-permission")
-      {
-        router.replace("/(auth)/notification-permission");
-      } else
-      {
-        router.replace("/(auth)/onboarding");
+        if (isActive)
+        {
+          router.replace("/(auth)/onboarding");
+        }
       }
-    });
+    };
+
+    void boot();
+
+    return () =>
+    {
+      isActive = false;
+    };
   }, [router]);
 
   return (
@@ -49,5 +73,4 @@ export default function Index()
     </>
   );
 }
-
 

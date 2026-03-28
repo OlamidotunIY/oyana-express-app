@@ -25,7 +25,7 @@ export const errorLink = new ErrorLink(({ error }) => {
 
     setTimeout(() => {
       try {
-        router.replace("/(auth)/auth-welcome");
+        router.replace("/(auth)/onboarding");
       } catch {
         // Root navigator may not be mounted yet. Auth guard still handles fallback.
       }

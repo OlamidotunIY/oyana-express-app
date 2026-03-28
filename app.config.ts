@@ -4,9 +4,9 @@ const androidPackage = process.env.EXPO_ANDROID_PACKAGE;
 const iosBundleIdentifier = process.env.EXPO_IOS_BUNDLE_IDENTIFIER;
 
 const config: ExpoConfig = {
-  name: "oyana-express-app",
+  name: "Oyana Express",
   slug: "oyana-express-app",
-  version: "1.0.0",
+  version: "1.0.1",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "oyanaexpressapp",
@@ -18,7 +18,7 @@ const config: ExpoConfig = {
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: "./assets/images/android-icon-foreground.png",
+      foregroundImage: "./assets/images/icon.png",
       backgroundColor: "#ffffff",
     },
     edgeToEdgeEnabled: true,
@@ -35,7 +35,7 @@ const config: ExpoConfig = {
     [
       "expo-splash-screen",
       {
-        image: "./assets/images/splash-icon.png",
+        image: "./assets/images/icon.png",
         imageWidth: 200,
         resizeMode: "contain",
         backgroundColor: "#ffffff",

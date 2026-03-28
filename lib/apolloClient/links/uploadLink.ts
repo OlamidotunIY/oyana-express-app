@@ -2,7 +2,7 @@ import { createHttpLink } from "@apollo/client";
 import { HTTP_URL } from "../env";
 
 export const uploadLink = createHttpLink({
-  uri: HTTP_URL,
+  uri: HTTP_URL ?? "https://oyana.invalid/graphql",
   credentials: "include",
   headers: {
     "apollo-require-preflight": "true",
