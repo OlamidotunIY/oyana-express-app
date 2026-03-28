@@ -4,6 +4,7 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import { client } from "@/lib/apolloClient";
 import { initializeNotificationChannels } from "@/lib/push-notifications";
 import { getUiTheme } from "@/lib/ui-theme";
+import { usePreferencesStore } from "@/store/preferencesStore";
 import { ApolloProvider } from "@apollo/client/react";
 import * as Notifications from "expo-notifications";
 import * as SplashScreen from "expo-splash-screen";
@@ -23,7 +24,9 @@ Notifications.setNotificationHandler({
 
 export default function RootLayout()
 {
-  const colorScheme = useColorScheme();
+  const deviceColorScheme = useColorScheme();
+  const themePreference = usePreferencesStore((state) => state.themePreference);
+  const colorScheme = themePreference === "system" ? deviceColorScheme : themePreference;
   const handleLayout = useCallback(() =>
   {
     void SplashScreen.hideAsync().catch(() => undefined);

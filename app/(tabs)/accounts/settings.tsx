@@ -1,236 +1,474 @@
 import React from "react";
 import { useMutation, useQuery } from "@apollo/client/react";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useRouter } from "expo-router";
+import Constants from "expo-constants";
+import { Linking, Platform, Switch } from "react-native";
 import { useTheme } from "styled-components/native";
 
-import { ScreenShell } from "@/components/ui/ScreenShell";
 import { Button, Card, CardContent, Spinner } from "@/components/ui";
-import
-{
-    MeQuery,
-    MeQueryVariables,
-    SetProviderAvailabilityMutation,
-    SetProviderAvailabilityMutationVariables,
-    UserType,
+import { ScreenShell } from "@/components/ui/ScreenShell";
+import {
+  MeQuery,
+  MeQueryVariables,
+  MyNotificationSettingsQuery,
+  SetProviderAvailabilityMutation,
+  SetProviderAvailabilityMutationVariables,
+  UpdateNotificationSettingsMutation,
+  UpdateNotificationSettingsMutationVariables,
+  UpsertPushDeviceMutation,
+  UpsertPushDeviceMutationVariables,
+  UserType,
 } from "@/gql/graphql";
-import { ME_QUERY, SET_PROVIDER_AVAILABILITY_MUTATION } from "@/graphql";
+import {
+  ME_QUERY,
+  MY_NOTIFICATION_SETTINGS_QUERY,
+  SET_PROVIDER_AVAILABILITY_MUTATION,
+  UPDATE_NOTIFICATION_SETTINGS_MUTATION,
+  UPSERT_PUSH_DEVICE_MUTATION,
+} from "@/graphql";
 import { useBackendErrorToast } from "@/hooks/use-backend-error-toast";
+import { client } from "@/lib/apolloClient";
+import { registerForPushNotificationsAsync } from "@/lib/push-notifications";
 import { showBackendErrorToast, showToast } from "@/lib/toast";
+import {
+  type ThemePreference,
+  usePreferencesStore,
+} from "@/store/preferencesStore";
 import { useUserStore } from "@/store/userStore";
-import
-{
-    StyledSettingsAvailabilityBadge,
-    StyledSettingsAvailabilityDescription,
-    StyledSettingsAvailabilityHeader,
-    StyledSettingsAvailabilityMeta,
-    StyledSettingsAvailabilityPanel,
-    StyledSettingsAvailabilityTitle,
-    StyledSettingsItemButton,
-    StyledSettingsItemDescription,
-    StyledSettingsItemIconWrap,
-    StyledSettingsItemLead,
-    StyledSettingsItemTextGroup,
-    StyledSettingsItemTitle,
-    StyledSettingsRoot,
-    StyledSettingsSection,
-    StyledSettingsSectionLabel,
+import {
+  StyledSettingsPanel,
+  StyledSettingsPanelDescription,
+  StyledSettingsPanelHeader,
+  StyledSettingsPanelMeta,
+  StyledSettingsPanelTextGroup,
+  StyledSettingsPanelTitle,
+  StyledSettingsRoot,
+  StyledSettingsSection,
+  StyledSettingsSectionLabel,
+  StyledSettingsStatusBadge,
+  StyledSettingsSwitchRow,
+  StyledSettingsThemeOptionButton,
+  StyledSettingsThemeOptionText,
+  StyledSettingsThemeOptionsRow,
 } from "@/styles/tabs/accounts";
 
-type SettingsItemProps = {
-    iconName: React.ComponentProps<typeof MaterialIcons>["name"];
-    title: string;
-    description: string;
-    onPress: () => void;
-};
+function formatPermissionStatus(value?: string | null): string {
+  if (!value) {
+    return "Not set";
+  }
 
-function SettingsItem({ iconName, title, description, onPress }: SettingsItemProps)
-{
-    const theme = useTheme();
-
-    return (
-        <StyledSettingsItemButton onPress={onPress}>
-            <StyledSettingsItemLead>
-                <StyledSettingsItemIconWrap>
-                    <MaterialIcons name={iconName} size={16} color={theme.colors.primary} />
-                </StyledSettingsItemIconWrap>
-                <StyledSettingsItemTextGroup>
-                    <StyledSettingsItemTitle>{title}</StyledSettingsItemTitle>
-                    <StyledSettingsItemDescription>{description}</StyledSettingsItemDescription>
-                </StyledSettingsItemTextGroup>
-            </StyledSettingsItemLead>
-            <MaterialIcons name="arrow-forward-ios" size={15} color="#94A3B8" />
-        </StyledSettingsItemButton>
-    );
+  return value
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-export default function SettingsScreen()
-{
-    const router = useRouter();
-    const setUser = useUserStore((state) => state.setUser);
+function formatThemeLabel(value: ThemePreference): string {
+  if (value === "system") {
+    return "System";
+  }
 
-    const {
-        data: profileData,
-        loading: profileLoading,
-        error: profileError,
-        refetch: refetchProfile,
-    } = useQuery<MeQuery, MeQueryVariables>(ME_QUERY, {
-        fetchPolicy: "cache-and-network",
-        errorPolicy: "all",
-    });
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
 
-    const [setProviderAvailability, { loading: updatingProviderAvailability }] = useMutation<
-        SetProviderAvailabilityMutation,
-        SetProviderAvailabilityMutationVariables
+export default function SettingsScreen() {
+  const theme = useTheme();
+  const setUser = useUserStore((state) => state.setUser);
+  const themePreference = usePreferencesStore((state) => state.themePreference);
+  const setThemePreference = usePreferencesStore(
+    (state) => state.setThemePreference,
+  );
+  const [notificationsBusy, setNotificationsBusy] = React.useState(false);
+
+  const {
+    data: profileData,
+    loading: profileLoading,
+    error: profileError,
+    refetch: refetchProfile,
+  } = useQuery<MeQuery, MeQueryVariables>(ME_QUERY, {
+    fetchPolicy: "cache-and-network",
+    errorPolicy: "all",
+  });
+
+  const {
+    data: notificationData,
+    loading: notificationLoading,
+    error: notificationError,
+    refetch: refetchNotifications,
+  } = useQuery<MyNotificationSettingsQuery>(MY_NOTIFICATION_SETTINGS_QUERY, {
+    fetchPolicy: "cache-and-network",
+    errorPolicy: "all",
+  });
+
+  const [setProviderAvailability, { loading: updatingProviderAvailability }] =
+    useMutation<
+      SetProviderAvailabilityMutation,
+      SetProviderAvailabilityMutationVariables
     >(SET_PROVIDER_AVAILABILITY_MUTATION);
 
-    useBackendErrorToast(profileError, "Unable to load provider availability.", {
-        title: "Settings Error",
-        dedupeKey: "account-settings-profile",
+  const [updateNotificationSettings] = useMutation<
+    UpdateNotificationSettingsMutation,
+    UpdateNotificationSettingsMutationVariables
+  >(UPDATE_NOTIFICATION_SETTINGS_MUTATION);
+
+  const [upsertPushDevice] = useMutation<
+    UpsertPushDeviceMutation,
+    UpsertPushDeviceMutationVariables
+  >(UPSERT_PUSH_DEVICE_MUTATION);
+
+  useBackendErrorToast(profileError, "Unable to load settings.", {
+    title: "Settings Error",
+    dedupeKey: "account-settings-profile",
+  });
+
+  useBackendErrorToast(
+    notificationError,
+    "Unable to load notification settings.",
+    {
+      title: "Settings Error",
+      dedupeKey: "account-settings-notifications",
+    },
+  );
+
+  const profile = profileData?.me ?? null;
+  const notificationSettings = notificationData?.myNotificationSettings;
+  const hasBusinessRole = Boolean(profile?.roles?.includes(UserType.Business));
+  const isProviderAvailable = profile?.providerIsAvailable === true;
+  const providerAvailabilityUpdatedAt = profile?.providerAvailabilityUpdatedAt
+    ? new Date(String(profile.providerAvailabilityUpdatedAt)).toLocaleString()
+    : "Not updated";
+  const notificationsEnabled =
+    notificationSettings?.notificationsEnabled ??
+    profile?.notificationsEnabled ??
+    false;
+  const pushPermissionGranted =
+    notificationSettings?.pushPermissionGranted ??
+    profile?.pushPermissionGranted ??
+    false;
+  const pushPermissionStatus =
+    notificationSettings?.pushPermissionStatus ??
+    profile?.pushPermissionStatus ??
+    null;
+  const hasActivePushDevice = notificationSettings?.hasActivePushDevice ?? false;
+
+  const syncProfile = React.useCallback(async () => {
+    const { data } = await client.query<MeQuery>({
+      query: ME_QUERY,
+      fetchPolicy: "no-cache",
     });
 
-    const profile = profileData?.me ?? null;
-    const hasBusinessRole = Boolean(profile?.roles?.includes(UserType.Business));
-    const isProviderAvailable = profile?.providerIsAvailable === true;
-    const providerAvailabilityLabel = isProviderAvailable ? "Available" : "Unavailable";
-    const providerAvailabilityUpdatedAt = profile?.providerAvailabilityUpdatedAt
-        ? new Date(String(profile.providerAvailabilityUpdatedAt)).toLocaleString()
-        : "Not updated";
+    if (data?.me) {
+      setUser(data.me);
+    }
 
-    const toggleProviderAvailability = async () =>
-    {
-        if (!profile?.providerId)
-        {
-            return;
-        }
+    await Promise.all([refetchProfile(), refetchNotifications()]);
+  }, [refetchNotifications, refetchProfile, setUser]);
 
-        const nextAvailability = !isProviderAvailable;
+  const toggleProviderAvailability = async () => {
+    if (!profile?.providerId) {
+      return;
+    }
 
-        try
-        {
-            const { data } = await setProviderAvailability({
-                variables: {
-                    input: {
-                        isAvailable: nextAvailability,
-                    },
-                },
-            });
+    const nextAvailability = !isProviderAvailable;
 
-            const updatedProfile = data?.setProviderAvailability ?? null;
-            if (updatedProfile)
-            {
-                setUser(updatedProfile);
-            }
+    try {
+      const { data } = await setProviderAvailability({
+        variables: {
+          input: {
+            isAvailable: nextAvailability,
+          },
+        },
+      });
 
-            await refetchProfile();
+      const updatedProfile = data?.setProviderAvailability ?? null;
+      if (updatedProfile) {
+        setUser(updatedProfile);
+      }
 
-            showToast({
-                title: "Provider Availability",
-                message: `Provider is now ${nextAvailability ? "available" : "unavailable"}.`,
-                tone: "success",
-                dedupeKey: `provider-availability-${nextAvailability ? "available" : "unavailable"}`,
-            });
-        } catch (error)
-        {
-            showBackendErrorToast(error, "Unable to update provider availability.", {
-                title: "Settings Error",
-                dedupeKey: "account-settings-provider-availability",
-            });
-        }
-    };
+      await refetchProfile();
 
-    return (
-        <ScreenShell contentJustify="flex-start">
-            <StyledSettingsRoot>
-                <Card>
-                    <CardContent>
-                        <StyledSettingsSection>
-                            <StyledSettingsSectionLabel>Account settings</StyledSettingsSectionLabel>
-                            {hasBusinessRole ? (
-                                <StyledSettingsAvailabilityPanel>
-                                    <StyledSettingsAvailabilityHeader>
-                                        <StyledSettingsAvailabilityTitle>
-                                            Dispatch availability
-                                        </StyledSettingsAvailabilityTitle>
-                                        {profileLoading ? (
-                                            <Spinner size="small" />
-                                        ) : (
-                                            <StyledSettingsAvailabilityBadge $isAvailable={isProviderAvailable}>
-                                                {providerAvailabilityLabel}
-                                            </StyledSettingsAvailabilityBadge>
-                                        )}
-                                    </StyledSettingsAvailabilityHeader>
-                                    <StyledSettingsAvailabilityDescription>
-                                        When unavailable, dispatch requests will not be sent to your provider account.
-                                    </StyledSettingsAvailabilityDescription>
-                                    <StyledSettingsAvailabilityMeta>
-                                        Last updated: {providerAvailabilityUpdatedAt}
-                                    </StyledSettingsAvailabilityMeta>
-                                    <Button
-                                        fullWidth
-                                        variant="secondary"
-                                        disabled={updatingProviderAvailability || !profile?.providerId}
-                                        onPress={() => void toggleProviderAvailability()}
-                                    >
-                                        {isProviderAvailable ? "Set unavailable" : "Set available"}
-                                    </Button>
-                                </StyledSettingsAvailabilityPanel>
-                            ) : null}
+      showToast({
+        title: "Provider Availability",
+        message: `Provider is now ${nextAvailability ? "available" : "unavailable"}.`,
+        tone: "success",
+        dedupeKey: `provider-availability-${nextAvailability ? "available" : "unavailable"}`,
+      });
+    } catch (error) {
+      showBackendErrorToast(error, "Unable to update provider availability.", {
+        title: "Settings Error",
+        dedupeKey: "account-settings-provider-availability",
+      });
+    }
+  };
 
-                            <SettingsItem
-                                iconName="person"
-                                title="Profile"
-                                description="Update personal profile details and avatar."
-                                onPress={() => router.push("/accounts/edit-profile" as never)}
-                            />
-                            <SettingsItem
-                                iconName="verified"
-                                title="Verify phone"
-                                description={profile?.phoneVerified ? "Your phone number is verified." : "Add and verify your phone number for account actions."}
-                                onPress={() => router.push("/accounts/verify-phone" as never)}
-                            />
-                            <SettingsItem
-                                iconName="account-balance-wallet"
-                                title="Wallet"
-                                description="Manage wallet funding, withdrawal, and compliance."
-                                onPress={() => router.push("/wallet" as never)}
-                            />
-                            <SettingsItem
-                                iconName="badge"
-                                title="KYC"
-                                description="Continue verification and track compliance status."
-                                onPress={() => router.push("/accounts/kyc-upload" as never)}
-                            />
-                            <SettingsItem
-                                iconName="directions-car"
-                                title="Fleet"
-                                description="Manage provider vehicles and dispatch readiness."
-                                onPress={() => router.push("/accounts/manage-vehicles" as never)}
-                            />
-                        </StyledSettingsSection>
-                    </CardContent>
-                </Card>
+  const toggleNotifications = async (nextValue: boolean) => {
+    setNotificationsBusy(true);
 
-                <Card>
-                    <CardContent>
-                        <StyledSettingsSection>
-                            <StyledSettingsSectionLabel>Support and policy</StyledSettingsSectionLabel>
-                            <SettingsItem
-                                iconName="support-agent"
-                                title="Support"
-                                description="Open support resources and assistance channels."
-                                onPress={() => router.push("/accounts/support-stack" as never)}
-                            />
-                            <SettingsItem
-                                iconName="policy"
-                                title="Legal"
-                                description="Read terms, privacy policy, and platform notices."
-                                onPress={() => router.push("/accounts/legal" as never)}
-                            />
-                        </StyledSettingsSection>
-                    </CardContent>
-                </Card>
-            </StyledSettingsRoot>
-        </ScreenShell>
-    );
+    try {
+      if (!nextValue) {
+        await updateNotificationSettings({
+          variables: {
+            input: {
+              notificationsEnabled: false,
+              markPrompted: true,
+            },
+          },
+        });
+
+        await syncProfile();
+        showToast({
+          title: "Notifications",
+          message: "Push alerts have been turned off for this account.",
+          tone: "success",
+          dedupeKey: "settings-notifications-disabled",
+        });
+        return;
+      }
+
+      const { status, token } = await registerForPushNotificationsAsync();
+
+      if (status !== "granted" || !token) {
+        await updateNotificationSettings({
+          variables: {
+            input: {
+              notificationsEnabled: false,
+              pushPermissionGranted: false,
+              pushPermissionStatus: status,
+              markPrompted: true,
+            },
+          },
+        });
+
+        await syncProfile();
+        showToast({
+          title: "Notifications",
+          message:
+            status === "granted"
+              ? "Push token could not be created on this device."
+              : "Notification permission was not granted.",
+          tone: "info",
+          dedupeKey: `settings-notifications-${status ?? "unknown"}`,
+        });
+        return;
+      }
+
+      await updateNotificationSettings({
+        variables: {
+          input: {
+            notificationsEnabled: true,
+            pushPermissionGranted: true,
+            pushPermissionStatus: status,
+            markPrompted: true,
+          },
+        },
+      });
+
+      await upsertPushDevice({
+        variables: {
+          input: {
+            expoPushToken: token,
+            platform: Platform.OS,
+            appVersion: Constants.expoConfig?.version ?? "1.0.0",
+            pushPermissionStatus: status,
+            isActive: true,
+          },
+        },
+      });
+
+      await syncProfile();
+
+      showToast({
+        title: "Notifications",
+        message: "Push alerts are now enabled.",
+        tone: "success",
+        dedupeKey: "settings-notifications-enabled",
+      });
+    } catch (error) {
+      showBackendErrorToast(error, "Unable to update notification settings.", {
+        title: "Settings Error",
+        dedupeKey: "account-settings-notifications-update",
+      });
+    } finally {
+      setNotificationsBusy(false);
+    }
+  };
+
+  return (
+    <ScreenShell contentJustify="flex-start">
+      <StyledSettingsRoot>
+        {hasBusinessRole ? (
+          <Card>
+            <CardContent>
+              <StyledSettingsSection>
+                <StyledSettingsSectionLabel>Operations</StyledSettingsSectionLabel>
+                <StyledSettingsPanel>
+                  <StyledSettingsPanelHeader>
+                    <StyledSettingsPanelTextGroup>
+                      <StyledSettingsPanelTitle>
+                        Dispatch availability
+                      </StyledSettingsPanelTitle>
+                      <StyledSettingsPanelDescription>
+                        Control whether new dispatch work can reach your provider
+                        account.
+                      </StyledSettingsPanelDescription>
+                    </StyledSettingsPanelTextGroup>
+                    {profileLoading ? (
+                      <Spinner size="small" />
+                    ) : (
+                      <StyledSettingsStatusBadge
+                        $tone={isProviderAvailable ? "success" : "warning"}
+                      >
+                        {isProviderAvailable ? "Available" : "Unavailable"}
+                      </StyledSettingsStatusBadge>
+                    )}
+                  </StyledSettingsPanelHeader>
+
+                  <StyledSettingsPanelMeta>
+                    Last updated: {providerAvailabilityUpdatedAt}
+                  </StyledSettingsPanelMeta>
+
+                  <StyledSettingsSwitchRow>
+                    <StyledSettingsPanelTextGroup>
+                      <StyledSettingsPanelTitle>
+                        Receive new assignments
+                      </StyledSettingsPanelTitle>
+                      <StyledSettingsPanelDescription>
+                        Turn this off to pause provider dispatch requests.
+                      </StyledSettingsPanelDescription>
+                    </StyledSettingsPanelTextGroup>
+                    <Switch
+                      disabled={
+                        updatingProviderAvailability || !profile?.providerId
+                      }
+                      onValueChange={() => void toggleProviderAvailability()}
+                      value={isProviderAvailable}
+                      trackColor={{
+                        false: theme.colors.border,
+                        true: "rgba(255, 106, 0, 0.38)",
+                      }}
+                      thumbColor={
+                        isProviderAvailable
+                          ? theme.colors.primary
+                          : theme.colors.mutedForeground
+                      }
+                    />
+                  </StyledSettingsSwitchRow>
+                </StyledSettingsPanel>
+              </StyledSettingsSection>
+            </CardContent>
+          </Card>
+        ) : null}
+
+        <Card>
+          <CardContent>
+            <StyledSettingsSection>
+              <StyledSettingsSectionLabel>Notifications</StyledSettingsSectionLabel>
+              <StyledSettingsPanel>
+                <StyledSettingsPanelHeader>
+                  <StyledSettingsPanelTextGroup>
+                    <StyledSettingsPanelTitle>
+                      Push notifications
+                    </StyledSettingsPanelTitle>
+                    <StyledSettingsPanelDescription>
+                      Manage shipment alerts, dispatch activity, and account
+                      updates.
+                    </StyledSettingsPanelDescription>
+                  </StyledSettingsPanelTextGroup>
+                  {notificationLoading || notificationsBusy ? (
+                    <Spinner size="small" />
+                  ) : (
+                    <StyledSettingsStatusBadge
+                      $tone={notificationsEnabled ? "success" : "muted"}
+                    >
+                      {notificationsEnabled ? "Enabled" : "Muted"}
+                    </StyledSettingsStatusBadge>
+                  )}
+                </StyledSettingsPanelHeader>
+
+                <StyledSettingsSwitchRow>
+                  <StyledSettingsPanelTextGroup>
+                    <StyledSettingsPanelTitle>
+                      Shipment and account alerts
+                    </StyledSettingsPanelTitle>
+                    <StyledSettingsPanelDescription>
+                      {pushPermissionGranted
+                        ? "Permission granted on this device."
+                        : "Permission has not been granted on this device yet."}
+                    </StyledSettingsPanelDescription>
+                  </StyledSettingsPanelTextGroup>
+                  <Switch
+                    disabled={notificationLoading || notificationsBusy}
+                    onValueChange={(value) => void toggleNotifications(value)}
+                    value={notificationsEnabled}
+                    trackColor={{
+                      false: theme.colors.border,
+                      true: "rgba(255, 106, 0, 0.38)",
+                    }}
+                    thumbColor={
+                      notificationsEnabled
+                        ? theme.colors.primary
+                        : theme.colors.mutedForeground
+                    }
+                  />
+                </StyledSettingsSwitchRow>
+
+                <StyledSettingsPanelMeta>
+                  Permission status: {formatPermissionStatus(pushPermissionStatus)}
+                </StyledSettingsPanelMeta>
+                <StyledSettingsPanelMeta>
+                  Active device linked: {hasActivePushDevice ? "Yes" : "No"}
+                </StyledSettingsPanelMeta>
+
+                {!pushPermissionGranted ? (
+                  <Button
+                    fullWidth
+                    variant="outline"
+                    onPress={() => void Linking.openSettings()}
+                  >
+                    Open device settings
+                  </Button>
+                ) : null}
+              </StyledSettingsPanel>
+            </StyledSettingsSection>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent>
+            <StyledSettingsSection>
+              <StyledSettingsSectionLabel>Appearance</StyledSettingsSectionLabel>
+              <StyledSettingsPanel>
+                <StyledSettingsPanelTextGroup>
+                  <StyledSettingsPanelTitle>Theme</StyledSettingsPanelTitle>
+                  <StyledSettingsPanelDescription>
+                    Choose how the app should look on this device.
+                  </StyledSettingsPanelDescription>
+                </StyledSettingsPanelTextGroup>
+
+                <StyledSettingsThemeOptionsRow>
+                  {(["system", "light", "dark"] as ThemePreference[]).map(
+                    (option) => (
+                      <StyledSettingsThemeOptionButton
+                        key={option}
+                        $selected={themePreference === option}
+                        onPress={() => setThemePreference(option)}
+                      >
+                        <StyledSettingsThemeOptionText
+                          $selected={themePreference === option}
+                        >
+                          {formatThemeLabel(option)}
+                        </StyledSettingsThemeOptionText>
+                      </StyledSettingsThemeOptionButton>
+                    ),
+                  )}
+                </StyledSettingsThemeOptionsRow>
+
+                <StyledSettingsPanelMeta>
+                  Current preference: {formatThemeLabel(themePreference)}
+                </StyledSettingsPanelMeta>
+              </StyledSettingsPanel>
+            </StyledSettingsSection>
+          </CardContent>
+        </Card>
+      </StyledSettingsRoot>
+    </ScreenShell>
+  );
 }

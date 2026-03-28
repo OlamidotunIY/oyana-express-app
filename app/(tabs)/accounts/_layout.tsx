@@ -64,7 +64,6 @@ export default function AccountLayout()
             <Stack.Screen name="manage-vehicles" options={{ title: "Manage Vehicles" }} />
             <Stack.Screen name="create-vehicle" options={{ title: "Create Vehicle" }} />
             <Stack.Screen name="kyc-upload" options={{ title: "KYC Upload" }} />
-            <Stack.Screen name="kyc-status" options={{ title: "KYC Status" }} />
             <Stack.Screen name="support-stack" options={{ title: "Support" }} />
             <Stack.Screen name="legal" options={{ title: "Legal & Policies" }} />
         </Stack>

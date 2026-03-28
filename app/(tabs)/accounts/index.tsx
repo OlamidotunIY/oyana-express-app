@@ -27,9 +27,6 @@ import
     StyledAccountProfileHero,
     StyledAccountProfileMeta,
     StyledAccountProfileName,
-    StyledAccountQuickActionItem,
-    StyledAccountQuickActionLabel,
-    StyledAccountQuickActionsRow,
     StyledAccountRoot,
     StyledAccountSectionLabel,
     StyledAccountStatBox,
@@ -90,11 +87,6 @@ function NavigationRow({ iconName, title, description, onPress }: NavigationRowP
 export default function AccountsScreen()
 {
     const router = useRouter();
-    const [isOnline, setIsOnline] = React.useState(false);
-    const toggleAvailability = () =>
-    {
-        setIsOnline((currentState) => !currentState);
-    };
 
     const {
         data: profileData,
@@ -199,26 +191,6 @@ export default function AccountsScreen()
                     </StyledAccountStatBox>
                 </StyledAccountStatBoxRow>
 
-                {/* ── QUICK ACTIONS ───────────────────────────── */}
-                <StyledAccountQuickActionsRow>
-                    <StyledAccountQuickActionItem onPress={toggleAvailability} $active={isOnline}>
-                        <MaterialIcons name={isOnline ? "wifi" : "wifi-off"} size={22} color={isOnline ? "#FF6A00" : "rgba(241,245,249,0.82)"} />
-                        <StyledAccountQuickActionLabel>{isOnline ? "Online" : "Offline"}</StyledAccountQuickActionLabel>
-                    </StyledAccountQuickActionItem>
-                    <StyledAccountQuickActionItem onPress={() => router.push("/accounts/manage-vehicles" as never)}>
-                        <MaterialIcons name="directions-car" size={22} color="rgba(241,245,249,0.82)" />
-                        <StyledAccountQuickActionLabel>Vehicles</StyledAccountQuickActionLabel>
-                    </StyledAccountQuickActionItem>
-                    <StyledAccountQuickActionItem onPress={() => router.push("/accounts/kyc-upload" as never)}>
-                        <MaterialIcons name="badge" size={22} color="rgba(241,245,249,0.82)" />
-                        <StyledAccountQuickActionLabel>KYC</StyledAccountQuickActionLabel>
-                    </StyledAccountQuickActionItem>
-                    <StyledAccountQuickActionItem onPress={() => router.push("/accounts/settings" as never)}>
-                        <MaterialIcons name="settings" size={22} color="rgba(241,245,249,0.82)" />
-                        <StyledAccountQuickActionLabel>Settings</StyledAccountQuickActionLabel>
-                    </StyledAccountQuickActionItem>
-                </StyledAccountQuickActionsRow>
-
                 <StyledAccountSurfaceCard>
                     <StyledAccountSectionLabel>Operations</StyledAccountSectionLabel>
                     <StyledAccountNavigationList>
@@ -239,12 +211,6 @@ export default function AccountsScreen()
                             title="KYC docs"
                             description="Open verification flow and upload required documents."
                             onPress={() => router.push("/accounts/kyc-upload" as never)}
-                        />
-                        <NavigationRow
-                            iconName="verified-user"
-                            title="KYC status"
-                            description="Track approvals, rejections, and pending actions."
-                            onPress={() => router.push("/accounts/kyc-status" as never)}
                         />
                     </StyledAccountNavigationList>
                 </StyledAccountSurfaceCard>
