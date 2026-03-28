@@ -52,6 +52,7 @@ jobs:
       - name: Generate Android project
         env:
           CI: "1"
+          NODE_ENV: production
         run: npx expo prebuild --platform android
 
       - name: Setup Java
@@ -63,6 +64,8 @@ jobs:
 
       - name: Build Android debug APK
         working-directory: android
+        env:
+          NODE_ENV: production
         run: ./gradlew assembleDebug
 
       - name: Upload Android artifact

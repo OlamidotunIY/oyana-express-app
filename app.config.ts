@@ -11,7 +11,7 @@ const config: ExpoConfig = {
   icon: "./assets/images/icon.png",
   scheme: "oyanaexpressapp",
   userInterfaceStyle: "automatic",
-  newArchEnabled: false,
+  newArchEnabled: true,
   ios: {
     supportsTablet: true,
     ...(iosBundleIdentifier ? { bundleIdentifier: iosBundleIdentifier } : {}),
