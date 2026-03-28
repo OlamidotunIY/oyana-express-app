@@ -2,8 +2,8 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import { LogoImage } from "@/styles/components/Logo";
 
 const logos = {
-    light: require("@/assets/images/logoBlack.png"),
-    dark: require("@/assets/images/logoWhite.png"),
+    light: require("../assets/images/logoBlack.png"),
+    dark: require("../assets/images/logoWhite.png"),
 };
 
 export default function Logo()

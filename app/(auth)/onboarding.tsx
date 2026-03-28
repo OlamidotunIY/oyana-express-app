@@ -13,7 +13,7 @@ import
     OnboardingSheetFade,
 } from "@/styles";
 
-const backgroundImage = require("@/assets/images/authImage.png");
+const backgroundImage = require("../../assets/images/authImage.png");
 
 export default function Onboarding()
 {
@@ -42,7 +42,7 @@ export default function Onboarding()
                             })
                         }
                     >
-                        Deliver & Earn — Become a Provider
+                        Deliver and Earn - Become a Provider
                     </Button>
                     <Button
                         variant="outline"
@@ -55,7 +55,7 @@ export default function Onboarding()
                             })
                         }
                     >
-                        Ship & Track — Send a Delivery
+                        Ship and Track - Send a Delivery
                     </Button>
                 </OnboardingButtonGroup>
 
