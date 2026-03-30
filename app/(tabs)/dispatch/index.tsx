@@ -296,6 +296,10 @@ export default function DispatchScreen()
                             {displayedShipments.map((shipment) =>
                             {
                                 const mode = getShipmentModePresentation(shipment.mode);
+                                const modeKey =
+                                    shipment.mode === ShipmentMode.Marketplace
+                                        ? "marketplace"
+                                        : "dispatch";
                                 const action = getShipmentNextAction(shipment.status);
                                 const progressSteps = getShipmentProgress(shipment.status);
                                 const amountMinor = shipment.finalPriceMinor ?? shipment.quotedPriceMinor;
@@ -314,9 +318,9 @@ export default function DispatchScreen()
                                                 </StyledDispatchShipmentDescription>
                                             </StyledDispatchShipmentCardMain>
                                             <StyledDispatchShipmentTrailing>
-                                                <StyledDispatchModeBadge $mode={shipment.mode}>
+                                                <StyledDispatchModeBadge $mode={modeKey}>
                                                     <MaterialIcons name={mode.icon} size={12} color={shipment.mode === ShipmentMode.Marketplace ? "#7c2d12" : "#1d4ed8"} />
-                                                    <StyledDispatchModeText $mode={shipment.mode}>
+                                                    <StyledDispatchModeText $mode={modeKey}>
                                                         {mode.label}
                                                     </StyledDispatchModeText>
                                                 </StyledDispatchModeBadge>

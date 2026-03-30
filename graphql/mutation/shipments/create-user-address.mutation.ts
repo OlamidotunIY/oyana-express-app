@@ -13,6 +13,7 @@ export const CREATE_USER_ADDRESS_MUTATION = gql`
       countryCode
       lat
       lng
+      isActive
       createdAt
       updatedAt
     }

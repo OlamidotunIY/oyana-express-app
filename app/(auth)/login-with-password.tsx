@@ -10,6 +10,7 @@ import { PasswordInput } from "@/components/ui/PasswordInput";
 import { Button } from "@/components/ui/Button";
 import { persistAuthTokens } from "@/lib/auth-cookies";
 import { parseAuthError, resolveAuthenticatedRoute } from "@/lib/session";
+import { useGoogleDriverAuth } from "@/lib/useGoogleDriverAuth";
 import { useUserStore } from "@/store/userStore";
 import { useToastStore } from "@/store/toastStore";
 import
@@ -34,6 +35,7 @@ export default function LoginWithPassword()
     const insets = useSafeAreaInsets();
     const setUser = useUserStore((s) => s.setUser);
     const showToast = useToastStore((s) => s.showToast);
+    const { promptGoogleAuth, loading: googleLoading } = useGoogleDriverAuth();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -60,7 +62,7 @@ export default function LoginWithPassword()
             const { accessToken, refreshToken, user } = data.signIn;
             persistAuthTokens(accessToken, refreshToken);
             setUser(user);
-            router.replace(resolveAuthenticatedRoute(user));
+            router.replace(resolveAuthenticatedRoute(user) as never);
         }
         catch (err)
         {
@@ -130,6 +132,15 @@ export default function LoginWithPassword()
                         {loading ? "Signing in…" : "Sign in"}
                     </Button>
 
+                    <Button
+                        onPress={() => void promptGoogleAuth()}
+                        disabled={googleLoading}
+                        fullWidth
+                        variant="outline"
+                    >
+                        {googleLoading ? "Connecting to Google…" : "Continue with Google"}
+                    </Button>
+
                     <AuthFooter>
                         <AuthFooterLink onPress={() => router.push("/(auth)/forgot-password")}>Forgot password?</AuthFooterLink>
                     </AuthFooter>
@@ -137,9 +148,9 @@ export default function LoginWithPassword()
                     <AuthFooter>
                         <AuthFooterText>Don&apos;t have an account? </AuthFooterText>
                         <AuthFooterLink
-                            onPress={() => router.push("/(auth)/register?type=user")}
+                            onPress={() => router.push("/(auth)/register")}
                         >
-                            Register
+                            Create a driver account
                         </AuthFooterLink>
                     </AuthFooter>
                 </AuthContent>

@@ -167,12 +167,23 @@ export type AdminOverview = {
 
 export type AdminProviderOverview = {
   __typename?: 'AdminProviderOverview';
+  activeAddress?: Maybe<Scalars['String']['output']>;
   activeAssignments: Scalars['Int']['output'];
+  activeCity?: Maybe<Scalars['String']['output']>;
   businessName: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
+  driverType?: Maybe<DriverType>;
+  firstName?: Maybe<Scalars['String']['output']>;
+  fullName?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  isAvailable: Scalars['Boolean']['output'];
   kycStatus: Scalars['String']['output'];
+  lastName?: Maybe<Scalars['String']['output']>;
   openOffers: Scalars['Int']['output'];
+  phoneVerified: Scalars['Boolean']['output'];
+  primaryVehicleCapacityKg?: Maybe<Scalars['Int']['output']>;
+  primaryVehicleCategory?: Maybe<VehicleCategory>;
+  primaryVehiclePlateNumber?: Maybe<Scalars['String']['output']>;
   status: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
 };
@@ -216,6 +227,15 @@ export enum BidStatus {
 export type CancelShipmentDto = {
   cancellationReason: Scalars['String']['input'];
   shipmentId: Scalars['String']['input'];
+};
+
+export type CompleteDriverRegistrationInput = {
+  capacityKg: Scalars['Int']['input'];
+  driverType: DriverType;
+  firstName: Scalars['String']['input'];
+  isAvailable: Scalars['Boolean']['input'];
+  lastName: Scalars['String']['input'];
+  plateNumber: Scalars['String']['input'];
 };
 
 export type ConfirmWalletFundingInput = {
@@ -267,6 +287,12 @@ export type CreateKycUploadUrlDto = {
   sizeBytes?: InputMaybe<Scalars['BigInt']['input']>;
 };
 
+export type CreateProfileImageUploadUrlInput = {
+  fileName: Scalars['String']['input'];
+  mimeType?: InputMaybe<Scalars['String']['input']>;
+  sizeBytes?: InputMaybe<Scalars['BigInt']['input']>;
+};
+
 export type CreateShipmentBidDto = {
   amountMinor: Scalars['BigInt']['input'];
   currency?: InputMaybe<Scalars['String']['input']>;
@@ -314,6 +340,7 @@ export type CreateUserAddressDto = {
   countryCode?: InputMaybe<Scalars['String']['input']>;
   label?: InputMaybe<Scalars['String']['input']>;
   placeId: Scalars['String']['input'];
+  setAsActive?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type CreateVehicleDto = {
@@ -437,6 +464,12 @@ export enum DisputeStatus {
   Open = 'OPEN',
   Rejected = 'REJECTED',
   Resolved = 'RESOLVED'
+}
+
+export enum DriverType {
+  Bike = 'BIKE',
+  Truck = 'TRUCK',
+  Van = 'VAN'
 }
 
 export type FlagFraudCaseDto = {
@@ -580,6 +613,7 @@ export type Mutation = {
   awardShipmentBid: ShipmentBidAward;
   cancelShipment: Shipment;
   cancelShipmentAssignment: ShipmentAssignment;
+  completeDriverRegistration: Profile;
   confirmDropoff: Shipment;
   confirmMarketplaceDropoff: Shipment;
   confirmMarketplacePickup: Shipment;
@@ -589,6 +623,7 @@ export type Mutation = {
   createDispute: DisputeCase;
   createInvoice: Invoice;
   createKycUploadUrl: KycUploadUrl;
+  createProfileImageUploadUrl: ProfileImageUploadUrl;
   createShipment: Shipment;
   createShipmentAssignment: ShipmentAssignment;
   createShipmentBid: ShipmentBid;
@@ -611,6 +646,8 @@ export type Mutation = {
   resolveDispute: DisputeCase;
   respondToDispatchOffer: DispatchOffer;
   sendDispatchOffer: DispatchOffer;
+  setActiveUserAddress: UserAddress;
+  setProfileImage: Profile;
   setProviderAvailability: Profile;
   signIn: AuthResponse;
   signInWithGoogle: AuthResponse;
@@ -672,6 +709,11 @@ export type MutationCancelShipmentAssignmentArgs = {
 };
 
 
+export type MutationCompleteDriverRegistrationArgs = {
+  input: CompleteDriverRegistrationInput;
+};
+
+
 export type MutationConfirmDropoffArgs = {
   shipmentId: Scalars['String']['input'];
 };
@@ -714,6 +756,11 @@ export type MutationCreateInvoiceArgs = {
 
 export type MutationCreateKycUploadUrlArgs = {
   input: CreateKycUploadUrlDto;
+};
+
+
+export type MutationCreateProfileImageUploadUrlArgs = {
+  input: CreateProfileImageUploadUrlInput;
 };
 
 
@@ -819,6 +866,16 @@ export type MutationRespondToDispatchOfferArgs = {
 
 export type MutationSendDispatchOfferArgs = {
   input: CreateDispatchOfferDto;
+};
+
+
+export type MutationSetActiveUserAddressArgs = {
+  addressId: Scalars['String']['input'];
+};
+
+
+export type MutationSetProfileImageArgs = {
+  input: SetProfileImageInput;
 };
 
 
@@ -961,6 +1018,16 @@ export type NotificationSettings = {
   pushPermissionStatus?: Maybe<Scalars['String']['output']>;
 };
 
+export enum OnboardingStep {
+  Address = 'ADDRESS',
+  Completed = 'COMPLETED',
+  DriverRegistration = 'DRIVER_REGISTRATION',
+  EmailVerification = 'EMAIL_VERIFICATION',
+  NotificationPermission = 'NOTIFICATION_PERMISSION',
+  PhoneInput = 'PHONE_INPUT',
+  PhoneVerification = 'PHONE_VERIFICATION'
+}
+
 export type PaymentIntent = {
   __typename?: 'PaymentIntent';
   amountMinor: Scalars['BigInt']['output'];
@@ -1013,9 +1080,11 @@ export enum PreferredLanguage {
 
 export type Profile = {
   __typename?: 'Profile';
+  activeAddressId?: Maybe<Scalars['String']['output']>;
   businessName?: Maybe<Scalars['String']['output']>;
   city?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
+  driverType?: Maybe<DriverType>;
   email: Scalars['String']['output'];
   emailVerified: Scalars['Boolean']['output'];
   emailVerifiedAt?: Maybe<Scalars['DateTime']['output']>;
@@ -1025,14 +1094,18 @@ export type Profile = {
   lastName?: Maybe<Scalars['String']['output']>;
   notificationPromptedAt?: Maybe<Scalars['DateTime']['output']>;
   notificationsEnabled: Scalars['Boolean']['output'];
+  onboardingCompleted: Scalars['Boolean']['output'];
+  onboardingStep: OnboardingStep;
   phoneE164?: Maybe<Scalars['String']['output']>;
   phoneVerified: Scalars['Boolean']['output'];
   phoneVerifiedAt?: Maybe<Scalars['DateTime']['output']>;
   preferredLanguage: PreferredLanguage;
   primaryAddress?: Maybe<Scalars['String']['output']>;
+  profileImageUrl?: Maybe<Scalars['String']['output']>;
   providerAvailabilityUpdatedAt?: Maybe<Scalars['DateTime']['output']>;
   providerId?: Maybe<Scalars['String']['output']>;
   providerIsAvailable?: Maybe<Scalars['Boolean']['output']>;
+  publicRole: PublicRole;
   pushPermissionGranted: Scalars['Boolean']['output'];
   pushPermissionStatus?: Maybe<Scalars['String']['output']>;
   referralCode?: Maybe<Scalars['String']['output']>;
@@ -1040,6 +1113,14 @@ export type Profile = {
   state: State;
   status: ProfileStatus;
   updatedAt: Scalars['DateTime']['output'];
+};
+
+export type ProfileImageUploadUrl = {
+  __typename?: 'ProfileImageUploadUrl';
+  expiresAt: Scalars['DateTime']['output'];
+  storageBucket: Scalars['String']['output'];
+  storagePath: Scalars['String']['output'];
+  uploadUrl: Scalars['String']['output'];
 };
 
 export enum ProfileStatus {
@@ -1138,6 +1219,14 @@ export type ProviderPerformance = {
   ratingCount: Scalars['Int']['output'];
   teamMembersCount: Scalars['Int']['output'];
 };
+
+export enum PublicRole {
+  Admin = 'ADMIN',
+  Rider = 'RIDER',
+  Shipper = 'SHIPPER',
+  TruckDriver = 'TRUCK_DRIVER',
+  VanDriver = 'VAN_DRIVER'
+}
 
 export type PushDevice = {
   __typename?: 'PushDevice';
@@ -1326,6 +1415,10 @@ export enum RefundStatus {
   Succeeded = 'SUCCEEDED'
 }
 
+export enum RegistrationIntent {
+  Driver = 'DRIVER'
+}
+
 export type ReplySupportTicketDto = {
   message: Scalars['String']['input'];
   ticketId: Scalars['String']['input'];
@@ -1400,6 +1493,11 @@ export type SearchAddressInput = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   query: Scalars['String']['input'];
   sessionToken?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SetProfileImageInput = {
+  storageBucket: Scalars['String']['input'];
+  storagePath: Scalars['String']['input'];
 };
 
 export type SetProviderAvailabilityInput = {
@@ -1629,19 +1727,21 @@ export type SignInInput = {
 
 export type SignInWithGoogleInput = {
   idToken: Scalars['String']['input'];
+  registrationIntent?: InputMaybe<RegistrationIntent>;
 };
 
 export type SignUpInput = {
   businessAddress?: InputMaybe<Scalars['String']['input']>;
   businessName?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
-  firstName: Scalars['String']['input'];
-  lastName: Scalars['String']['input'];
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
   password: Scalars['String']['input'];
   phoneNumber?: InputMaybe<Scalars['String']['input']>;
   referralCode?: InputMaybe<Scalars['String']['input']>;
+  registrationIntent?: InputMaybe<RegistrationIntent>;
   roles?: InputMaybe<Array<UserType>>;
-  state: State;
+  state?: InputMaybe<State>;
 };
 
 export enum SlaRuleScope {
@@ -1872,6 +1972,7 @@ export type UserAddress = {
   countryCode: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['ID']['output'];
+  isActive: Scalars['Boolean']['output'];
   label?: Maybe<Scalars['String']['output']>;
   lat?: Maybe<Scalars['Float']['output']>;
   lng?: Maybe<Scalars['Float']['output']>;
@@ -2075,7 +2176,7 @@ export type RefreshTokenMutationVariables = Exact<{
 }>;
 
 
-export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string, user: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, roles: Array<UserType>, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, state: State, referralCode?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } } };
+export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string, user: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, roles: Array<UserType>, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, profileImageUrl?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state: State, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } } };
 
 export type RequestOtpMutationVariables = Exact<{
   input: RequestOtpInput;
@@ -2098,12 +2199,19 @@ export type ResetPasswordMutationVariables = Exact<{
 
 export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: { __typename?: 'MessageResponse', message: string, success: boolean } };
 
+export type SignInWithGoogleMutationVariables = Exact<{
+  input: SignInWithGoogleInput;
+}>;
+
+
+export type SignInWithGoogleMutation = { __typename?: 'Mutation', signInWithGoogle: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string, user: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, roles: Array<UserType>, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state: State, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } } };
+
 export type SignInMutationVariables = Exact<{
   input: SignInInput;
 }>;
 
 
-export type SignInMutation = { __typename?: 'Mutation', signIn: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string, user: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, roles: Array<UserType>, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, state: State, referralCode?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } } };
+export type SignInMutation = { __typename?: 'Mutation', signIn: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string, user: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, roles: Array<UserType>, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, profileImageUrl?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state: State, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } } };
 
 export type SignUpMutationVariables = Exact<{
   input: SignUpInput;
@@ -2117,7 +2225,7 @@ export type VerifyOtpMutationVariables = Exact<{
 }>;
 
 
-export type VerifyOtpMutation = { __typename?: 'Mutation', verifyOtp: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string, user: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, roles: Array<UserType>, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, state: State, referralCode?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } } };
+export type VerifyOtpMutation = { __typename?: 'Mutation', verifyOtp: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string, user: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, roles: Array<UserType>, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, profileImageUrl?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state: State, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } } };
 
 export type VerifyPhoneOtpMutationVariables = Exact<{
   input: VerifyPhoneOtpInput;
@@ -2264,7 +2372,14 @@ export type CreateUserAddressMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserAddressMutation = { __typename?: 'Mutation', createUserAddress: { __typename?: 'UserAddress', id: string, profileId: string, address: string, city: string, state: State, postalCode: string, label?: string | null, countryCode: string, lat?: number | null, lng?: number | null, createdAt: any, updatedAt: any } };
+export type CreateUserAddressMutation = { __typename?: 'Mutation', createUserAddress: { __typename?: 'UserAddress', id: string, profileId: string, address: string, city: string, state: State, postalCode: string, label?: string | null, countryCode: string, lat?: number | null, lng?: number | null, isActive: boolean, createdAt: any, updatedAt: any } };
+
+export type SetActiveUserAddressMutationVariables = Exact<{
+  addressId: Scalars['String']['input'];
+}>;
+
+
+export type SetActiveUserAddressMutation = { __typename?: 'Mutation', setActiveUserAddress: { __typename?: 'UserAddress', id: string, profileId: string, address: string, city: string, state: State, postalCode: string, label?: string | null, countryCode: string, lat?: number | null, lng?: number | null, isActive: boolean, createdAt: any, updatedAt: any } };
 
 export type UpdateShipmentMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -2274,12 +2389,33 @@ export type UpdateShipmentMutationVariables = Exact<{
 
 export type UpdateShipmentMutation = { __typename?: 'Mutation', updateShipment: { __typename?: 'Shipment', id: string, trackingCode: string, customerProfileId: string, mode: ShipmentMode, vehicleCategory: VehicleCategory, scheduleType: ShipmentScheduleType, status: ShipmentStatus, pickupAddressId: string, dropoffAddressId: string, scheduledAt?: any | null, packageDescription?: string | null, packageValueMinor?: any | null, specialInstructions?: string | null, requiresEscrow: boolean, pricingCurrency: string, quotedPriceMinor?: any | null, finalPriceMinor?: any | null, commissionRateBps: number, commissionAmountMinor: any, createdAt: any, updatedAt: any, cancelledAt?: any | null, cancelledByProfileId?: string | null, cancellationReason?: string | null } };
 
+export type CompleteDriverRegistrationMutationVariables = Exact<{
+  input: CompleteDriverRegistrationInput;
+}>;
+
+
+export type CompleteDriverRegistrationMutation = { __typename?: 'Mutation', completeDriverRegistration: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, roles: Array<UserType>, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state: State, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } };
+
+export type CreateProfileImageUploadUrlMutationVariables = Exact<{
+  input: CreateProfileImageUploadUrlInput;
+}>;
+
+
+export type CreateProfileImageUploadUrlMutation = { __typename?: 'Mutation', createProfileImageUploadUrl: { __typename?: 'ProfileImageUploadUrl', storageBucket: string, storagePath: string, uploadUrl: string, expiresAt: any } };
+
+export type SetProfileImageMutationVariables = Exact<{
+  input: SetProfileImageInput;
+}>;
+
+
+export type SetProfileImageMutation = { __typename?: 'Mutation', setProfileImage: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, roles: Array<UserType>, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, profileImageUrl?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state: State, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } };
+
 export type SetProviderAvailabilityMutationVariables = Exact<{
   input: SetProviderAvailabilityInput;
 }>;
 
 
-export type SetProviderAvailabilityMutation = { __typename?: 'Mutation', setProviderAvailability: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, roles: Array<UserType>, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, state: State, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } };
+export type SetProviderAvailabilityMutation = { __typename?: 'Mutation', setProviderAvailability: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, roles: Array<UserType>, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state: State, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } };
 
 export type UpdateNotificationSettingsMutationVariables = Exact<{
   input: UpdateNotificationSettingsInput;
@@ -2293,7 +2429,7 @@ export type UpdateProfileMutationVariables = Exact<{
 }>;
 
 
-export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, roles: Array<UserType>, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, state: State, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } };
+export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, roles: Array<UserType>, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state: State, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } };
 
 export type UpsertPushDeviceMutationVariables = Exact<{
   input: UpsertPushDeviceInput;
@@ -2378,7 +2514,7 @@ export type MyShipmentDashboardQuery = { __typename?: 'Query', myShipmentDashboa
 export type MyUserAddressesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyUserAddressesQuery = { __typename?: 'Query', myUserAddresses: Array<{ __typename?: 'UserAddress', id: string, profileId: string, address: string, city: string, state: State, postalCode: string, label?: string | null, countryCode: string, lat?: number | null, lng?: number | null, createdAt: any, updatedAt: any }> };
+export type MyUserAddressesQuery = { __typename?: 'Query', myUserAddresses: Array<{ __typename?: 'UserAddress', id: string, profileId: string, address: string, city: string, state: State, postalCode: string, label?: string | null, countryCode: string, lat?: number | null, lng?: number | null, isActive: boolean, createdAt: any, updatedAt: any }> };
 
 export type SearchAddressesQueryVariables = Exact<{
   input: SearchAddressInput;
@@ -2411,7 +2547,7 @@ export type ShipmentsQuery = { __typename?: 'Query', shipments: Array<{ __typena
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, roles: Array<UserType>, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, state: State, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } | null };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, roles: Array<UserType>, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state: State, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } | null };
 
 export type MyNotificationSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2500,14 +2636,26 @@ export const RefreshTokenDocument = new TypedDocumentString(`
       firstName
       lastName
       phoneE164
+      profileImageUrl
       phoneVerified
       phoneVerifiedAt
       notificationsEnabled
       notificationPromptedAt
       pushPermissionGranted
       pushPermissionStatus
+      publicRole
+      driverType
+      onboardingStep
+      onboardingCompleted
       state
       referralCode
+      businessName
+      providerId
+      providerIsAvailable
+      providerAvailabilityUpdatedAt
+      primaryAddress
+      city
+      activeAddressId
       preferredLanguage
       status
       lastLoginAt
@@ -2541,9 +2689,9 @@ export const ResetPasswordDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<ResetPasswordMutation, ResetPasswordMutationVariables>;
-export const SignInDocument = new TypedDocumentString(`
-    mutation SignIn($input: SignInInput!) {
-  signIn(input: $input) {
+export const SignInWithGoogleDocument = new TypedDocumentString(`
+    mutation SignInWithGoogle($input: SignInWithGoogleInput!) {
+  signInWithGoogle(input: $input) {
     accessToken
     refreshToken
     user {
@@ -2561,8 +2709,62 @@ export const SignInDocument = new TypedDocumentString(`
       notificationPromptedAt
       pushPermissionGranted
       pushPermissionStatus
+      publicRole
+      driverType
+      onboardingStep
+      onboardingCompleted
       state
       referralCode
+      businessName
+      providerId
+      providerIsAvailable
+      providerAvailabilityUpdatedAt
+      primaryAddress
+      city
+      activeAddressId
+      preferredLanguage
+      status
+      lastLoginAt
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<SignInWithGoogleMutation, SignInWithGoogleMutationVariables>;
+export const SignInDocument = new TypedDocumentString(`
+    mutation SignIn($input: SignInInput!) {
+  signIn(input: $input) {
+    accessToken
+    refreshToken
+    user {
+      id
+      email
+      emailVerified
+      emailVerifiedAt
+      roles
+      firstName
+      lastName
+      phoneE164
+      profileImageUrl
+      phoneVerified
+      phoneVerifiedAt
+      notificationsEnabled
+      notificationPromptedAt
+      pushPermissionGranted
+      pushPermissionStatus
+      publicRole
+      driverType
+      onboardingStep
+      onboardingCompleted
+      state
+      referralCode
+      businessName
+      providerId
+      providerIsAvailable
+      providerAvailabilityUpdatedAt
+      primaryAddress
+      city
+      activeAddressId
       preferredLanguage
       status
       lastLoginAt
@@ -2594,14 +2796,26 @@ export const VerifyOtpDocument = new TypedDocumentString(`
       firstName
       lastName
       phoneE164
+      profileImageUrl
       phoneVerified
       phoneVerifiedAt
       notificationsEnabled
       notificationPromptedAt
       pushPermissionGranted
       pushPermissionStatus
+      publicRole
+      driverType
+      onboardingStep
+      onboardingCompleted
       state
       referralCode
+      businessName
+      providerId
+      providerIsAvailable
+      providerAvailabilityUpdatedAt
+      primaryAddress
+      city
+      activeAddressId
       preferredLanguage
       status
       lastLoginAt
@@ -2970,11 +3184,31 @@ export const CreateUserAddressDocument = new TypedDocumentString(`
     countryCode
     lat
     lng
+    isActive
     createdAt
     updatedAt
   }
 }
     `) as unknown as TypedDocumentString<CreateUserAddressMutation, CreateUserAddressMutationVariables>;
+export const SetActiveUserAddressDocument = new TypedDocumentString(`
+    mutation SetActiveUserAddress($addressId: String!) {
+  setActiveUserAddress(addressId: $addressId) {
+    id
+    profileId
+    address
+    city
+    state
+    postalCode
+    label
+    countryCode
+    lat
+    lng
+    isActive
+    createdAt
+    updatedAt
+  }
+}
+    `) as unknown as TypedDocumentString<SetActiveUserAddressMutation, SetActiveUserAddressMutationVariables>;
 export const UpdateShipmentDocument = new TypedDocumentString(`
     mutation UpdateShipment($id: String!, $input: UpdateShipmentDto!) {
   updateShipment(id: $id, input: $input) {
@@ -3005,6 +3239,93 @@ export const UpdateShipmentDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<UpdateShipmentMutation, UpdateShipmentMutationVariables>;
+export const CompleteDriverRegistrationDocument = new TypedDocumentString(`
+    mutation CompleteDriverRegistration($input: CompleteDriverRegistrationInput!) {
+  completeDriverRegistration(input: $input) {
+    id
+    email
+    emailVerified
+    emailVerifiedAt
+    roles
+    firstName
+    lastName
+    phoneE164
+    phoneVerified
+    phoneVerifiedAt
+    notificationsEnabled
+    notificationPromptedAt
+    pushPermissionGranted
+    pushPermissionStatus
+    publicRole
+    driverType
+    onboardingStep
+    onboardingCompleted
+    state
+    referralCode
+    businessName
+    providerId
+    providerIsAvailable
+    providerAvailabilityUpdatedAt
+    primaryAddress
+    city
+    activeAddressId
+    preferredLanguage
+    status
+    lastLoginAt
+    createdAt
+    updatedAt
+  }
+}
+    `) as unknown as TypedDocumentString<CompleteDriverRegistrationMutation, CompleteDriverRegistrationMutationVariables>;
+export const CreateProfileImageUploadUrlDocument = new TypedDocumentString(`
+    mutation CreateProfileImageUploadUrl($input: CreateProfileImageUploadUrlInput!) {
+  createProfileImageUploadUrl(input: $input) {
+    storageBucket
+    storagePath
+    uploadUrl
+    expiresAt
+  }
+}
+    `) as unknown as TypedDocumentString<CreateProfileImageUploadUrlMutation, CreateProfileImageUploadUrlMutationVariables>;
+export const SetProfileImageDocument = new TypedDocumentString(`
+    mutation SetProfileImage($input: SetProfileImageInput!) {
+  setProfileImage(input: $input) {
+    id
+    email
+    emailVerified
+    emailVerifiedAt
+    roles
+    firstName
+    lastName
+    phoneE164
+    profileImageUrl
+    phoneVerified
+    phoneVerifiedAt
+    notificationsEnabled
+    notificationPromptedAt
+    pushPermissionGranted
+    pushPermissionStatus
+    publicRole
+    driverType
+    onboardingStep
+    onboardingCompleted
+    state
+    referralCode
+    businessName
+    providerId
+    providerIsAvailable
+    providerAvailabilityUpdatedAt
+    primaryAddress
+    city
+    activeAddressId
+    preferredLanguage
+    status
+    lastLoginAt
+    createdAt
+    updatedAt
+  }
+}
+    `) as unknown as TypedDocumentString<SetProfileImageMutation, SetProfileImageMutationVariables>;
 export const SetProviderAvailabilityDocument = new TypedDocumentString(`
     mutation SetProviderAvailability($input: SetProviderAvailabilityInput!) {
   setProviderAvailability(input: $input) {
@@ -3022,6 +3343,10 @@ export const SetProviderAvailabilityDocument = new TypedDocumentString(`
     notificationPromptedAt
     pushPermissionGranted
     pushPermissionStatus
+    publicRole
+    driverType
+    onboardingStep
+    onboardingCompleted
     state
     referralCode
     businessName
@@ -3030,6 +3355,7 @@ export const SetProviderAvailabilityDocument = new TypedDocumentString(`
     providerAvailabilityUpdatedAt
     primaryAddress
     city
+    activeAddressId
     preferredLanguage
     status
     lastLoginAt
@@ -3067,6 +3393,10 @@ export const UpdateProfileDocument = new TypedDocumentString(`
     notificationPromptedAt
     pushPermissionGranted
     pushPermissionStatus
+    publicRole
+    driverType
+    onboardingStep
+    onboardingCompleted
     state
     referralCode
     businessName
@@ -3075,6 +3405,7 @@ export const UpdateProfileDocument = new TypedDocumentString(`
     providerAvailabilityUpdatedAt
     primaryAddress
     city
+    activeAddressId
     preferredLanguage
     status
     lastLoginAt
@@ -3445,6 +3776,7 @@ export const MyUserAddressesDocument = new TypedDocumentString(`
     countryCode
     lat
     lng
+    isActive
     createdAt
     updatedAt
   }
@@ -3612,6 +3944,10 @@ export const MeDocument = new TypedDocumentString(`
     notificationPromptedAt
     pushPermissionGranted
     pushPermissionStatus
+    publicRole
+    driverType
+    onboardingStep
+    onboardingCompleted
     state
     referralCode
     businessName
@@ -3620,6 +3956,7 @@ export const MeDocument = new TypedDocumentString(`
     providerAvailabilityUpdatedAt
     primaryAddress
     city
+    activeAddressId
     preferredLanguage
     status
     lastLoginAt

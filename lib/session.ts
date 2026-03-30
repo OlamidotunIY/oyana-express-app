@@ -1,5 +1,5 @@
 import type { MeQuery, Profile } from "@/gql/graphql";
-import { UserType } from "@/gql/graphql";
+import { OnboardingStep, UserType } from "@/gql/graphql";
 import { ME_QUERY } from "@/graphql";
 import { client } from "@/lib/apolloClient";
 import {
@@ -15,13 +15,18 @@ import { useUserStore } from "@/store/userStore";
 
 export type AppStatusType = "maintenance" | "force-update";
 
-export type BootResolution =
-  | { route: "auth"; reason?: "not-provider" }
-  | { route: "verify-email"; email: string }
-  | { route: "notification-permission"; profile: Profile }
-  | { route: "tabs"; profile: Profile }
-  | { route: "app-status"; statusType: AppStatusType }
-  | { route: "customer-not-supported"; profile: Profile };
+export type RouterTarget =
+  | string
+  | {
+      pathname: string;
+      params?: Record<string, string>;
+    };
+
+export type BootResolution = {
+  route: RouterTarget;
+  profile?: Profile | null;
+  statusType?: AppStatusType;
+};
 
 export function isForceUpdateEnabled() {
   return process.env.EXPO_PUBLIC_FORCE_UPDATE === "true";
@@ -49,13 +54,37 @@ export function isProviderUser(profile?: Profile | null) {
 }
 
 export function shouldPromptNotificationPermission(profile?: Profile | null) {
-  return Boolean(profile?.emailVerified && !profile?.notificationPromptedAt);
+  return profile?.onboardingStep === OnboardingStep.NotificationPermission;
 }
 
-export function resolveAuthenticatedRoute(profile: Profile) {
-  return shouldPromptNotificationPermission(profile)
-    ? "/(auth)/notification-permission"
-    : "/(tabs)";
+export function resolveAuthenticatedRoute(profile: Profile): RouterTarget {
+  if (!isProviderUser(profile)) {
+    return "/(auth)/customer-not-supported";
+  }
+
+  switch (profile.onboardingStep) {
+    case OnboardingStep.EmailVerification:
+      return {
+        pathname: "/(auth)/verify-otp",
+        params: {
+          email: profile.email,
+          mode: "email-verification",
+        },
+      };
+    case OnboardingStep.PhoneInput:
+      return "/(auth)/onboarding/phone";
+    case OnboardingStep.PhoneVerification:
+      return "/(auth)/onboarding/verify-phone";
+    case OnboardingStep.DriverRegistration:
+      return "/(auth)/onboarding/driver";
+    case OnboardingStep.Address:
+      return "/(auth)/onboarding/address";
+    case OnboardingStep.NotificationPermission:
+      return "/(auth)/notification-permission";
+    case OnboardingStep.Completed:
+    default:
+      return "/(tabs)";
+  }
 }
 
 function isUnauthorizedClientError(error: unknown) {
@@ -64,11 +93,23 @@ function isUnauthorizedClientError(error: unknown) {
 
 export async function resolveBootRoute(): Promise<BootResolution> {
   if (isForceUpdateEnabled()) {
-    return { route: "app-status", statusType: "force-update" };
+    return {
+      route: {
+        pathname: "/app-status",
+        params: { type: "force-update" },
+      },
+      statusType: "force-update",
+    };
   }
 
   if (isMaintenanceEnabled()) {
-    return { route: "app-status", statusType: "maintenance" };
+    return {
+      route: {
+        pathname: "/app-status",
+        params: { type: "maintenance" },
+      },
+      statusType: "maintenance",
+    };
   }
 
   await ensureAuthCookiesLoaded();
@@ -76,7 +117,7 @@ export async function resolveBootRoute(): Promise<BootResolution> {
   const { accessToken, refreshToken } = getAuthCookies();
   if (!accessToken && !refreshToken) {
     useUserStore.getState().clearUser();
-    return { route: "auth" };
+    return { route: "/(auth)/onboarding" };
   }
 
   try {
@@ -90,43 +131,36 @@ export async function resolveBootRoute(): Promise<BootResolution> {
     if (!profile) {
       clearAuthTokens();
       useUserStore.getState().clearUser();
-      return { route: "auth" };
-    }
-
-    if (!isProviderUser(profile)) {
-      useUserStore.getState().setUser(profile);
-      return { route: "customer-not-supported", profile };
+      return { route: "/(auth)/onboarding" };
     }
 
     useUserStore.getState().setUser(profile);
 
-    if (!profile.emailVerified) {
-      return {
-        route: "verify-email",
-        email: profile.email,
-      };
-    }
-
-    if (shouldPromptNotificationPermission(profile)) {
-      return {
-        route: "notification-permission",
-        profile,
-      };
-    }
-
     return {
-      route: "tabs",
+      route: resolveAuthenticatedRoute(profile),
       profile,
     };
   } catch (error) {
     if (isUnauthorizedClientError(error)) {
       clearAuthTokens();
       useUserStore.getState().clearUser();
-      return { route: "auth" };
+      return { route: "/(auth)/onboarding" };
     }
 
     clearAuthTokens();
     useUserStore.getState().clearUser();
-    return { route: "auth" };
+    return { route: "/(auth)/onboarding" };
   }
+}
+
+export async function refetchCurrentUser(): Promise<Profile | null> {
+  const { data } = await client.query<MeQuery>({
+    query: ME_QUERY,
+    fetchPolicy: "no-cache",
+    errorPolicy: "none",
+  });
+
+  const profile = data?.me ?? null;
+  useUserStore.getState().setUser(profile);
+  return profile;
 }

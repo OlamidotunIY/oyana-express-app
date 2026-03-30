@@ -25,28 +25,7 @@ export default function Index()
           return;
         }
 
-        if (resolution.route === "tabs")
-        {
-          router.replace("/(tabs)");
-        } else if (resolution.route === "customer-not-supported")
-        {
-          router.replace("/(auth)/customer-not-supported");
-        } else if (resolution.route === "verify-email")
-        {
-          router.replace({
-            pathname: "/(auth)/verify-otp",
-            params: {
-              email: resolution.email,
-              mode: "email-verification",
-            },
-          });
-        } else if (resolution.route === "notification-permission")
-        {
-          router.replace("/(auth)/notification-permission");
-        } else
-        {
-          router.replace("/(auth)/onboarding");
-        }
+        router.replace(resolution.route as never);
       } catch
       {
         if (isActive)
@@ -76,4 +55,3 @@ export default function Index()
     </>
   );
 }
-

@@ -1,5 +1,6 @@
 export * from "./sign-up.mutation";
 export * from "./sign-in.mutation";
+export * from "./sign-in-with-google.mutation";
 export * from "./request-otp.mutation";
 export * from "./verify-otp.mutation";
 export * from "./forgot-password.mutation";

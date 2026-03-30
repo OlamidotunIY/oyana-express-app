@@ -6,7 +6,7 @@ import
     TabHeader,
     resolveHeaderTitle,
 } from "@/components/NavigationHeader";
-import { isProviderUser } from "@/lib/session";
+import { isProviderUser, resolveAuthenticatedRoute } from "@/lib/session";
 import { useUserStore } from "@/store/userStore";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs, useRouter } from "expo-router";
@@ -25,8 +25,11 @@ export default function TabsLayout()
         if (user !== null && !isProviderUser(user))
         {
             router.replace("/(auth)/customer-not-supported");
+        } else if (user !== null && !user.onboardingCompleted)
+        {
+            router.replace(resolveAuthenticatedRoute(user) as never);
         }
-    }, [user]);
+    }, [router, user]);
 
     const getTabMenuItems = React.useCallback((routeName: string): HeaderMenuItem[] =>
     {

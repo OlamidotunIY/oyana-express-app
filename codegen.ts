@@ -1,7 +1,7 @@
 import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
-  schema: "http://192.168.0.197:3500/graphql",
+  schema: "../oyana-backend/src/schema.gql",
   documents: ["./**/*.{ts,tsx}", "!./gql/**/*", "!./node_modules/**"],
   ignoreNoDocuments: true,
   generates: {

@@ -121,7 +121,7 @@ export default function VerifyOtp()
             {
                 persistAuthTokens(accessToken, refreshToken);
                 setUser(user);
-                router.replace(resolveAuthenticatedRoute(user));
+                router.replace(resolveAuthenticatedRoute(user) as never);
             } else
             {
                 showToast({

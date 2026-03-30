@@ -1,4 +1,5 @@
 export * from "./create-profile-image-upload-url.mutation";
+export * from "./complete-driver-registration.mutation";
 export * from "./set-profile-image.mutation";
 export * from "./update-profile.mutation";
 export * from "./set-provider-availability.mutation";

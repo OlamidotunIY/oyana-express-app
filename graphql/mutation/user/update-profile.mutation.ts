@@ -17,6 +17,10 @@ export const UPDATE_PROFILE_MUTATION = gql`
       notificationPromptedAt
       pushPermissionGranted
       pushPermissionStatus
+      publicRole
+      driverType
+      onboardingStep
+      onboardingCompleted
       state
       referralCode
       businessName
@@ -25,6 +29,7 @@ export const UPDATE_PROFILE_MUTATION = gql`
       providerAvailabilityUpdatedAt
       primaryAddress
       city
+      activeAddressId
       preferredLanguage
       status
       lastLoginAt

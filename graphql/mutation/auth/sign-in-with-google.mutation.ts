@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const SIGN_IN_MUTATION = gql`
-  mutation SignIn($input: SignInInput!) {
-    signIn(input: $input) {
+export const SIGN_IN_WITH_GOOGLE_MUTATION = gql`
+  mutation SignInWithGoogle($input: SignInWithGoogleInput!) {
+    signInWithGoogle(input: $input) {
       accessToken
       refreshToken
       user {
@@ -14,7 +14,6 @@ export const SIGN_IN_MUTATION = gql`
         firstName
         lastName
         phoneE164
-        profileImageUrl
         phoneVerified
         phoneVerifiedAt
         notificationsEnabled

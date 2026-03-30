@@ -49,15 +49,15 @@ export default function CustomerNotSupportedScreen()
                     </View>
 
                     <AuthHeader>
-                        <AuthTitle>Providers only</AuthTitle>
+                        <AuthTitle>Drivers only</AuthTitle>
                         <AuthSubtitle>
-                            This app is currently available to registered business providers only.
-                            Customer access is not yet supported on mobile.
+                            This mobile app is currently reserved for Rider, Van Driver, and Truck Driver accounts.
+                            Shipper access is not yet supported here.
                         </AuthSubtitle>
                     </AuthHeader>
 
                     <AuthSubtitle style={{ marginBottom: 40, lineHeight: 24 }}>
-                        If you want to book or track shipments as a customer, please visit our web platform instead. Business providers can continue using this app to manage their operations.
+                        If you want to book or track shipments as a shipper, please use the web platform instead. Drivers can continue here to complete onboarding and manage deliveries.
                     </AuthSubtitle>
 
                     <View style={{ gap: 12 }}>

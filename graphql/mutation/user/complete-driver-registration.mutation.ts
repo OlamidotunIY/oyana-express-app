@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const SET_PROVIDER_AVAILABILITY_MUTATION = gql`
-  mutation SetProviderAvailability($input: SetProviderAvailabilityInput!) {
-    setProviderAvailability(input: $input) {
+export const COMPLETE_DRIVER_REGISTRATION_MUTATION = gql`
+  mutation CompleteDriverRegistration($input: CompleteDriverRegistrationInput!) {
+    completeDriverRegistration(input: $input) {
       id
       email
       emailVerified

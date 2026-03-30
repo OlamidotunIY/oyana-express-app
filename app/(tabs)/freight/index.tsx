@@ -10,6 +10,8 @@ import
     MyUserAddressesQuery,
     SearchAddressesQuery,
     SearchAddressesQueryVariables,
+    SetActiveUserAddressMutation,
+    SetActiveUserAddressMutationVariables,
     ShipmentStatus,
 } from "@/gql/graphql";
 import
@@ -18,6 +20,7 @@ import
     GET_PROVIDER_MARKETPLACE_TAB_QUARY,
     MY_USER_ADDRESSES_QUERY,
     SEARCH_ADDRESSES_QUERY,
+    SET_ACTIVE_USER_ADDRESS_MUTATION,
 } from "@/graphql";
 import { useBackendErrorToast } from "@/hooks/use-backend-error-toast";
 import { DEV_FREIGHT_DATA } from "@/lib/dev-fixtures";
@@ -89,7 +92,6 @@ import
     StyledStatusText
 } from "@/styles/tabs";
 import { formatMinorCurrency, formatShipmentStatus } from "@/utils/format";
-import { useUserStore } from "@/store/userStore";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -368,7 +370,6 @@ export default function FreightScreen()
     const tabBarHeight = useBottomTabBarHeight();
 
     // ── Address picker ────────────────────────────────────────
-    const activeAddressId = useUserStore((s) => s.activeAddressId);
     const [activeAddress, setActiveAddress] = React.useState<SavedAddress | null>(null);
     const [addressPickerOpen, setAddressPickerOpen] = React.useState(false);
     const [addressSearchText, setAddressSearchText] = React.useState("");
@@ -425,6 +426,10 @@ export default function FreightScreen()
         CreateUserAddressMutation,
         CreateUserAddressMutationVariables
     >(CREATE_USER_ADDRESS_MUTATION);
+    const [setActiveUserAddress] = useMutation<
+        SetActiveUserAddressMutation,
+        SetActiveUserAddressMutationVariables
+    >(SET_ACTIVE_USER_ADDRESS_MUTATION);
 
     useBackendErrorToast(boardError, "Unable to load marketplace board.", {
         title: "Marketplace Error",
@@ -453,16 +458,16 @@ export default function FreightScreen()
     const addressSuggestions = addressSearchData?.searchAddresses ?? [];
     const showSearchResults = addressSearchText.trim().length > 1;
 
-    // Sync active address from store whenever saved addresses load
+    // Sync active address from the server-owned active address whenever addresses load
     React.useEffect(() =>
     {
-        if (!activeAddressId || savedAddresses.length === 0) return;
-        const match = savedAddresses.find((a) => a.id === activeAddressId);
+        if (savedAddresses.length === 0) return;
+        const match = savedAddresses.find((a) => a.isActive) ?? savedAddresses[0];
         if (match && activeAddress?.id !== match.id)
         {
             setActiveAddress(match as SavedAddress);
         }
-    }, [activeAddressId, savedAddresses]);
+    }, [activeAddress?.id, savedAddresses]);
 
     // ── Handlers ──────────────────────────────────────────────
     const handleAddressSearch = React.useCallback(
@@ -477,19 +482,29 @@ export default function FreightScreen()
         [runAddressSearch],
     );
 
-    const handleSelectSavedAddress = React.useCallback((address: SavedAddress) =>
-    {
-        setActiveAddress(address);
-        setAddressPickerOpen(false);
-        setAddressSearchText("");
-    }, []);
+    const handleSelectSavedAddress = React.useCallback(
+        async (address: SavedAddress) =>
+        {
+            try
+            {
+                await setActiveUserAddress({ variables: { addressId: address.id } });
+                setActiveAddress(address);
+            }
+            catch { /* handled by Apollo */ }
+            setAddressPickerOpen(false);
+            setAddressSearchText("");
+        },
+        [setActiveUserAddress],
+    );
 
     const handleSelectSuggestion = React.useCallback(
         async (placeId: string) =>
         {
             try
             {
-                const result = await createUserAddress({ variables: { input: { placeId } } });
+                const result = await createUserAddress({
+                    variables: { input: { placeId, setAsActive: true } },
+                });
                 const saved = result.data?.createUserAddress;
                 if (saved)
                 {

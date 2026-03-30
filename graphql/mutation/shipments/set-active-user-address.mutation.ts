@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const MY_USER_ADDRESSES_QUERY = gql`
-  query MyUserAddresses {
-    myUserAddresses {
+export const SET_ACTIVE_USER_ADDRESS_MUTATION = gql`
+  mutation SetActiveUserAddress($addressId: String!) {
+    setActiveUserAddress(addressId: $addressId) {
       id
       profileId
       address

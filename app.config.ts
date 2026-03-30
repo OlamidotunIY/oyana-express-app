@@ -3,6 +3,9 @@ import type { ExpoConfig } from "expo/config";
 const androidPackage = process.env.EXPO_ANDROID_PACKAGE ?? "com.express.oyana";
 const iosBundleIdentifier = process.env.EXPO_IOS_BUNDLE_IDENTIFIER;
 const googleMapsApiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
+const googleWebClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
+const googleAndroidClientId = process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID;
+const googleIosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
 
 const config: ExpoConfig = {
   name: "Oyana Express",
@@ -50,6 +53,11 @@ const config: ExpoConfig = {
     favicon: "./assets/images/favicon.png",
   },
   extra: {
+    googleAuth: {
+      webClientId: googleWebClientId,
+      androidClientId: googleAndroidClientId,
+      iosClientId: googleIosClientId,
+    },
     eas: {
       projectId: "f277e6a4-b0a6-4ca6-a1f6-45397b993fe6",
     },

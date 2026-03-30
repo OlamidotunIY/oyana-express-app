@@ -74,8 +74,9 @@ export function OverlayTrigger({
   children,
   onPress,
   ...props
-}: PressableProps & {
+}: Omit<PressableProps, "children"> & {
   asChild?: boolean;
+  children?: React.ReactNode;
 }) {
   const { open, setOpen } = useOverlayContext("OverlayTrigger");
 
@@ -103,8 +104,9 @@ export function OverlayClose({
   children,
   onPress,
   ...props
-}: PressableProps & {
+}: Omit<PressableProps, "children"> & {
   asChild?: boolean;
+  children?: React.ReactNode;
 }) {
   const { setOpen } = useOverlayContext("OverlayClose");
 

@@ -17,6 +17,10 @@ export const ME_QUERY = gql`
       notificationPromptedAt
       pushPermissionGranted
       pushPermissionStatus
+      publicRole
+      driverType
+      onboardingStep
+      onboardingCompleted
       state
       referralCode
       businessName
@@ -25,6 +29,7 @@ export const ME_QUERY = gql`
       providerAvailabilityUpdatedAt
       primaryAddress
       city
+      activeAddressId
       preferredLanguage
       status
       lastLoginAt

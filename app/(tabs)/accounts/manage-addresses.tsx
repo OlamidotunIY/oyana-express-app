@@ -15,16 +15,18 @@ import
     MyUserAddressesQueryVariables,
     SearchAddressesQuery,
     SearchAddressesQueryVariables,
+    SetActiveUserAddressMutation,
+    SetActiveUserAddressMutationVariables,
 } from "@/gql/graphql";
 import
 {
     CREATE_USER_ADDRESS_MUTATION,
     MY_USER_ADDRESSES_QUERY,
     SEARCH_ADDRESSES_QUERY,
+    SET_ACTIVE_USER_ADDRESS_MUTATION,
 } from "@/graphql";
 import { useBackendErrorToast } from "@/hooks/use-backend-error-toast";
 import { showBackendErrorToast, showToast } from "@/lib/toast";
-import { useUserStore } from "@/store/userStore";
 import
 {
     StyledManageAddressesActiveBadge,
@@ -81,9 +83,6 @@ export default function ManageAddressesScreen()
     const [selectedPlace, setSelectedPlace] = React.useState<SelectedPlace | null>(null);
     const [saving, setSaving] = React.useState(false);
 
-    const activeAddressId = useUserStore((s) => s.activeAddressId);
-    const setActiveAddressId = useUserStore((s) => s.setActiveAddressId);
-
     const { data, loading, error, refetch } = useQuery<
         MyUserAddressesQuery,
         MyUserAddressesQueryVariables
@@ -105,6 +104,10 @@ export default function ManageAddressesScreen()
         CreateUserAddressMutation,
         CreateUserAddressMutationVariables
     >(CREATE_USER_ADDRESS_MUTATION);
+    const [setActiveUserAddress] = useMutation<
+        SetActiveUserAddressMutation,
+        SetActiveUserAddressMutationVariables
+    >(SET_ACTIVE_USER_ADDRESS_MUTATION);
 
     useBackendErrorToast(error, "Unable to load addresses.", {
         title: "Addresses Error",
@@ -185,7 +188,7 @@ export default function ManageAddressesScreen()
                             <StyledManageAddressesList>
                                 {addresses.map((addr) =>
                                 {
-                                    const isActive = activeAddressId === addr.id;
+                                    const isActive = addr.isActive;
 
                                     return (
                                         <StyledManageAddressesListRowTouchable
@@ -216,7 +219,33 @@ export default function ManageAddressesScreen()
                                             </StyledManageAddressesListRowHeader>
                                             {!isActive ? (
                                                 <StyledManageAddressesSetActiveBtn
-                                                    onPress={() => setActiveAddressId(addr.id)}
+                                                    onPress={async () =>
+                                                    {
+                                                        try
+                                                        {
+                                                            await setActiveUserAddress({
+                                                                variables: { addressId: addr.id },
+                                                            });
+                                                            await refetch();
+                                                            showToast({
+                                                                title: "Address Updated",
+                                                                message: "Active address updated successfully.",
+                                                                tone: "success",
+                                                                dedupeKey: "manage-addresses-set-active",
+                                                            });
+                                                        }
+                                                        catch (activeError)
+                                                        {
+                                                            showBackendErrorToast(
+                                                                activeError,
+                                                                "We could not set this address as active.",
+                                                                {
+                                                                    title: "Address Update Failed",
+                                                                    dedupeKey: "manage-addresses-set-active-error",
+                                                                },
+                                                            );
+                                                        }
+                                                    }}
                                                 >
                                                     <StyledManageAddressesSetActiveBtnText>
                                                         Set as active

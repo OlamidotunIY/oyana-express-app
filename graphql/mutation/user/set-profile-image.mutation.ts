@@ -18,6 +18,10 @@ export const SET_PROFILE_IMAGE_MUTATION = gql`
       notificationPromptedAt
       pushPermissionGranted
       pushPermissionStatus
+      publicRole
+      driverType
+      onboardingStep
+      onboardingCompleted
       state
       referralCode
       businessName
@@ -26,6 +30,7 @@ export const SET_PROFILE_IMAGE_MUTATION = gql`
       providerAvailabilityUpdatedAt
       primaryAddress
       city
+      activeAddressId
       preferredLanguage
       status
       lastLoginAt
