@@ -88,15 +88,15 @@ export default function CreateVehicleScreen()
 
             showToast({
                 tone: "success",
-                title: "Vehicle Added",
-                message: "Vehicle profile created successfully.",
+                title: "Vehicle Saved",
+                message: "Your active vehicle record has been updated.",
                 dedupeKey: "account-create-vehicle-success",
             });
 
             router.replace("/accounts/manage-vehicles" as never);
         } catch (error)
         {
-            showBackendErrorToast(error, "Unable to create vehicle.", {
+            showBackendErrorToast(error, "Unable to save vehicle.", {
                 title: "Create Vehicle Error",
                 dedupeKey: "account-create-vehicle-mutation",
             });
@@ -112,7 +112,7 @@ export default function CreateVehicleScreen()
                 <Card>
                     <CardContent>
                         <StyledCreateVehicleForm>
-                            <StyledCreateVehicleSectionLabel>Create vehicle</StyledCreateVehicleSectionLabel>
+                            <StyledCreateVehicleSectionLabel>Update vehicle</StyledCreateVehicleSectionLabel>
 
                             <StyledCreateVehicleLabel>Vehicle category</StyledCreateVehicleLabel>
                             <StyledCreateVehicleCategoryRow>

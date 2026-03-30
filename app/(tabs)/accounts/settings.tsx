@@ -17,7 +17,6 @@ import
         UpdateNotificationSettingsMutationVariables,
         UpsertPushDeviceMutation,
         UpsertPushDeviceMutationVariables,
-        UserType,
     } from "@/gql/graphql";
 import
     {
@@ -30,6 +29,7 @@ import
 import { useBackendErrorToast } from "@/hooks/use-backend-error-toast";
 import { client } from "@/lib/apolloClient";
 import { registerForPushNotificationsAsync } from "@/lib/push-notifications";
+import { getProfileRoleLabel, isDriverRole } from "@/lib/session";
 import { showBackendErrorToast, showToast } from "@/lib/toast";
 import
     {
@@ -139,7 +139,8 @@ export default function SettingsScreen()
 
     const profile = profileData?.me ?? null;
     const notificationSettings = notificationData?.myNotificationSettings;
-    const hasBusinessRole = Boolean(profile?.roles?.includes(UserType.Business));
+    const hasBusinessRole = isDriverRole(profile?.role);
+    const driverLabel = getProfileRoleLabel(profile, "Driver");
     const isProviderAvailable = profile?.providerIsAvailable === true;
     const providerAvailabilityUpdatedAt = profile?.providerAvailabilityUpdatedAt
         ? new Date(String(profile.providerAvailabilityUpdatedAt)).toLocaleString()
@@ -201,14 +202,14 @@ export default function SettingsScreen()
             await refetchProfile();
 
             showToast({
-                title: "Provider Availability",
-                message: `Provider is now ${nextAvailability ? "available" : "unavailable"}.`,
+                title: `${driverLabel} Availability`,
+                message: `${driverLabel} is now ${nextAvailability ? "available" : "unavailable"}.`,
                 tone: "success",
                 dedupeKey: `provider-availability-${nextAvailability ? "available" : "unavailable"}`,
             });
         } catch (error)
         {
-            showBackendErrorToast(error, "Unable to update provider availability.", {
+            showBackendErrorToast(error, "Unable to update driver availability.", {
                 title: "Settings Error",
                 dedupeKey: "account-settings-provider-availability",
             });
@@ -323,10 +324,10 @@ export default function SettingsScreen()
                             <StyledSettingsPanelHeader>
                                 <StyledSettingsPanelTextGroup>
                                     <StyledSettingsPanelTitle>
-                                        Dispatch availability
+                                        {driverLabel} availability
                                     </StyledSettingsPanelTitle>
                                     <StyledSettingsPanelDescription>
-                                        Control whether new dispatch work can reach your provider
+                                        Control whether new dispatch work can reach your driver
                                         account.
                                     </StyledSettingsPanelDescription>
                                 </StyledSettingsPanelTextGroup>
@@ -351,7 +352,7 @@ export default function SettingsScreen()
                                         Receive new assignments
                                     </StyledSettingsPanelTitle>
                                     <StyledSettingsPanelDescription>
-                                        Turn this off to pause provider dispatch requests.
+                                        Turn this off to pause driver dispatch requests.
                                     </StyledSettingsPanelDescription>
                                 </StyledSettingsPanelTextGroup>
                                 <Switch

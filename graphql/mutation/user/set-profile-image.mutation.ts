@@ -7,7 +7,7 @@ export const SET_PROFILE_IMAGE_MUTATION = gql`
       email
       emailVerified
       emailVerifiedAt
-      roles
+      role
       firstName
       lastName
       phoneE164

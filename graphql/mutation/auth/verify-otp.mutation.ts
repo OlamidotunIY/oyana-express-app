@@ -10,7 +10,7 @@ export const VERIFY_OTP_MUTATION = gql`
         email
         emailVerified
         emailVerifiedAt
-        roles
+        role
         firstName
         lastName
         phoneE164

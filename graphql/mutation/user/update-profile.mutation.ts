@@ -7,10 +7,11 @@ export const UPDATE_PROFILE_MUTATION = gql`
       email
       emailVerified
       emailVerifiedAt
-      roles
+      role
       firstName
       lastName
       phoneE164
+      profileImageUrl
       phoneVerified
       phoneVerifiedAt
       notificationsEnabled

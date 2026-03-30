@@ -10,7 +10,7 @@ export const SIGN_IN_WITH_GOOGLE_MUTATION = gql`
         email
         emailVerified
         emailVerifiedAt
-        roles
+        role
         firstName
         lastName
         phoneE164
@@ -24,6 +24,7 @@ export const SIGN_IN_WITH_GOOGLE_MUTATION = gql`
         driverType
         onboardingStep
         onboardingCompleted
+        profileImageUrl
         state
         referralCode
         businessName

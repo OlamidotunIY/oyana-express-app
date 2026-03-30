@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Constants from "expo-constants";
 
 import { Button } from "@/components/ui/Button";
+import { OnboardingProgress } from "@/components/ui/OnboardingProgress";
 import
   {
     MeQuery,
@@ -22,7 +23,7 @@ import
   } from "@/graphql";
 import { client } from "@/lib/apolloClient";
 import { registerForPushNotificationsAsync } from "@/lib/push-notifications";
-import { parseAuthError } from "@/lib/session";
+import { parseAuthError, resolveAuthenticatedRoute } from "@/lib/session";
 import { useToastStore } from "@/store/toastStore";
 import { useUserStore } from "@/store/userStore";
 import
@@ -63,6 +64,8 @@ export default function NotificationPermissionScreen()
     if (data?.me)
     {
       setUser(data.me);
+      router.replace(resolveAuthenticatedRoute(data.me) as never);
+      return;
     }
 
     router.replace("/(tabs)");
@@ -169,6 +172,8 @@ export default function NotificationPermissionScreen()
     <AuthKeyboardAvoiding behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <AuthScrollView contentContainerStyle={{ paddingTop: insets.top + 40 }} keyboardShouldPersistTaps="handled">
         <AuthContent>
+          <OnboardingProgress currentStep="notifications" />
+
           <AuthHeader>
             <AuthTitle>Stay in the loop</AuthTitle>
             <AuthSubtitle>

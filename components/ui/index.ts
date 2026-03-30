@@ -10,6 +10,7 @@ export * from "./Input";
 export * from "./InputGroup";
 export * from "./InputOtp";
 export * from "./Label";
+export * from "./OnboardingProgress";
 export * from "./Progress";
 export * from "./Separator";
 export * from "./Skeleton";

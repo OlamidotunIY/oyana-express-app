@@ -14,6 +14,7 @@ import {
   VERIFY_PHONE_OTP_MUTATION,
 } from "@/graphql";
 import { Button } from "@/components/ui/Button";
+import { OnboardingProgress } from "@/components/ui/OnboardingProgress";
 import {
   InputOTP,
   InputOTPGroup,
@@ -156,6 +157,8 @@ export default function OnboardingVerifyPhoneScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <AuthContent>
+          <OnboardingProgress currentStep="verify-phone" />
+
           <BackButton onPress={() => router.back()}>
             <BackButtonText>← Back</BackButtonText>
           </BackButton>

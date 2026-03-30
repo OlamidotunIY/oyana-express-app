@@ -7,7 +7,8 @@ export const COMPLETE_DRIVER_REGISTRATION_MUTATION = gql`
       email
       emailVerified
       emailVerifiedAt
-      roles
+      role
+      profileImageUrl
       firstName
       lastName
       phoneE164

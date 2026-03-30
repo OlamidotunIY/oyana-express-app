@@ -20,6 +20,7 @@ import {
 } from "@/graphql";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { OnboardingProgress } from "@/components/ui/OnboardingProgress";
 import {
   parseAuthError,
   refetchCurrentUser,
@@ -148,6 +149,8 @@ export default function OnboardingAddressScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <AuthContent>
+          <OnboardingProgress currentStep="address" />
+
           <BackButton onPress={() => router.back()}>
             <BackButtonText>← Back</BackButtonText>
           </BackButton>

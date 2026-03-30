@@ -10,7 +10,7 @@ export const REFRESH_TOKEN_MUTATION = gql`
         email
         emailVerified
         emailVerifiedAt
-        roles
+        role
         firstName
         lastName
         phoneE164

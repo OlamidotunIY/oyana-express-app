@@ -10,6 +10,7 @@ import {
 import { REQUEST_PHONE_OTP_MUTATION } from "@/graphql";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { OnboardingProgress } from "@/components/ui/OnboardingProgress";
 import { parseAuthError } from "@/lib/session";
 import { useToastStore } from "@/store/toastStore";
 import {
@@ -87,6 +88,8 @@ export default function OnboardingPhoneScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <AuthContent>
+          <OnboardingProgress currentStep="phone" />
+
           <BackButton onPress={() => router.back()}>
             <BackButtonText>← Back</BackButtonText>
           </BackButton>

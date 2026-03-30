@@ -65,10 +65,10 @@ export default function ManageVehiclesScreen()
                     <Card>
                         <CardContent>
                             <StyledManageVehiclesSection>
-                                <StyledManageVehiclesSectionLabel>Registered vehicles</StyledManageVehiclesSectionLabel>
+                                <StyledManageVehiclesSectionLabel>Active vehicle</StyledManageVehiclesSectionLabel>
                                 {vehicles.length === 0 ? (
                                     <StyledManageVehiclesHint>
-                                        No vehicles on your provider profile yet.
+                                        No vehicle has been added to your driver profile yet.
                                     </StyledManageVehiclesHint>
                                 ) : (
                                     <StyledManageVehiclesList>
@@ -91,7 +91,7 @@ export default function ManageVehiclesScreen()
             </ScreenShell>
 
             <StyledManageVehiclesFloatingButton
-                accessibilityLabel="Create vehicle"
+                accessibilityLabel="Update vehicle"
                 onPress={() => router.push("/accounts/create-vehicle" as never)}
                 $bottom={tabBarHeight + 12}
             >

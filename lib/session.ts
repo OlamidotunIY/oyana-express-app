@@ -1,5 +1,5 @@
 import type { MeQuery, Profile } from "@/gql/graphql";
-import { OnboardingStep, UserType } from "@/gql/graphql";
+import { DriverType, OnboardingStep, UserRole } from "@/gql/graphql";
 import { ME_QUERY } from "@/graphql";
 import { client } from "@/lib/apolloClient";
 import {
@@ -49,8 +49,52 @@ export function parseAuthError(error: unknown, fallbackMessage: string) {
   return getBackendErrorMessage(error, fallbackMessage);
 }
 
+export function isDriverRole(role?: UserRole | null) {
+  return (
+    role === UserRole.Rider ||
+    role === UserRole.VanDriver ||
+    role === UserRole.TruckDriver
+  );
+}
+
 export function isProviderUser(profile?: Profile | null) {
-  return profile?.roles.includes(UserType.Business);
+  return isDriverRole(profile?.role);
+}
+
+export function getProfileRoleLabel(
+  profile?: Pick<Profile, "role" | "driverType"> | null,
+  fallback = "Driver",
+) {
+  if (profile?.role === UserRole.Admin) {
+    return "Admin";
+  }
+
+  if (profile?.role === UserRole.Shipper) {
+    return "Shipper";
+  }
+
+  if (
+    profile?.role === UserRole.Rider ||
+    profile?.driverType === DriverType.Bike
+  ) {
+    return "Rider";
+  }
+
+  if (
+    profile?.role === UserRole.VanDriver ||
+    profile?.driverType === DriverType.Van
+  ) {
+    return "Van Driver";
+  }
+
+  if (
+    profile?.role === UserRole.TruckDriver ||
+    profile?.driverType === DriverType.Truck
+  ) {
+    return "Truck Driver";
+  }
+
+  return fallback;
 }
 
 export function shouldPromptNotificationPermission(profile?: Profile | null) {
@@ -58,33 +102,37 @@ export function shouldPromptNotificationPermission(profile?: Profile | null) {
 }
 
 export function resolveAuthenticatedRoute(profile: Profile): RouterTarget {
+  if (!profile.onboardingCompleted) {
+    switch (profile.onboardingStep) {
+      case OnboardingStep.EmailVerification:
+        return {
+          pathname: "/(auth)/verify-otp",
+          params: {
+            email: profile.email,
+            mode: "email-verification",
+          },
+        };
+      case OnboardingStep.PhoneInput:
+        return "/(auth)/onboarding/phone";
+      case OnboardingStep.PhoneVerification:
+        return "/(auth)/onboarding/verify-phone";
+      case OnboardingStep.DriverRegistration:
+        return "/(auth)/onboarding/driver";
+      case OnboardingStep.Address:
+        return "/(auth)/onboarding/address";
+      case OnboardingStep.NotificationPermission:
+        return "/(auth)/notification-permission";
+      case OnboardingStep.Completed:
+      default:
+        break;
+    }
+  }
+
   if (!isProviderUser(profile)) {
     return "/(auth)/customer-not-supported";
   }
 
-  switch (profile.onboardingStep) {
-    case OnboardingStep.EmailVerification:
-      return {
-        pathname: "/(auth)/verify-otp",
-        params: {
-          email: profile.email,
-          mode: "email-verification",
-        },
-      };
-    case OnboardingStep.PhoneInput:
-      return "/(auth)/onboarding/phone";
-    case OnboardingStep.PhoneVerification:
-      return "/(auth)/onboarding/verify-phone";
-    case OnboardingStep.DriverRegistration:
-      return "/(auth)/onboarding/driver";
-    case OnboardingStep.Address:
-      return "/(auth)/onboarding/address";
-    case OnboardingStep.NotificationPermission:
-      return "/(auth)/notification-permission";
-    case OnboardingStep.Completed:
-    default:
-      return "/(tabs)";
-  }
+  return "/(tabs)";
 }
 
 function isUnauthorizedClientError(error: unknown) {

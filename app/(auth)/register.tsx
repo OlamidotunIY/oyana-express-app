@@ -4,9 +4,8 @@ import { useMutation } from "@apollo/client/react";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
-  RegistrationIntent,
-  SignUpMutation,
-  SignUpMutationVariables,
+  SignUpDriverMutation,
+  SignUpDriverMutationVariables,
 } from "@/gql/graphql";
 import { SIGN_UP_MUTATION } from "@/graphql";
 import { Button } from "@/components/ui/Button";
@@ -42,8 +41,8 @@ export default function Register() {
   const [password, setPassword] = React.useState("");
 
   const [signUp, { loading }] = useMutation<
-    SignUpMutation,
-    SignUpMutationVariables
+    SignUpDriverMutation,
+    SignUpDriverMutationVariables
   >(SIGN_UP_MUTATION);
 
   async function handleSubmit() {
@@ -61,21 +60,20 @@ export default function Register() {
           input: {
             email: email.trim().toLowerCase(),
             password,
-            registrationIntent: RegistrationIntent.Driver,
           },
         },
       });
 
-      if (!data?.signUp?.success) {
+      if (!data?.signUpDriver?.success) {
         showToast({
-          message: data?.signUp?.message ?? "Registration failed.",
+          message: data?.signUpDriver?.message ?? "Registration failed.",
           tone: "error",
         });
         return;
       }
 
       showToast({
-        message: data.signUp.message,
+        message: data.signUpDriver.message,
         tone: "success",
       });
       router.replace({

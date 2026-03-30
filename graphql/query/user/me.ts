@@ -7,7 +7,8 @@ export const ME_QUERY = gql`
       email
       emailVerified
       emailVerifiedAt
-      roles
+      role
+      profileImageUrl
       firstName
       lastName
       phoneE164

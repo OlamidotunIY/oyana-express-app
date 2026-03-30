@@ -5,7 +5,6 @@ import * as WebBrowser from "expo-web-browser";
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import {
-  RegistrationIntent,
   SignInWithGoogleMutation,
   SignInWithGoogleMutationVariables,
 } from "@/gql/graphql";
@@ -69,7 +68,6 @@ export function useGoogleDriverAuth() {
           variables: {
             input: {
               idToken,
-              registrationIntent: RegistrationIntent.Driver,
             },
           },
         });

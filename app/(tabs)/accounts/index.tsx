@@ -6,6 +6,7 @@ import { useBackendErrorToast } from "@/hooks/use-backend-error-toast";
 import { useProfileImageUpload } from "@/hooks/use-profile-image-upload";
 import { clearAuthTokens } from "@/lib/auth-cookies";
 import { client } from "@/lib/apolloClient";
+import { getProfileRoleLabel } from "@/lib/session";
 import { useUserStore } from "@/store/userStore";
 import
 {
@@ -130,7 +131,7 @@ export default function AccountsScreen()
         dedupeKey: "account-profile-query",
     });
 
-    useBackendErrorToast(dashboardError, "Unable to load provider status.", {
+    useBackendErrorToast(dashboardError, "Unable to load driver status.", {
         title: "Account Error",
         dedupeKey: "account-dashboard-query",
     });
@@ -145,9 +146,8 @@ export default function AccountsScreen()
     const displayName =
         [profile?.firstName, profile?.lastName].filter(Boolean).join(" ") ||
         profile?.email ||
-        "Provider";
-    const roleLabel =
-        profile?.roles?.map((role: any) => formatEnum(role)).join(" / ") || "-";
+        "Driver";
+    const roleLabel = getProfileRoleLabel(profile, "Driver");
     const initials =
         `${profile?.firstName?.[0] ?? ""}${profile?.lastName?.[0] ?? ""}`.trim().toUpperCase() || "OP";
     const profileImageUrl = storedUser?.profileImageUrl ?? null;
@@ -158,7 +158,7 @@ export default function AccountsScreen()
             stickyTop={
                 <StyledAccountProfileHero>
                     <StyledAccountHeroHeaderRow>
-                        <StyledAccountHeroLabel>Provider profile</StyledAccountHeroLabel>
+                        <StyledAccountHeroLabel>{roleLabel} profile</StyledAccountHeroLabel>
                         <StyledAccountHeroChip>{approvedKyc ? "KYC Verified" : "KYC Pending"}</StyledAccountHeroChip>
                     </StyledAccountHeroHeaderRow>
 
@@ -202,7 +202,7 @@ export default function AccountsScreen()
 
                     <StyledAccountInfoPillsRow>
                         <StyledAccountInfoPill>
-                            <StyledAccountInfoPillLabel>Roles</StyledAccountInfoPillLabel>
+                            <StyledAccountInfoPillLabel>Role</StyledAccountInfoPillLabel>
                             <StyledAccountInfoPillValue>{roleLabel}</StyledAccountInfoPillValue>
                         </StyledAccountInfoPill>
                         <StyledAccountInfoPill>
@@ -253,13 +253,13 @@ export default function AccountsScreen()
                         <NavigationRow
                             iconName="settings"
                             title="Settings"
-                            description="Open provider settings and account controls."
+                            description="Open driver settings and account controls."
                             onPress={() => router.push("/accounts/settings" as never)}
                         />
                         <NavigationRow
                             iconName="directions-car"
-                            title="Manage vehicles"
-                            description="Register and maintain your active fleet records."
+                            title="Manage vehicle"
+                            description="Review and update your active vehicle record."
                             onPress={() => router.push("/accounts/manage-vehicles" as never)}
                         />
                         <NavigationRow
@@ -301,7 +301,7 @@ export default function AccountsScreen()
                                         Sign out
                                     </StyledAccountNavigationTitle>
                                     <StyledAccountNavigationDescription>
-                                        Sign out of your provider account.
+                                        Sign out of your driver account.
                                     </StyledAccountNavigationDescription>
                                 </StyledAccountNavigationTextGroup>
                             </StyledAccountNavigationLead>

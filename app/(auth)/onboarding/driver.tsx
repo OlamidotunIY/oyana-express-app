@@ -7,10 +7,12 @@ import {
   CompleteDriverRegistrationMutation,
   CompleteDriverRegistrationMutationVariables,
   DriverType,
+  UserRole,
 } from "@/gql/graphql";
 import { COMPLETE_DRIVER_REGISTRATION_MUTATION } from "@/graphql";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { OnboardingProgress } from "@/components/ui/OnboardingProgress";
 import {
   parseAuthError,
   refetchCurrentUser,
@@ -39,6 +41,12 @@ const DRIVER_OPTIONS: { label: string; value: DriverType }[] = [
   { label: "Van Driver", value: DriverType.Van },
   { label: "Truck Driver", value: DriverType.Truck },
 ];
+
+const roleByDriverType: Record<DriverType, UserRole> = {
+  [DriverType.Bike]: UserRole.Rider,
+  [DriverType.Van]: UserRole.VanDriver,
+  [DriverType.Truck]: UserRole.TruckDriver,
+};
 
 export default function OnboardingDriverScreen() {
   const router = useRouter();
@@ -87,6 +95,7 @@ export default function OnboardingDriverScreen() {
             firstName: firstName.trim(),
             lastName: lastName.trim(),
             driverType,
+            role: roleByDriverType[driverType],
             plateNumber: plateNumber.trim(),
             capacityKg: Number(capacityKg.trim()),
             isAvailable,
@@ -124,6 +133,8 @@ export default function OnboardingDriverScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <AuthContent>
+          <OnboardingProgress currentStep="driver" />
+
           <BackButton onPress={() => router.back()}>
             <BackButtonText>← Back</BackButtonText>
           </BackButton>

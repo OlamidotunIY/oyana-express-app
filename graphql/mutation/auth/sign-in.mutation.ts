@@ -10,7 +10,7 @@ export const SIGN_IN_MUTATION = gql`
         email
         emailVerified
         emailVerifiedAt
-        roles
+        role
         firstName
         lastName
         phoneE164

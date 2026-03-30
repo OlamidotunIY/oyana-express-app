@@ -19,6 +19,7 @@ import
     InputOTPSlot,
 } from "@/components/ui/InputOtp";
 import { Button } from "@/components/ui/Button";
+import { OnboardingProgress } from "@/components/ui/OnboardingProgress";
 import { persistAuthTokens } from "@/lib/auth-cookies";
 import { parseAuthError, resolveAuthenticatedRoute } from "@/lib/session";
 import { useUserStore } from "@/store/userStore";
@@ -85,6 +86,7 @@ export default function VerifyOtp()
         : verifyMode === "email-verification"
             ? "Enter the 6-digit verification code sent to"
             : "We sent a 6-digit code to";
+    const showOnboardingProgress = verifyMode === "email-verification";
 
     const handleVerify = useCallback(async () =>
     {
@@ -213,6 +215,10 @@ export default function VerifyOtp()
                 keyboardShouldPersistTaps="handled"
             >
                 <AuthContent>
+                    {showOnboardingProgress ? (
+                        <OnboardingProgress currentStep="email-verification" />
+                    ) : null}
+
                     <BackButton onPress={() => router.back()}>
                         <BackButtonText>← Back</BackButtonText>
                     </BackButton>
