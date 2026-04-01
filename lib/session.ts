@@ -17,6 +17,10 @@ import {
   ensureAuthCookiesLoaded,
   getAuthCookies,
 } from "@/lib/auth-cookies";
+import {
+  ensureInitialOnboardingStoreLoaded,
+  useInitialOnboardingStore,
+} from "@/store/initialOnboardingStore";
 import { useUserStore } from "@/store/userStore";
 
 export type AppStatusType = "maintenance" | "force-update";
@@ -146,8 +150,67 @@ export function shouldPromptNotificationPermission(_profile?: Profile | null) {
   return false;
 }
 
-export function resolveAuthenticatedRoute(_profile: Profile): RouterTarget {
+export function hasCompletedInitialOnboarding(
+  profile?: Pick<Profile, "id" | "onboardingCompleted" | "firstName" | "lastName"> | null,
+) {
+  if (!profile) {
+    return false;
+  }
+
+  const hasFullName =
+    Boolean(profile.firstName?.trim()) &&
+    Boolean(profile.lastName?.trim());
+
+  if (!hasFullName) {
+    return false;
+  }
+
+  if (
+    useInitialOnboardingStore
+      .getState()
+      .hasCompletedInitialOnboarding(profile.id)
+  ) {
+    return true;
+  }
+
+  return profile.onboardingCompleted;
+}
+
+export function resolveInitialOnboardingRoute(
+  profile: Pick<Profile, "id" | "onboardingCompleted" | "firstName" | "lastName">,
+): RouterTarget {
+  const selectedMode = useInitialOnboardingStore
+    .getState()
+    .getSelectedMode(profile.id);
+
+  if (selectedMode === AppMode.Driver) {
+    return {
+      pathname: "/(auth)/onboarding/welcome",
+      params: { role: "driver" },
+    };
+  }
+
+  if (selectedMode === AppMode.Shipper) {
+    return {
+      pathname: "/(auth)/onboarding/welcome",
+      params: { role: "shipper" },
+    };
+  }
+
+  return "/(auth)/onboarding/role";
+}
+
+export function resolveAuthenticatedRoute(profile: Profile): RouterTarget {
+  if (!hasCompletedInitialOnboarding(profile)) {
+    return resolveInitialOnboardingRoute(profile);
+  }
+
   return "/(tabs)";
+}
+
+export function isInitialOnboardingRoute(target: RouterTarget) {
+  const pathname = typeof target === "string" ? target : target.pathname;
+  return pathname.startsWith("/(auth)/onboarding");
 }
 
 function isUnauthorizedClientError(error: unknown) {
@@ -176,6 +239,7 @@ export async function resolveBootRoute(): Promise<BootResolution> {
   }
 
   await ensureAuthCookiesLoaded();
+  await ensureInitialOnboardingStoreLoaded();
 
   const { accessToken, refreshToken } = getAuthCookies();
   if (!accessToken && !refreshToken) {

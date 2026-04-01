@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, TextInput } from "react-native";
+import { TextInput, View } from "react-native";
 import
 {
     StyledInputOTP,
@@ -33,20 +33,21 @@ export function InputOTP({
     const inputRef = React.useRef<TextInput>(null);
 
     return (
-        <Pressable onPress={() => inputRef.current?.focus()}>
-            <StyledInputOTP {...props}>
-                <StyledInputOTPHiddenInput
-                    ref={inputRef}
-                    keyboardType="number-pad"
-                    value={value}
-                    autoFocus
-                    maxLength={maxLength}
-                    onChangeText={(text) => onChange(text.replace(/[^0-9a-zA-Z]/g, "").slice(0, maxLength))}
-                    onSelectionChange={(event) => setActiveIndex(event.nativeEvent.selection.start)}
-                />
+        <View style={{ position: "relative" }}>
+            <StyledInputOTP {...props} pointerEvents="none">
                 <OTPContext.Provider value={{ value, activeIndex }}>{children}</OTPContext.Provider>
             </StyledInputOTP>
-        </Pressable>
+            <StyledInputOTPHiddenInput
+                ref={inputRef}
+                keyboardType="number-pad"
+                value={value}
+                autoFocus
+                caretHidden
+                maxLength={maxLength}
+                onChangeText={(text) => onChange(text.replace(/[^0-9]/g, "").slice(0, maxLength))}
+                onSelectionChange={(event) => setActiveIndex(event.nativeEvent.selection.start)}
+            />
+        </View>
     );
 }
 

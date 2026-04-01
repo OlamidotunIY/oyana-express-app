@@ -10,7 +10,11 @@ import {
 } from "@/gql/graphql";
 import { SIGN_IN_WITH_GOOGLE_MUTATION } from "@/graphql";
 import { persistAuthTokens } from "@/lib/auth-cookies";
-import { parseAuthError, resolveAuthenticatedRoute } from "@/lib/session";
+import {
+  isInitialOnboardingRoute,
+  parseAuthError,
+  resolveAuthenticatedRoute,
+} from "@/lib/session";
 import { useToastStore } from "@/store/toastStore";
 import { useUserStore } from "@/store/userStore";
 
@@ -79,7 +83,14 @@ export function useGoogleDriverAuth() {
 
         persistAuthTokens(payload.accessToken, payload.refreshToken);
         setUser(payload.user);
-        router.replace(resolveAuthenticatedRoute(payload.user) as never);
+        const nextRoute = resolveAuthenticatedRoute(payload.user);
+
+        if (isInitialOnboardingRoute(nextRoute)) {
+          router.push(nextRoute as never);
+          return;
+        }
+
+        router.replace(nextRoute as never);
       } catch (error) {
         showToast({
           message: parseAuthError(

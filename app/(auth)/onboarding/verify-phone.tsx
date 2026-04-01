@@ -1,7 +1,7 @@
+import { useMutation } from "@apollo/client/react";
 import React from "react";
 import { Platform } from "react-native";
-import { useMutation } from "@apollo/client/react";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   RequestPhoneOtpMutation,
@@ -13,20 +13,23 @@ import {
   REQUEST_PHONE_OTP_MUTATION,
   VERIFY_PHONE_OTP_MUTATION,
 } from "@/graphql";
+import { AuthBackButton } from "@/components/ui/AuthBackButton";
 import { Button } from "@/components/ui/Button";
-import { OnboardingProgress } from "@/components/ui/OnboardingProgress";
 import {
   InputOTP,
   InputOTPGroup,
+  InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/InputOtp";
 import { persistAuthTokens } from "@/lib/auth-cookies";
 import {
+  isInitialOnboardingRoute,
   parseAuthError,
   resolveAuthenticatedRoute,
 } from "@/lib/session";
-import { useUserStore } from "@/store/userStore";
+import { useAuthFlowStore } from "@/store/authFlowStore";
 import { useToastStore } from "@/store/toastStore";
+import { useUserStore } from "@/store/userStore";
 import {
   AuthContent,
   AuthFooter,
@@ -36,8 +39,6 @@ import {
   AuthScrollView,
   AuthSubtitle,
   AuthTitle,
-  BackButton,
-  BackButtonText,
   OtpEmailHighlight,
   OtpWrapper,
 } from "@/styles";
@@ -47,7 +48,8 @@ const OTP_LENGTH = 6;
 export default function OnboardingVerifyPhoneScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { phone } = useLocalSearchParams<{ phone?: string }>();
+  const phone = useAuthFlowStore((state) => state.pendingPhone);
+  const setPendingPhone = useAuthFlowStore((state) => state.setPendingPhone);
   const showToast = useToastStore((state) => state.showToast);
   const setUser = useUserStore((state) => state.setUser);
   const [otp, setOtp] = React.useState("");
@@ -61,6 +63,12 @@ export default function OnboardingVerifyPhoneScreen() {
     RequestPhoneOtpMutation,
     RequestPhoneOtpMutationVariables
   >(REQUEST_PHONE_OTP_MUTATION);
+
+  React.useEffect(() => {
+    if (!phone?.trim()) {
+      router.replace("/(auth)/onboarding/phone" as never);
+    }
+  }, [phone, router]);
 
   async function handleVerify() {
     if (!phone?.trim()) {
@@ -90,17 +98,26 @@ export default function OnboardingVerifyPhoneScreen() {
       });
 
       const payload = data?.verifyPhoneOtpAndAuthenticate;
-      if (!payload?.accessToken || !payload.refreshToken || !payload.user) {
+      if (!payload?.accessToken || !payload.refreshToken || !payload.user)
+      {
         throw new Error("Unable to create your mobile session.");
       }
 
       persistAuthTokens(payload.accessToken, payload.refreshToken);
       setUser(payload.user);
+      setPendingPhone(null);
       showToast({
         message: "Phone number verified successfully. Your mobile account is ready.",
         tone: "success",
       });
-      router.replace(resolveAuthenticatedRoute(payload.user) as never);
+
+      const nextRoute = resolveAuthenticatedRoute(payload.user);
+      if (isInitialOnboardingRoute(nextRoute)) {
+        router.push(nextRoute as never);
+        return;
+      }
+
+      router.replace(nextRoute as never);
     } catch (error) {
       showToast({
         message: parseAuthError(
@@ -132,8 +149,17 @@ export default function OnboardingVerifyPhoneScreen() {
         },
       });
 
+      const response = data?.requestPhoneOtp;
+      if (!response?.success) {
+        showToast({
+          message: response?.message ?? "Unable to resend the phone code right now.",
+          tone: "error",
+        });
+        return;
+      }
+
       showToast({
-        message: data?.requestPhoneOtp.message ?? "Code resent successfully.",
+        message: response.message ?? "Code resent successfully.",
         tone: "success",
       });
     } catch (error) {
@@ -141,7 +167,8 @@ export default function OnboardingVerifyPhoneScreen() {
         message: parseAuthError(error, "Unable to resend the phone code."),
         tone: "error",
       });
-    } finally {
+    } finally
+    {
       setResending(false);
     }
   }
@@ -152,6 +179,10 @@ export default function OnboardingVerifyPhoneScreen() {
     }
   }, [loading, otp]);
 
+  if (!phone?.trim()) {
+    return null;
+  }
+
   return (
     <AuthKeyboardAvoiding
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -161,11 +192,7 @@ export default function OnboardingVerifyPhoneScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <AuthContent>
-          <OnboardingProgress currentStep="verify-phone" />
-
-          <BackButton onPress={() => router.back()}>
-            <BackButtonText>Back</BackButtonText>
-          </BackButton>
+          <AuthBackButton fallbackHref="/(auth)/onboarding/phone" />
 
           <AuthHeader>
             <AuthTitle>Verify your phone</AuthTitle>
@@ -178,9 +205,18 @@ export default function OnboardingVerifyPhoneScreen() {
           <OtpWrapper>
             <InputOTP value={otp} onChange={setOtp} maxLength={OTP_LENGTH}>
               <InputOTPGroup>
-                {Array.from({ length: OTP_LENGTH }).map((_, index) => (
-                  <InputOTPSlot key={index} index={index} />
-                ))}
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+              </InputOTPGroup>
+              <InputOTPSeparator />
+              <InputOTPGroup>
+                <InputOTPSlot index={2} />
+                <InputOTPSlot index={3} />
+              </InputOTPGroup>
+              <InputOTPSeparator />
+              <InputOTPGroup>
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
               </InputOTPGroup>
             </InputOTP>
           </OtpWrapper>

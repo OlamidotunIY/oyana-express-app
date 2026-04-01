@@ -69,12 +69,27 @@ export const AuthFooterLink = styled.Text`
   font-weight: 500;
 `;
 
-export const BackButton = styled.TouchableOpacity`
+export const BackButton = styled.Pressable`
+  align-self: flex-start;
+  flex-direction: row;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm}px;
   margin-bottom: ${({ theme }) => theme.spacing.xxl}px;
+`;
+
+export const BackButtonIcon = styled.View`
+  width: 40px;
+  height: 40px;
+  border-radius: ${({ theme }) => theme.radii.full}px;
+  border-width: ${({ theme }) => theme.borderWidths.thin}px;
+  border-color: ${({ theme }) => theme.colors.border};
+  background-color: ${({ theme }) => theme.colors.muted};
+  align-items: center;
+  justify-content: center;
 `;
 
 export const BackButtonText = styled.Text`
   font-size: 15px;
-  color: ${({ theme }) => theme.colors.primary};
-  font-weight: 500;
+  color: ${({ theme }) => theme.colors.foreground};
+  font-weight: 600;
 `;

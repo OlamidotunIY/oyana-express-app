@@ -10,6 +10,7 @@ export const StyledInputOTP = styled.View`
 export const StyledInputOTPGroup = styled.View`
   flex-direction: row;
   align-items: center;
+  gap: ${({ theme }) => theme.spacing.xs}px;
 `;
 
 export const StyledInputOTPSlot = styled.View<{ active?: boolean }>`
@@ -31,11 +32,17 @@ export const StyledInputOTPSlotText = styled.Text`
 
 export const StyledInputOTPHiddenInput = styled(TextInput)`
   position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   opacity: 0;
+  color: transparent;
 `;
 
 export const StyledInputOTPSeparator = styled.View`
-  width: 12px;
-  height: 1px;
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
   background-color: ${({ theme }) => theme.colors.mutedForeground};
 `;
