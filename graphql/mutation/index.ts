@@ -4,4 +4,3 @@ export * from "./shipments";
 export * from "./dispatch";
 export * from "./marketplace";
 export * from "./wallet";
-export * from "./provider";

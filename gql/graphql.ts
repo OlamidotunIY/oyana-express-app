@@ -22,9 +22,22 @@ export type Scalars = {
   JSON: { input: any; output: any; }
 };
 
+export enum AccountRole {
+  Admin = 'ADMIN',
+  User = 'USER'
+}
+
 export type AddDisputeCommentDto = {
   disputeId: Scalars['String']['input'];
   message: Scalars['String']['input'];
+};
+
+export type AddDriverComplianceDocumentInput = {
+  documentType: DriverComplianceDocumentType;
+  mimeType?: InputMaybe<Scalars['String']['input']>;
+  notes?: InputMaybe<Scalars['String']['input']>;
+  storageBucket: Scalars['String']['input'];
+  storagePath: Scalars['String']['input'];
 };
 
 export type AddShipmentItemDto = {
@@ -183,6 +196,11 @@ export type AdminProviderOverview = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
+export enum AppMode {
+  Driver = 'DRIVER',
+  Shipper = 'SHIPPER'
+}
+
 export type ApproveRefundDto = {
   approved: Scalars['Boolean']['input'];
   refundId: Scalars['String']['input'];
@@ -247,7 +265,7 @@ export type CreateDispatchOfferDto = {
   batchId: Scalars['String']['input'];
   expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
   metadata?: InputMaybe<Scalars['JSON']['input']>;
-  providerEtaMinutes?: InputMaybe<Scalars['Float']['input']>;
+  providerEtaMinutes?: InputMaybe<Scalars['Int']['input']>;
   providerId: Scalars['String']['input'];
   shipmentId: Scalars['String']['input'];
   vehicleId?: InputMaybe<Scalars['String']['input']>;
@@ -259,6 +277,13 @@ export type CreateDisputeDto = {
   reason: Scalars['String']['input'];
   referenceId?: InputMaybe<Scalars['String']['input']>;
   shipmentId?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateDriverDocumentUploadUrlInput = {
+  documentType: DriverComplianceDocumentType;
+  fileName: Scalars['String']['input'];
+  mimeType?: InputMaybe<Scalars['String']['input']>;
+  sizeBytes?: InputMaybe<Scalars['BigInt']['input']>;
 };
 
 export type CreateInvoiceDto = {
@@ -398,7 +423,7 @@ export type DispatchOffer = {
   expiresAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
   metadata?: Maybe<Scalars['JSON']['output']>;
-  providerEtaMinutes?: Maybe<Scalars['Float']['output']>;
+  providerEtaMinutes?: Maybe<Scalars['Int']['output']>;
   providerId: Scalars['String']['output'];
   respondedAt?: Maybe<Scalars['DateTime']['output']>;
   sentAt?: Maybe<Scalars['DateTime']['output']>;
@@ -462,11 +487,126 @@ export enum DisputeStatus {
   Resolved = 'RESOLVED'
 }
 
+export enum DriverCapability {
+  Dispatch = 'DISPATCH',
+  Freight = 'FREIGHT'
+}
+
+export type DriverComplianceDocumentRecord = {
+  __typename?: 'DriverComplianceDocumentRecord';
+  id: Scalars['ID']['output'];
+  mimeType?: Maybe<Scalars['String']['output']>;
+  notes?: Maybe<Scalars['String']['output']>;
+  reviewedAt?: Maybe<Scalars['DateTime']['output']>;
+  status: Scalars['String']['output'];
+  storageBucket: Scalars['String']['output'];
+  storagePath: Scalars['String']['output'];
+  type: DriverComplianceDocumentType;
+  uploadedAt: Scalars['DateTime']['output'];
+};
+
+export enum DriverComplianceDocumentType {
+  DriverLicense = 'DRIVER_LICENSE',
+  IdentityDocument = 'IDENTITY_DOCUMENT',
+  Insurance = 'INSURANCE',
+  Nin = 'NIN',
+  ProofOfAddress = 'PROOF_OF_ADDRESS',
+  Selfie = 'SELFIE',
+  VehicleRegistration = 'VEHICLE_REGISTRATION'
+}
+
+export type DriverDocumentUploadUrl = {
+  __typename?: 'DriverDocumentUploadUrl';
+  expiresAt: Scalars['DateTime']['output'];
+  storageBucket: Scalars['String']['output'];
+  storagePath: Scalars['String']['output'];
+  uploadUrl: Scalars['String']['output'];
+};
+
+export enum DriverOnboardingStatus {
+  Approved = 'APPROVED',
+  Draft = 'DRAFT',
+  InReview = 'IN_REVIEW',
+  NotStarted = 'NOT_STARTED',
+  Rejected = 'REJECTED'
+}
+
+export type DriverOnboardingSubmissionRecord = {
+  __typename?: 'DriverOnboardingSubmissionRecord';
+  id: Scalars['ID']['output'];
+  rejectionReason?: Maybe<Scalars['String']['output']>;
+  reviewedAt?: Maybe<Scalars['DateTime']['output']>;
+  reviewerId?: Maybe<Scalars['String']['output']>;
+  snapshot?: Maybe<Scalars['JSON']['output']>;
+  status: DriverOnboardingStatus;
+  submittedAt: Scalars['DateTime']['output'];
+};
+
+export type DriverPresenceRecord = {
+  __typename?: 'DriverPresenceRecord';
+  accuracyMeters?: Maybe<Scalars['Float']['output']>;
+  heading?: Maybe<Scalars['Float']['output']>;
+  id: Scalars['ID']['output'];
+  isOnline: Scalars['Boolean']['output'];
+  lastHeartbeatAt?: Maybe<Scalars['DateTime']['output']>;
+  lat?: Maybe<Scalars['Float']['output']>;
+  lng?: Maybe<Scalars['Float']['output']>;
+  recordedAt?: Maybe<Scalars['DateTime']['output']>;
+  speedKph?: Maybe<Scalars['Float']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type DriverProfileRecord = {
+  __typename?: 'DriverProfileRecord';
+  approvedAt?: Maybe<Scalars['DateTime']['output']>;
+  canDispatch: Scalars['Boolean']['output'];
+  canFreight: Scalars['Boolean']['output'];
+  capabilities: Array<DriverCapability>;
+  complianceDocuments: Array<DriverComplianceDocumentRecord>;
+  createdAt: Scalars['DateTime']['output'];
+  dateOfBirth?: Maybe<Scalars['DateTime']['output']>;
+  driverType?: Maybe<DriverType>;
+  id: Scalars['ID']['output'];
+  identityNumber?: Maybe<Scalars['String']['output']>;
+  identityType?: Maybe<Scalars['String']['output']>;
+  insurancePolicyNumber?: Maybe<Scalars['String']['output']>;
+  legalFirstName?: Maybe<Scalars['String']['output']>;
+  legalLastName?: Maybe<Scalars['String']['output']>;
+  licenseExpiryAt?: Maybe<Scalars['DateTime']['output']>;
+  licenseNumber?: Maybe<Scalars['String']['output']>;
+  onboardingStatus: DriverOnboardingStatus;
+  presence?: Maybe<DriverPresenceRecord>;
+  providerId?: Maybe<Scalars['String']['output']>;
+  rejectionReason?: Maybe<Scalars['String']['output']>;
+  reviewedAt?: Maybe<Scalars['DateTime']['output']>;
+  selfieStorageBucket?: Maybe<Scalars['String']['output']>;
+  selfieStoragePath?: Maybe<Scalars['String']['output']>;
+  submissions: Array<DriverOnboardingSubmissionRecord>;
+  submittedAt?: Maybe<Scalars['DateTime']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+  vehicle?: Maybe<DriverVehicleRecord>;
+};
+
 export enum DriverType {
   Bike = 'BIKE',
   Truck = 'TRUCK',
   Van = 'VAN'
 }
+
+export type DriverVehicleRecord = {
+  __typename?: 'DriverVehicleRecord';
+  capacityKg?: Maybe<Scalars['Int']['output']>;
+  capacityVolumeCm3?: Maybe<Scalars['BigInt']['output']>;
+  category: VehicleCategory;
+  color?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  make?: Maybe<Scalars['String']['output']>;
+  model?: Maybe<Scalars['String']['output']>;
+  plateNumber?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+  vin?: Maybe<Scalars['String']['output']>;
+};
 
 export type FlagFraudCaseDto = {
   invoiceId?: InputMaybe<Scalars['String']['input']>;
@@ -603,6 +743,7 @@ export type MessageResponse = {
 export type Mutation = {
   __typename?: 'Mutation';
   addDisputeComment: DisputeEvent;
+  addDriverComplianceDocument: DriverProfileRecord;
   addShipmentItem: ShipmentItem;
   approveRefund: Refund;
   awardShipmentBid: ShipmentBidAward;
@@ -616,6 +757,7 @@ export type Mutation = {
   confirmWalletFunding: WalletFundingResult;
   createDispatchBatch: DispatchBatch;
   createDispute: DisputeCase;
+  createDriverDocumentUploadUrl: DriverDocumentUploadUrl;
   createInvoice: Invoice;
   createKycUploadUrl: KycUploadUrl;
   createProfileImageUploadUrl: ProfileImageUploadUrl;
@@ -631,28 +773,34 @@ export type Mutation = {
   flagFraudCase: FraudFlag;
   forgotPassword: MessageResponse;
   logout: MessageResponse;
+  markAllNotificationsRead: Scalars['Int']['output'];
   markEnRoutePickup: Shipment;
   markMarketplaceEnRoutePickup: Shipment;
+  markNotificationRead: NotificationInboxItem;
   refreshToken: AuthResponse;
   replySupportTicket: SupportTicketMessage;
-  requestOtp: MessageResponse;
   requestPhoneOtp: MessageResponse;
   resetPassword: MessageResponse;
   resolveDispute: DisputeCase;
   respondToDispatchOffer: DispatchOffer;
+  reviewDriverOnboarding: DriverProfileRecord;
+  saveDriverIdentityInfo: DriverProfileRecord;
+  saveDriverPersonalInfo: DriverProfileRecord;
+  saveDriverVehicle: DriverProfileRecord;
   sendDispatchOffer: DispatchOffer;
   setActiveUserAddress: UserAddress;
   setProfileImage: Profile;
   setProviderAvailability: Profile;
   signIn: AuthResponse;
   signInWithGoogle: AuthResponse;
-  signUpDriver: MessageResponse;
-  signUpShipper: MessageResponse;
   startNinFaceVerification: ProviderKycCheck;
   startPhoneVerification: ProviderKycCheck;
   startVehiclePlateVerification: ProviderKycCheck;
   startVehicleVinVerification: ProviderKycCheck;
+  submitDriverOnboarding: DriverProfileRecord;
+  switchAppMode: Profile;
   syncKycStatus: Array<ProviderKycCheck>;
+  updateDriverPresence: DriverPresenceRecord;
   updateFraudFlagStatus: FraudFlag;
   updateInvoiceStatus: Invoice;
   updateNotificationSettings: NotificationSettings;
@@ -664,14 +812,18 @@ export type Mutation = {
   updateSlaRule: SlaRule;
   updateSupportTicketStatus: SupportTicket;
   upsertPushDevice: PushDevice;
-  verifyOtp: AuthResponse;
-  verifyPhoneOtp: MessageResponse;
+  verifyPhoneOtpAndAuthenticate: AuthResponse;
   withdrawBid: ShipmentBid;
 };
 
 
 export type MutationAddDisputeCommentArgs = {
   input: AddDisputeCommentDto;
+};
+
+
+export type MutationAddDriverComplianceDocumentArgs = {
+  input: AddDriverComplianceDocumentInput;
 };
 
 
@@ -737,6 +889,11 @@ export type MutationCreateDispatchBatchArgs = {
 
 export type MutationCreateDisputeArgs = {
   input: CreateDisputeDto;
+};
+
+
+export type MutationCreateDriverDocumentUploadUrlArgs = {
+  input: CreateDriverDocumentUploadUrlInput;
 };
 
 
@@ -820,6 +977,11 @@ export type MutationMarkMarketplaceEnRoutePickupArgs = {
 };
 
 
+export type MutationMarkNotificationReadArgs = {
+  notificationId: Scalars['String']['input'];
+};
+
+
 export type MutationRefreshTokenArgs = {
   refreshToken?: InputMaybe<Scalars['String']['input']>;
 };
@@ -827,11 +989,6 @@ export type MutationRefreshTokenArgs = {
 
 export type MutationReplySupportTicketArgs = {
   input: ReplySupportTicketDto;
-};
-
-
-export type MutationRequestOtpArgs = {
-  input: RequestOtpInput;
 };
 
 
@@ -852,6 +1009,26 @@ export type MutationResolveDisputeArgs = {
 
 export type MutationRespondToDispatchOfferArgs = {
   input: UpdateDispatchOfferDto;
+};
+
+
+export type MutationReviewDriverOnboardingArgs = {
+  input: ReviewDriverOnboardingInput;
+};
+
+
+export type MutationSaveDriverIdentityInfoArgs = {
+  input: SaveDriverIdentityInfoInput;
+};
+
+
+export type MutationSaveDriverPersonalInfoArgs = {
+  input: SaveDriverPersonalInfoInput;
+};
+
+
+export type MutationSaveDriverVehicleArgs = {
+  input: SaveDriverVehicleInput;
 };
 
 
@@ -885,16 +1062,6 @@ export type MutationSignInWithGoogleArgs = {
 };
 
 
-export type MutationSignUpDriverArgs = {
-  input: SignUpDriverInput;
-};
-
-
-export type MutationSignUpShipperArgs = {
-  input: SignUpShipperInput;
-};
-
-
 export type MutationStartNinFaceVerificationArgs = {
   input: StartNinFaceVerificationDto;
 };
@@ -915,8 +1082,23 @@ export type MutationStartVehicleVinVerificationArgs = {
 };
 
 
+export type MutationSubmitDriverOnboardingArgs = {
+  input: SubmitDriverOnboardingInput;
+};
+
+
+export type MutationSwitchAppModeArgs = {
+  input: SwitchAppModeInput;
+};
+
+
 export type MutationSyncKycStatusArgs = {
   input: SyncKycStatusDto;
+};
+
+
+export type MutationUpdateDriverPresenceArgs = {
+  input: UpdateDriverPresenceInput;
 };
 
 
@@ -978,13 +1160,8 @@ export type MutationUpsertPushDeviceArgs = {
 };
 
 
-export type MutationVerifyOtpArgs = {
-  input: VerifyOtpInput;
-};
-
-
-export type MutationVerifyPhoneOtpArgs = {
-  input: VerifyPhoneOtpInput;
+export type MutationVerifyPhoneOtpAndAuthenticateArgs = {
+  input: VerifyPhoneOtpAndAuthenticateInput;
 };
 
 
@@ -1003,6 +1180,28 @@ export enum NotificationAudience {
   Customer = 'CUSTOMER',
   Provider = 'PROVIDER'
 }
+
+export enum NotificationCategory {
+  Dispatch = 'DISPATCH',
+  Dispute = 'DISPUTE',
+  Shipment = 'SHIPMENT',
+  Support = 'SUPPORT',
+  System = 'SYSTEM'
+}
+
+export type NotificationInboxItem = {
+  __typename?: 'NotificationInboxItem';
+  body: Scalars['String']['output'];
+  category: NotificationCategory;
+  createdAt: Scalars['DateTime']['output'];
+  entityId?: Maybe<Scalars['String']['output']>;
+  entityType?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  isRead: Scalars['Boolean']['output'];
+  metadata?: Maybe<Scalars['JSON']['output']>;
+  readAt?: Maybe<Scalars['DateTime']['output']>;
+  title: Scalars['String']['output'];
+};
 
 export type NotificationSettings = {
   __typename?: 'NotificationSettings';
@@ -1076,12 +1275,18 @@ export enum PreferredLanguage {
 
 export type Profile = {
   __typename?: 'Profile';
+  accountRole: AccountRole;
   activeAddressId?: Maybe<Scalars['String']['output']>;
+  availableModes: Array<AppMode>;
   businessName?: Maybe<Scalars['String']['output']>;
   city?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
+  currentMode: AppMode;
+  driverCapabilities: Array<DriverCapability>;
+  driverOnboardingStatus: DriverOnboardingStatus;
+  driverProfileId?: Maybe<Scalars['String']['output']>;
   driverType?: Maybe<DriverType>;
-  email: Scalars['String']['output'];
+  email?: Maybe<Scalars['String']['output']>;
   emailVerified: Scalars['Boolean']['output'];
   emailVerifiedAt?: Maybe<Scalars['DateTime']['output']>;
   firstName?: Maybe<Scalars['String']['output']>;
@@ -1108,7 +1313,11 @@ export type Profile = {
   role?: Maybe<UserRole>;
   state?: Maybe<State>;
   status: ProfileStatus;
+  unreadNotificationCount: Scalars['Int']['output'];
   updatedAt: Scalars['DateTime']['output'];
+  walletBalanceMinor?: Maybe<Scalars['BigInt']['output']>;
+  walletCurrency?: Maybe<Scalars['String']['output']>;
+  walletEscrowMinor?: Maybe<Scalars['BigInt']['output']>;
 };
 
 export type ProfileImageUploadUrl = {
@@ -1267,10 +1476,12 @@ export type Query = {
   myBids: Array<ShipmentBid>;
   myDispatchOffers: Array<DispatchOffer>;
   myDisputes: Array<DisputeCase>;
+  myDriverProfile?: Maybe<DriverProfileRecord>;
   myFreightRequests: Array<Shipment>;
   myInvoices: Array<Invoice>;
   myKycChecks: Array<ProviderKycCheck>;
   myKycStatus?: Maybe<ProviderKycStatus>;
+  myNotificationInbox: Array<NotificationInboxItem>;
   myNotificationSettings: NotificationSettings;
   mySavedFundingCards: Array<WalletCardMethod>;
   mySavedWithdrawalAccounts: Array<WalletSavedBankAccount>;
@@ -1337,6 +1548,11 @@ export type QueryMarketplaceShipmentsArgs = {
 
 export type QueryMyKycChecksArgs = {
   filter?: InputMaybe<MyKycChecksFilterDto>;
+};
+
+
+export type QueryMyNotificationInboxArgs = {
+  take?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -1417,11 +1633,6 @@ export type ReplySupportTicketDto = {
   ticketId: Scalars['String']['input'];
 };
 
-export type RequestOtpInput = {
-  email: Scalars['String']['input'];
-  mode: Scalars['String']['input'];
-};
-
 export type RequestPhoneOtpInput = {
   phoneE164: Scalars['String']['input'];
 };
@@ -1449,6 +1660,12 @@ export type ResolvedAddress = {
   placeId?: Maybe<Scalars['String']['output']>;
   postalCode?: Maybe<Scalars['String']['output']>;
   stateOrProvince?: Maybe<Scalars['String']['output']>;
+};
+
+export type ReviewDriverOnboardingInput = {
+  driverProfileId: Scalars['String']['input'];
+  rejectionReason?: InputMaybe<Scalars['String']['input']>;
+  status: DriverOnboardingStatus;
 };
 
 export type Role = {
@@ -1479,6 +1696,34 @@ export type SlaRule = {
   scope: SlaRuleScope;
   value: Scalars['JSON']['output'];
   vehicleCategory?: Maybe<Scalars['String']['output']>;
+};
+
+export type SaveDriverIdentityInfoInput = {
+  identityNumber: Scalars['String']['input'];
+  identityType: Scalars['String']['input'];
+  insurancePolicyNumber?: InputMaybe<Scalars['String']['input']>;
+  licenseExpiryAt: Scalars['String']['input'];
+  licenseNumber: Scalars['String']['input'];
+};
+
+export type SaveDriverPersonalInfoInput = {
+  dateOfBirth: Scalars['String']['input'];
+  driverType: DriverType;
+  legalFirstName: Scalars['String']['input'];
+  legalLastName: Scalars['String']['input'];
+  selfieStorageBucket?: InputMaybe<Scalars['String']['input']>;
+  selfieStoragePath?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SaveDriverVehicleInput = {
+  capacityKg: Scalars['Int']['input'];
+  capacityVolumeCm3?: InputMaybe<Scalars['BigInt']['input']>;
+  category: VehicleCategory;
+  color?: InputMaybe<Scalars['String']['input']>;
+  make?: InputMaybe<Scalars['String']['input']>;
+  model?: InputMaybe<Scalars['String']['input']>;
+  plateNumber: Scalars['String']['input'];
+  vin?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type SearchAddressInput = {
@@ -1722,16 +1967,6 @@ export type SignInWithGoogleInput = {
   idToken: Scalars['String']['input'];
 };
 
-export type SignUpDriverInput = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-};
-
-export type SignUpShipperInput = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-};
-
 export enum SlaRuleScope {
   Global = 'GLOBAL',
   Provider = 'PROVIDER',
@@ -1804,6 +2039,10 @@ export enum State {
   Zamfara = 'ZAMFARA'
 }
 
+export type SubmitDriverOnboardingInput = {
+  activateDriverMode?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   dispatchOfferSent: DispatchOffer;
@@ -1852,6 +2091,10 @@ export enum SupportTicketStatus {
   Resolved = 'RESOLVED'
 }
 
+export type SwitchAppModeInput = {
+  mode: AppMode;
+};
+
 export type SyncKycStatusDto = {
   checkId?: InputMaybe<Scalars['String']['input']>;
   providerId?: InputMaybe<Scalars['String']['input']>;
@@ -1899,9 +2142,19 @@ export enum TransactionType {
 
 export type UpdateDispatchOfferDto = {
   offerId: Scalars['String']['input'];
-  providerEtaMinutes?: InputMaybe<Scalars['Float']['input']>;
+  providerEtaMinutes?: InputMaybe<Scalars['Int']['input']>;
   respondedAt?: InputMaybe<Scalars['DateTime']['input']>;
   status: DispatchOfferStatus;
+};
+
+export type UpdateDriverPresenceInput = {
+  accuracyMeters?: InputMaybe<Scalars['Float']['input']>;
+  heading?: InputMaybe<Scalars['Float']['input']>;
+  isOnline: Scalars['Boolean']['input'];
+  lat?: InputMaybe<Scalars['Float']['input']>;
+  lng?: InputMaybe<Scalars['Float']['input']>;
+  recordedAt?: InputMaybe<Scalars['String']['input']>;
+  speedKph?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type UpdateFraudFlagStatusDto = {
@@ -1948,7 +2201,7 @@ export type UpdateShipmentDto = {
   cancelledAt?: InputMaybe<Scalars['DateTime']['input']>;
   cancelledByProfileId?: InputMaybe<Scalars['String']['input']>;
   commissionAmountMinor?: InputMaybe<Scalars['BigInt']['input']>;
-  commissionRateBps?: InputMaybe<Scalars['Float']['input']>;
+  commissionRateBps?: InputMaybe<Scalars['Int']['input']>;
   customerProfileId?: InputMaybe<Scalars['String']['input']>;
   dropoffAddressId?: InputMaybe<Scalars['String']['input']>;
   finalPriceMinor?: InputMaybe<Scalars['BigInt']['input']>;
@@ -2045,12 +2298,7 @@ export enum VehicleStatus {
   Maintenance = 'MAINTENANCE'
 }
 
-export type VerifyOtpInput = {
-  email: Scalars['String']['input'];
-  token: Scalars['String']['input'];
-};
-
-export type VerifyPhoneOtpInput = {
+export type VerifyPhoneOtpAndAuthenticateInput = {
   phoneE164: Scalars['String']['input'];
   token: Scalars['String']['input'];
 };
@@ -2188,26 +2436,12 @@ export type WalletWithdrawal = {
   walletAccountId: Scalars['String']['output'];
 };
 
-export type ForgotPasswordMutationVariables = Exact<{
-  input: ForgotPasswordInput;
-}>;
-
-
-export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: { __typename?: 'MessageResponse', message: string, success: boolean } };
-
 export type RefreshTokenMutationVariables = Exact<{
   refreshToken: Scalars['String']['input'];
 }>;
 
 
-export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string, user: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, profileImageUrl?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } } };
-
-export type RequestOtpMutationVariables = Exact<{
-  input: RequestOtpInput;
-}>;
-
-
-export type RequestOtpMutation = { __typename?: 'Mutation', requestOtp: { __typename?: 'MessageResponse', message: string, success: boolean } };
+export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string, user: { __typename?: 'Profile', id: string, email?: string | null, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, accountRole: AccountRole, availableModes: Array<AppMode>, currentMode: AppMode, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, profileImageUrl?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, driverProfileId?: string | null, driverOnboardingStatus: DriverOnboardingStatus, driverCapabilities: Array<DriverCapability>, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, walletBalanceMinor?: any | null, walletEscrowMinor?: any | null, walletCurrency?: string | null, unreadNotificationCount: number, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } } };
 
 export type RequestPhoneOtpMutationVariables = Exact<{
   input: RequestPhoneOtpInput;
@@ -2216,47 +2450,26 @@ export type RequestPhoneOtpMutationVariables = Exact<{
 
 export type RequestPhoneOtpMutation = { __typename?: 'Mutation', requestPhoneOtp: { __typename?: 'MessageResponse', message: string, success: boolean } };
 
-export type ResetPasswordMutationVariables = Exact<{
-  input: ResetPasswordInput;
-}>;
-
-
-export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: { __typename?: 'MessageResponse', message: string, success: boolean } };
-
 export type SignInWithGoogleMutationVariables = Exact<{
   input: SignInWithGoogleInput;
 }>;
 
 
-export type SignInWithGoogleMutation = { __typename?: 'Mutation', signInWithGoogle: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string, user: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, profileImageUrl?: string | null, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } } };
+export type SignInWithGoogleMutation = { __typename?: 'Mutation', signInWithGoogle: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string, user: { __typename?: 'Profile', id: string, email?: string | null, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, accountRole: AccountRole, availableModes: Array<AppMode>, currentMode: AppMode, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, driverProfileId?: string | null, driverOnboardingStatus: DriverOnboardingStatus, driverCapabilities: Array<DriverCapability>, onboardingStep: OnboardingStep, onboardingCompleted: boolean, profileImageUrl?: string | null, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, walletBalanceMinor?: any | null, walletEscrowMinor?: any | null, walletCurrency?: string | null, unreadNotificationCount: number, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } } };
 
 export type SignInMutationVariables = Exact<{
   input: SignInInput;
 }>;
 
 
-export type SignInMutation = { __typename?: 'Mutation', signIn: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string, user: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, profileImageUrl?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } } };
+export type SignInMutation = { __typename?: 'Mutation', signIn: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string, user: { __typename?: 'Profile', id: string, email?: string | null, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, profileImageUrl?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } } };
 
-export type SignUpDriverMutationVariables = Exact<{
-  input: SignUpDriverInput;
+export type VerifyPhoneOtpAndAuthenticateMutationVariables = Exact<{
+  input: VerifyPhoneOtpAndAuthenticateInput;
 }>;
 
 
-export type SignUpDriverMutation = { __typename?: 'Mutation', signUpDriver: { __typename?: 'MessageResponse', message: string, success: boolean } };
-
-export type VerifyOtpMutationVariables = Exact<{
-  input: VerifyOtpInput;
-}>;
-
-
-export type VerifyOtpMutation = { __typename?: 'Mutation', verifyOtp: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string, user: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, profileImageUrl?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } } };
-
-export type VerifyPhoneOtpMutationVariables = Exact<{
-  input: VerifyPhoneOtpInput;
-}>;
-
-
-export type VerifyPhoneOtpMutation = { __typename?: 'Mutation', verifyPhoneOtp: { __typename?: 'MessageResponse', message: string, success: boolean } };
+export type VerifyPhoneOtpAndAuthenticateMutation = { __typename?: 'Mutation', verifyPhoneOtpAndAuthenticate: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string, user: { __typename?: 'Profile', id: string, email?: string | null, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, accountRole: AccountRole, availableModes: Array<AppMode>, currentMode: AppMode, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, profileImageUrl?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, driverProfileId?: string | null, driverOnboardingStatus: DriverOnboardingStatus, driverCapabilities: Array<DriverCapability>, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, walletBalanceMinor?: any | null, walletEscrowMinor?: any | null, walletCurrency?: string | null, unreadNotificationCount: number, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } } };
 
 export type ConfirmDropoffMutationVariables = Exact<{
   shipmentId: Scalars['String']['input'];
@@ -2321,55 +2534,6 @@ export type WithdrawBidMutationVariables = Exact<{
 
 export type WithdrawBidMutation = { __typename?: 'Mutation', withdrawBid: { __typename?: 'ShipmentBid', id: string, shipmentId: string, providerId: string, amountMinor: any, currency: string, message?: string | null, status: BidStatus, createdAt: any, updatedAt: any } };
 
-export type CreateKycUploadUrlMutationVariables = Exact<{
-  input: CreateKycUploadUrlDto;
-}>;
-
-
-export type CreateKycUploadUrlMutation = { __typename?: 'Mutation', createKycUploadUrl: { __typename?: 'KycUploadUrl', mediaId: string, storageBucket: string, storagePath: string, uploadUrl: string, expiresAt: any } };
-
-export type CreateVehicleMutationVariables = Exact<{
-  input: CreateVehicleDto;
-}>;
-
-
-export type CreateVehicleMutation = { __typename?: 'Mutation', createVehicle: { __typename?: 'Vehicle', id: string, providerId: string, category: VehicleCategory, plateNumber?: string | null, vin?: string | null, make?: string | null, model?: string | null, color?: string | null, capacityKg?: number | null, capacityVolumeCm3?: any | null, plateVerificationStatus?: string | null, vinVerificationStatus?: string | null, lastVerificationAt?: any | null, verificationFailureReason?: string | null, status: VehicleStatus, createdAt: any, updatedAt: any } };
-
-export type StartNinFaceVerificationMutationVariables = Exact<{
-  input: StartNinFaceVerificationDto;
-}>;
-
-
-export type StartNinFaceVerificationMutation = { __typename?: 'Mutation', startNinFaceVerification: { __typename?: 'ProviderKycCheck', id: string, checkType: string, status: string, vendor: string, vendorReference?: string | null, responseCode?: string | null, confidence?: number | null, message?: string | null, maskedIdentifier?: string | null, createdAt: any, verifiedAt?: any | null, failedAt?: any | null } };
-
-export type StartPhoneVerificationMutationVariables = Exact<{
-  input: StartPhoneVerificationDto;
-}>;
-
-
-export type StartPhoneVerificationMutation = { __typename?: 'Mutation', startPhoneVerification: { __typename?: 'ProviderKycCheck', id: string, checkType: string, status: string, vendorReference?: string | null, responseCode?: string | null, message?: string | null, maskedIdentifier?: string | null, createdAt: any, verifiedAt?: any | null, failedAt?: any | null } };
-
-export type StartVehiclePlateVerificationMutationVariables = Exact<{
-  input: StartVehiclePlateVerificationDto;
-}>;
-
-
-export type StartVehiclePlateVerificationMutation = { __typename?: 'Mutation', startVehiclePlateVerification: { __typename?: 'ProviderKycCheck', id: string, checkType: string, status: string, vendorReference?: string | null, responseCode?: string | null, message?: string | null, maskedIdentifier?: string | null, createdAt: any, verifiedAt?: any | null, failedAt?: any | null } };
-
-export type StartVehicleVinVerificationMutationVariables = Exact<{
-  input: StartVehicleVinVerificationDto;
-}>;
-
-
-export type StartVehicleVinVerificationMutation = { __typename?: 'Mutation', startVehicleVinVerification: { __typename?: 'ProviderKycCheck', id: string, checkType: string, status: string, vendorReference?: string | null, responseCode?: string | null, message?: string | null, maskedIdentifier?: string | null, createdAt: any, verifiedAt?: any | null, failedAt?: any | null } };
-
-export type SyncKycStatusMutationVariables = Exact<{
-  input: SyncKycStatusDto;
-}>;
-
-
-export type SyncKycStatusMutation = { __typename?: 'Mutation', syncKycStatus: Array<{ __typename?: 'ProviderKycCheck', id: string, checkType: string, status: string, vendorReference?: string | null, responseCode?: string | null, message?: string | null, maskedIdentifier?: string | null, createdAt: any, verifiedAt?: any | null, failedAt?: any | null }> };
-
 export type AddShipmentItemMutationVariables = Exact<{
   input: AddShipmentItemDto;
 }>;
@@ -2413,12 +2577,19 @@ export type UpdateShipmentMutationVariables = Exact<{
 
 export type UpdateShipmentMutation = { __typename?: 'Mutation', updateShipment: { __typename?: 'Shipment', id: string, trackingCode: string, customerProfileId: string, mode: ShipmentMode, vehicleCategory: VehicleCategory, scheduleType: ShipmentScheduleType, status: ShipmentStatus, pickupAddressId: string, dropoffAddressId: string, scheduledAt?: any | null, packageDescription?: string | null, packageValueMinor?: any | null, specialInstructions?: string | null, requiresEscrow: boolean, pricingCurrency: string, quotedPriceMinor?: any | null, finalPriceMinor?: any | null, commissionRateBps: number, commissionAmountMinor: any, createdAt: any, updatedAt: any, cancelledAt?: any | null, cancelledByProfileId?: string | null, cancellationReason?: string | null } };
 
-export type CompleteDriverRegistrationMutationVariables = Exact<{
-  input: CompleteDriverRegistrationInput;
+export type AddDriverComplianceDocumentMutationVariables = Exact<{
+  input: AddDriverComplianceDocumentInput;
 }>;
 
 
-export type CompleteDriverRegistrationMutation = { __typename?: 'Mutation', completeDriverRegistration: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, profileImageUrl?: string | null, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } };
+export type AddDriverComplianceDocumentMutation = { __typename?: 'Mutation', addDriverComplianceDocument: { __typename?: 'DriverProfileRecord', id: string, onboardingStatus: DriverOnboardingStatus, driverType?: DriverType | null, legalFirstName?: string | null, legalLastName?: string | null, dateOfBirth?: any | null, selfieStorageBucket?: string | null, selfieStoragePath?: string | null, licenseNumber?: string | null, licenseExpiryAt?: any | null, identityType?: string | null, identityNumber?: string | null, insurancePolicyNumber?: string | null, rejectionReason?: string | null, capabilities: Array<DriverCapability>, canDispatch: boolean, canFreight: boolean, submittedAt?: any | null, reviewedAt?: any | null, approvedAt?: any | null, createdAt: any, updatedAt: any, vehicle?: { __typename?: 'DriverVehicleRecord', id: string, category: VehicleCategory, plateNumber?: string | null, vin?: string | null, make?: string | null, model?: string | null, color?: string | null, capacityKg?: number | null, capacityVolumeCm3?: any | null, createdAt: any, updatedAt: any } | null, complianceDocuments: Array<{ __typename?: 'DriverComplianceDocumentRecord', id: string, type: DriverComplianceDocumentType, status: string, storageBucket: string, storagePath: string, mimeType?: string | null, notes?: string | null, uploadedAt: any, reviewedAt?: any | null }>, submissions: Array<{ __typename?: 'DriverOnboardingSubmissionRecord', id: string, status: DriverOnboardingStatus, rejectionReason?: string | null, reviewerId?: string | null, snapshot?: any | null, submittedAt: any, reviewedAt?: any | null }>, presence?: { __typename?: 'DriverPresenceRecord', id: string, isOnline: boolean, lat?: number | null, lng?: number | null, accuracyMeters?: number | null, heading?: number | null, speedKph?: number | null, recordedAt?: any | null, lastHeartbeatAt?: any | null, updatedAt: any } | null } };
+
+export type CreateDriverDocumentUploadUrlMutationVariables = Exact<{
+  input: CreateDriverDocumentUploadUrlInput;
+}>;
+
+
+export type CreateDriverDocumentUploadUrlMutation = { __typename?: 'Mutation', createDriverDocumentUploadUrl: { __typename?: 'DriverDocumentUploadUrl', storageBucket: string, storagePath: string, uploadUrl: string, expiresAt: any } };
 
 export type CreateProfileImageUploadUrlMutationVariables = Exact<{
   input: CreateProfileImageUploadUrlInput;
@@ -2427,19 +2598,66 @@ export type CreateProfileImageUploadUrlMutationVariables = Exact<{
 
 export type CreateProfileImageUploadUrlMutation = { __typename?: 'Mutation', createProfileImageUploadUrl: { __typename?: 'ProfileImageUploadUrl', storageBucket: string, storagePath: string, uploadUrl: string, expiresAt: any } };
 
+export type MarkAllNotificationsReadMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MarkAllNotificationsReadMutation = { __typename?: 'Mutation', markAllNotificationsRead: number };
+
+export type MarkNotificationReadMutationVariables = Exact<{
+  notificationId: Scalars['String']['input'];
+}>;
+
+
+export type MarkNotificationReadMutation = { __typename?: 'Mutation', markNotificationRead: { __typename?: 'NotificationInboxItem', id: string, category: NotificationCategory, title: string, body: string, entityType?: string | null, entityId?: string | null, metadata?: any | null, isRead: boolean, readAt?: any | null, createdAt: any } };
+
+export type SaveDriverIdentityInfoMutationVariables = Exact<{
+  input: SaveDriverIdentityInfoInput;
+}>;
+
+
+export type SaveDriverIdentityInfoMutation = { __typename?: 'Mutation', saveDriverIdentityInfo: { __typename?: 'DriverProfileRecord', id: string, onboardingStatus: DriverOnboardingStatus, driverType?: DriverType | null, legalFirstName?: string | null, legalLastName?: string | null, dateOfBirth?: any | null, selfieStorageBucket?: string | null, selfieStoragePath?: string | null, licenseNumber?: string | null, licenseExpiryAt?: any | null, identityType?: string | null, identityNumber?: string | null, insurancePolicyNumber?: string | null, rejectionReason?: string | null, capabilities: Array<DriverCapability>, canDispatch: boolean, canFreight: boolean, submittedAt?: any | null, reviewedAt?: any | null, approvedAt?: any | null, createdAt: any, updatedAt: any, vehicle?: { __typename?: 'DriverVehicleRecord', id: string, category: VehicleCategory, plateNumber?: string | null, vin?: string | null, make?: string | null, model?: string | null, color?: string | null, capacityKg?: number | null, capacityVolumeCm3?: any | null, createdAt: any, updatedAt: any } | null, complianceDocuments: Array<{ __typename?: 'DriverComplianceDocumentRecord', id: string, type: DriverComplianceDocumentType, status: string, storageBucket: string, storagePath: string, mimeType?: string | null, notes?: string | null, uploadedAt: any, reviewedAt?: any | null }>, submissions: Array<{ __typename?: 'DriverOnboardingSubmissionRecord', id: string, status: DriverOnboardingStatus, rejectionReason?: string | null, reviewerId?: string | null, snapshot?: any | null, submittedAt: any, reviewedAt?: any | null }>, presence?: { __typename?: 'DriverPresenceRecord', id: string, isOnline: boolean, lat?: number | null, lng?: number | null, accuracyMeters?: number | null, heading?: number | null, speedKph?: number | null, recordedAt?: any | null, lastHeartbeatAt?: any | null, updatedAt: any } | null } };
+
+export type SaveDriverPersonalInfoMutationVariables = Exact<{
+  input: SaveDriverPersonalInfoInput;
+}>;
+
+
+export type SaveDriverPersonalInfoMutation = { __typename?: 'Mutation', saveDriverPersonalInfo: { __typename?: 'DriverProfileRecord', id: string, onboardingStatus: DriverOnboardingStatus, driverType?: DriverType | null, legalFirstName?: string | null, legalLastName?: string | null, dateOfBirth?: any | null, selfieStorageBucket?: string | null, selfieStoragePath?: string | null, licenseNumber?: string | null, licenseExpiryAt?: any | null, identityType?: string | null, identityNumber?: string | null, insurancePolicyNumber?: string | null, rejectionReason?: string | null, capabilities: Array<DriverCapability>, canDispatch: boolean, canFreight: boolean, submittedAt?: any | null, reviewedAt?: any | null, approvedAt?: any | null, createdAt: any, updatedAt: any, vehicle?: { __typename?: 'DriverVehicleRecord', id: string, category: VehicleCategory, plateNumber?: string | null, vin?: string | null, make?: string | null, model?: string | null, color?: string | null, capacityKg?: number | null, capacityVolumeCm3?: any | null, createdAt: any, updatedAt: any } | null, complianceDocuments: Array<{ __typename?: 'DriverComplianceDocumentRecord', id: string, type: DriverComplianceDocumentType, status: string, storageBucket: string, storagePath: string, mimeType?: string | null, notes?: string | null, uploadedAt: any, reviewedAt?: any | null }>, submissions: Array<{ __typename?: 'DriverOnboardingSubmissionRecord', id: string, status: DriverOnboardingStatus, rejectionReason?: string | null, reviewerId?: string | null, snapshot?: any | null, submittedAt: any, reviewedAt?: any | null }>, presence?: { __typename?: 'DriverPresenceRecord', id: string, isOnline: boolean, lat?: number | null, lng?: number | null, accuracyMeters?: number | null, heading?: number | null, speedKph?: number | null, recordedAt?: any | null, lastHeartbeatAt?: any | null, updatedAt: any } | null } };
+
+export type SaveDriverVehicleMutationVariables = Exact<{
+  input: SaveDriverVehicleInput;
+}>;
+
+
+export type SaveDriverVehicleMutation = { __typename?: 'Mutation', saveDriverVehicle: { __typename?: 'DriverProfileRecord', id: string, onboardingStatus: DriverOnboardingStatus, driverType?: DriverType | null, legalFirstName?: string | null, legalLastName?: string | null, dateOfBirth?: any | null, selfieStorageBucket?: string | null, selfieStoragePath?: string | null, licenseNumber?: string | null, licenseExpiryAt?: any | null, identityType?: string | null, identityNumber?: string | null, insurancePolicyNumber?: string | null, rejectionReason?: string | null, capabilities: Array<DriverCapability>, canDispatch: boolean, canFreight: boolean, submittedAt?: any | null, reviewedAt?: any | null, approvedAt?: any | null, createdAt: any, updatedAt: any, vehicle?: { __typename?: 'DriverVehicleRecord', id: string, category: VehicleCategory, plateNumber?: string | null, vin?: string | null, make?: string | null, model?: string | null, color?: string | null, capacityKg?: number | null, capacityVolumeCm3?: any | null, createdAt: any, updatedAt: any } | null, complianceDocuments: Array<{ __typename?: 'DriverComplianceDocumentRecord', id: string, type: DriverComplianceDocumentType, status: string, storageBucket: string, storagePath: string, mimeType?: string | null, notes?: string | null, uploadedAt: any, reviewedAt?: any | null }>, submissions: Array<{ __typename?: 'DriverOnboardingSubmissionRecord', id: string, status: DriverOnboardingStatus, rejectionReason?: string | null, reviewerId?: string | null, snapshot?: any | null, submittedAt: any, reviewedAt?: any | null }>, presence?: { __typename?: 'DriverPresenceRecord', id: string, isOnline: boolean, lat?: number | null, lng?: number | null, accuracyMeters?: number | null, heading?: number | null, speedKph?: number | null, recordedAt?: any | null, lastHeartbeatAt?: any | null, updatedAt: any } | null } };
+
 export type SetProfileImageMutationVariables = Exact<{
   input: SetProfileImageInput;
 }>;
 
 
-export type SetProfileImageMutation = { __typename?: 'Mutation', setProfileImage: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, profileImageUrl?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } };
+export type SetProfileImageMutation = { __typename?: 'Mutation', setProfileImage: { __typename?: 'Profile', id: string, email?: string | null, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, accountRole: AccountRole, availableModes: Array<AppMode>, currentMode: AppMode, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, profileImageUrl?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, driverProfileId?: string | null, driverOnboardingStatus: DriverOnboardingStatus, driverCapabilities: Array<DriverCapability>, walletBalanceMinor?: any | null, walletEscrowMinor?: any | null, walletCurrency?: string | null, unreadNotificationCount: number, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } };
 
-export type SetProviderAvailabilityMutationVariables = Exact<{
-  input: SetProviderAvailabilityInput;
+export type SubmitDriverOnboardingMutationVariables = Exact<{
+  input: SubmitDriverOnboardingInput;
 }>;
 
 
-export type SetProviderAvailabilityMutation = { __typename?: 'Mutation', setProviderAvailability: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, profileImageUrl?: string | null, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } };
+export type SubmitDriverOnboardingMutation = { __typename?: 'Mutation', submitDriverOnboarding: { __typename?: 'DriverProfileRecord', id: string, onboardingStatus: DriverOnboardingStatus, driverType?: DriverType | null, legalFirstName?: string | null, legalLastName?: string | null, dateOfBirth?: any | null, selfieStorageBucket?: string | null, selfieStoragePath?: string | null, licenseNumber?: string | null, licenseExpiryAt?: any | null, identityType?: string | null, identityNumber?: string | null, insurancePolicyNumber?: string | null, rejectionReason?: string | null, capabilities: Array<DriverCapability>, canDispatch: boolean, canFreight: boolean, submittedAt?: any | null, reviewedAt?: any | null, approvedAt?: any | null, createdAt: any, updatedAt: any, vehicle?: { __typename?: 'DriverVehicleRecord', id: string, category: VehicleCategory, plateNumber?: string | null, vin?: string | null, make?: string | null, model?: string | null, color?: string | null, capacityKg?: number | null, capacityVolumeCm3?: any | null, createdAt: any, updatedAt: any } | null, complianceDocuments: Array<{ __typename?: 'DriverComplianceDocumentRecord', id: string, type: DriverComplianceDocumentType, status: string, storageBucket: string, storagePath: string, mimeType?: string | null, notes?: string | null, uploadedAt: any, reviewedAt?: any | null }>, submissions: Array<{ __typename?: 'DriverOnboardingSubmissionRecord', id: string, status: DriverOnboardingStatus, rejectionReason?: string | null, reviewerId?: string | null, snapshot?: any | null, submittedAt: any, reviewedAt?: any | null }>, presence?: { __typename?: 'DriverPresenceRecord', id: string, isOnline: boolean, lat?: number | null, lng?: number | null, accuracyMeters?: number | null, heading?: number | null, speedKph?: number | null, recordedAt?: any | null, lastHeartbeatAt?: any | null, updatedAt: any } | null } };
+
+export type SwitchAppModeMutationVariables = Exact<{
+  input: SwitchAppModeInput;
+}>;
+
+
+export type SwitchAppModeMutation = { __typename?: 'Mutation', switchAppMode: { __typename?: 'Profile', id: string, email?: string | null, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, accountRole: AccountRole, availableModes: Array<AppMode>, currentMode: AppMode, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, profileImageUrl?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, driverProfileId?: string | null, driverOnboardingStatus: DriverOnboardingStatus, driverCapabilities: Array<DriverCapability>, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, walletBalanceMinor?: any | null, walletEscrowMinor?: any | null, walletCurrency?: string | null, unreadNotificationCount: number, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } };
+
+export type UpdateDriverPresenceMutationVariables = Exact<{
+  input: UpdateDriverPresenceInput;
+}>;
+
+
+export type UpdateDriverPresenceMutation = { __typename?: 'Mutation', updateDriverPresence: { __typename?: 'DriverPresenceRecord', id: string, isOnline: boolean, lat?: number | null, lng?: number | null, accuracyMeters?: number | null, heading?: number | null, speedKph?: number | null, recordedAt?: any | null, lastHeartbeatAt?: any | null, updatedAt: any } };
 
 export type UpdateNotificationSettingsMutationVariables = Exact<{
   input: UpdateNotificationSettingsInput;
@@ -2453,7 +2671,7 @@ export type UpdateProfileMutationVariables = Exact<{
 }>;
 
 
-export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, profileImageUrl?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } };
+export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'Profile', id: string, email?: string | null, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, accountRole: AccountRole, availableModes: Array<AppMode>, currentMode: AppMode, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, profileImageUrl?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, driverProfileId?: string | null, driverOnboardingStatus: DriverOnboardingStatus, driverCapabilities: Array<DriverCapability>, walletBalanceMinor?: any | null, walletEscrowMinor?: any | null, walletCurrency?: string | null, unreadNotificationCount: number, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } };
 
 export type UpsertPushDeviceMutationVariables = Exact<{
   input: UpsertPushDeviceInput;
@@ -2510,18 +2728,6 @@ export type GetProviderDashboardQuaryQueryVariables = Exact<{ [key: string]: nev
 
 export type GetProviderDashboardQuaryQuery = { __typename?: 'Query', getProviderDashboardQuary: { __typename?: 'ProviderDashboardQuary', myShipmentDashboard: { __typename?: 'ShipmentDashboard', summary: { __typename?: 'ShipmentDashboardSummary', activeShipments: number, completedThisMonth: number, pendingPaymentAmountMinor: any, pendingPaymentCurrency: string }, recentShipments: Array<{ __typename?: 'ShipmentDashboardRecentShipment', id: string, trackingCode: string, status: ShipmentStatus, scheduledAt?: any | null, createdAt: any, pickupAddressSummary?: string | null, dropoffAddressSummary?: string | null }> }, myWallet?: { __typename?: 'WalletAccount', id: string, currency: string, balanceMinor: any, status: WalletAccountStatus } | null, kycStatus?: { __typename?: 'ProviderKycStatus', id: string, overallStatus: string, kycLevel: number, ninStatus: string, phoneStatus: string, faceStatus: string, vehiclePlateStatus: string, vehicleVinStatus: string } | null, activeAssignments: Array<{ __typename?: 'Shipment', id: string, trackingCode: string, mode: ShipmentMode, status: ShipmentStatus, vehicleCategory: VehicleCategory, scheduledAt?: any | null, createdAt: any, packageDescription?: string | null, pricingCurrency: string, quotedPriceMinor?: any | null, finalPriceMinor?: any | null }>, completedShipments: Array<{ __typename?: 'Shipment', id: string, trackingCode: string, mode: ShipmentMode, status: ShipmentStatus, vehicleCategory: VehicleCategory, scheduledAt?: any | null, createdAt: any, updatedAt: any, packageDescription?: string | null, pricingCurrency: string, finalPriceMinor?: any | null, quotedPriceMinor?: any | null }>, vehicles: Array<{ __typename?: 'Vehicle', id: string, category: VehicleCategory, status: VehicleStatus }> } };
 
-export type MyKycStatusQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MyKycStatusQuery = { __typename?: 'Query', myKycStatus?: { __typename?: 'ProviderKycStatus', id: string, providerId: string, overallStatus: string, kycLevel: number, ninStatus: string, phoneStatus: string, faceStatus: string, vehiclePlateStatus: string, vehicleVinStatus: string, maskedNin?: string | null, maskedPhone?: string | null, failureSummary?: string | null, lastVendorSyncAt?: any | null, lastCheckAt?: any | null, createdAt: any, updatedAt: any } | null };
-
-export type MyKycChecksQueryVariables = Exact<{
-  filter?: InputMaybe<MyKycChecksFilterDto>;
-}>;
-
-
-export type MyKycChecksQuery = { __typename?: 'Query', myKycChecks: Array<{ __typename?: 'ProviderKycCheck', id: string, checkType: string, status: string, vendor: string, vendorReference?: string | null, responseCode?: string | null, confidence?: number | null, message?: string | null, maskedIdentifier?: string | null, createdAt: any, verifiedAt?: any | null, failedAt?: any | null }> };
-
 export type CurrentAddressQueryVariables = Exact<{
   lat: Scalars['Float']['input'];
   lng: Scalars['Float']['input'];
@@ -2566,12 +2772,24 @@ export type ShipmentsQueryVariables = Exact<{
 }>;
 
 
-export type ShipmentsQuery = { __typename?: 'Query', shipments: Array<{ __typename?: 'Shipment', id: string, trackingCode: string, customerProfileId: string, mode: ShipmentMode, vehicleCategory: VehicleCategory, scheduleType: ShipmentScheduleType, status: ShipmentStatus, pickupAddressId: string, dropoffAddressId: string, scheduledAt?: any | null, packageDescription?: string | null, packageValueMinor?: any | null, specialInstructions?: string | null, requiresEscrow: boolean, pricingCurrency: string, quotedPriceMinor?: any | null, finalPriceMinor?: any | null, commissionRateBps: number, commissionAmountMinor: any, createdAt: any, updatedAt: any, cancelledAt?: any | null, cancelledByProfileId?: string | null, cancellationReason?: string | null }> };
+export type ShipmentsQuery = { __typename?: 'Query', shipments: Array<{ __typename?: 'Shipment', id: string, trackingCode: string, customerProfileId: string, mode: ShipmentMode, vehicleCategory: VehicleCategory, scheduleType: ShipmentScheduleType, status: ShipmentStatus, pickupAddressId: string, pickupAddressSummary?: string | null, dropoffAddressId: string, dropoffAddressSummary?: string | null, scheduledAt?: any | null, packageDescription?: string | null, packageValueMinor?: any | null, specialInstructions?: string | null, requiresEscrow: boolean, pricingCurrency: string, quotedPriceMinor?: any | null, finalPriceMinor?: any | null, commissionRateBps: number, commissionAmountMinor: any, createdAt: any, updatedAt: any, cancelledAt?: any | null, cancelledByProfileId?: string | null, cancellationReason?: string | null }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'Profile', id: string, email: string, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, profileImageUrl?: string | null, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } | null };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'Profile', id: string, email?: string | null, emailVerified: boolean, emailVerifiedAt?: any | null, role?: UserRole | null, accountRole: AccountRole, availableModes: Array<AppMode>, currentMode: AppMode, profileImageUrl?: string | null, firstName?: string | null, lastName?: string | null, phoneE164?: string | null, phoneVerified: boolean, phoneVerifiedAt?: any | null, notificationsEnabled: boolean, notificationPromptedAt?: any | null, pushPermissionGranted: boolean, pushPermissionStatus?: string | null, publicRole: PublicRole, driverType?: DriverType | null, driverProfileId?: string | null, driverOnboardingStatus: DriverOnboardingStatus, driverCapabilities: Array<DriverCapability>, walletBalanceMinor?: any | null, walletEscrowMinor?: any | null, walletCurrency?: string | null, unreadNotificationCount: number, onboardingStep: OnboardingStep, onboardingCompleted: boolean, state?: State | null, referralCode?: string | null, businessName?: string | null, providerId?: string | null, providerIsAvailable?: boolean | null, providerAvailabilityUpdatedAt?: any | null, primaryAddress?: string | null, city?: string | null, activeAddressId?: string | null, preferredLanguage: PreferredLanguage, status: ProfileStatus, lastLoginAt?: any | null, createdAt: any, updatedAt: any } | null };
+
+export type MyDriverProfileQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyDriverProfileQuery = { __typename?: 'Query', myDriverProfile?: { __typename?: 'DriverProfileRecord', id: string, providerId?: string | null, onboardingStatus: DriverOnboardingStatus, driverType?: DriverType | null, legalFirstName?: string | null, legalLastName?: string | null, dateOfBirth?: any | null, selfieStorageBucket?: string | null, selfieStoragePath?: string | null, licenseNumber?: string | null, licenseExpiryAt?: any | null, identityType?: string | null, identityNumber?: string | null, insurancePolicyNumber?: string | null, rejectionReason?: string | null, capabilities: Array<DriverCapability>, canDispatch: boolean, canFreight: boolean, submittedAt?: any | null, reviewedAt?: any | null, approvedAt?: any | null, createdAt: any, updatedAt: any, vehicle?: { __typename?: 'DriverVehicleRecord', id: string, category: VehicleCategory, plateNumber?: string | null, vin?: string | null, make?: string | null, model?: string | null, color?: string | null, capacityKg?: number | null, capacityVolumeCm3?: any | null, createdAt: any, updatedAt: any } | null, complianceDocuments: Array<{ __typename?: 'DriverComplianceDocumentRecord', id: string, type: DriverComplianceDocumentType, status: string, storageBucket: string, storagePath: string, mimeType?: string | null, notes?: string | null, uploadedAt: any, reviewedAt?: any | null }>, submissions: Array<{ __typename?: 'DriverOnboardingSubmissionRecord', id: string, status: DriverOnboardingStatus, rejectionReason?: string | null, reviewerId?: string | null, snapshot?: any | null, submittedAt: any, reviewedAt?: any | null }>, presence?: { __typename?: 'DriverPresenceRecord', id: string, isOnline: boolean, lat?: number | null, lng?: number | null, accuracyMeters?: number | null, heading?: number | null, speedKph?: number | null, recordedAt?: any | null, lastHeartbeatAt?: any | null, updatedAt: any } | null } | null };
+
+export type MyNotificationInboxQueryVariables = Exact<{
+  take?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type MyNotificationInboxQuery = { __typename?: 'Query', myNotificationInbox: Array<{ __typename?: 'NotificationInboxItem', id: string, category: NotificationCategory, title: string, body: string, entityType?: string | null, entityId?: string | null, metadata?: any | null, isRead: boolean, readAt?: any | null, createdAt: any }> };
 
 export type MyNotificationSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2638,14 +2856,6 @@ export class TypedDocumentString<TResult, TVariables>
   }
 }
 
-export const ForgotPasswordDocument = new TypedDocumentString(`
-    mutation ForgotPassword($input: ForgotPasswordInput!) {
-  forgotPassword(input: $input) {
-    message
-    success
-  }
-}
-    `) as unknown as TypedDocumentString<ForgotPasswordMutation, ForgotPasswordMutationVariables>;
 export const RefreshTokenDocument = new TypedDocumentString(`
     mutation RefreshToken($refreshToken: String!) {
   refreshToken(refreshToken: $refreshToken) {
@@ -2657,6 +2867,9 @@ export const RefreshTokenDocument = new TypedDocumentString(`
       emailVerified
       emailVerifiedAt
       role
+      accountRole
+      availableModes
+      currentMode
       firstName
       lastName
       phoneE164
@@ -2669,6 +2882,9 @@ export const RefreshTokenDocument = new TypedDocumentString(`
       pushPermissionStatus
       publicRole
       driverType
+      driverProfileId
+      driverOnboardingStatus
+      driverCapabilities
       onboardingStep
       onboardingCompleted
       state
@@ -2680,6 +2896,10 @@ export const RefreshTokenDocument = new TypedDocumentString(`
       primaryAddress
       city
       activeAddressId
+      walletBalanceMinor
+      walletEscrowMinor
+      walletCurrency
+      unreadNotificationCount
       preferredLanguage
       status
       lastLoginAt
@@ -2689,14 +2909,6 @@ export const RefreshTokenDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<RefreshTokenMutation, RefreshTokenMutationVariables>;
-export const RequestOtpDocument = new TypedDocumentString(`
-    mutation RequestOtp($input: RequestOtpInput!) {
-  requestOtp(input: $input) {
-    message
-    success
-  }
-}
-    `) as unknown as TypedDocumentString<RequestOtpMutation, RequestOtpMutationVariables>;
 export const RequestPhoneOtpDocument = new TypedDocumentString(`
     mutation RequestPhoneOtp($input: RequestPhoneOtpInput!) {
   requestPhoneOtp(input: $input) {
@@ -2705,14 +2917,6 @@ export const RequestPhoneOtpDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<RequestPhoneOtpMutation, RequestPhoneOtpMutationVariables>;
-export const ResetPasswordDocument = new TypedDocumentString(`
-    mutation ResetPassword($input: ResetPasswordInput!) {
-  resetPassword(input: $input) {
-    message
-    success
-  }
-}
-    `) as unknown as TypedDocumentString<ResetPasswordMutation, ResetPasswordMutationVariables>;
 export const SignInWithGoogleDocument = new TypedDocumentString(`
     mutation SignInWithGoogle($input: SignInWithGoogleInput!) {
   signInWithGoogle(input: $input) {
@@ -2724,6 +2928,9 @@ export const SignInWithGoogleDocument = new TypedDocumentString(`
       emailVerified
       emailVerifiedAt
       role
+      accountRole
+      availableModes
+      currentMode
       firstName
       lastName
       phoneE164
@@ -2735,6 +2942,9 @@ export const SignInWithGoogleDocument = new TypedDocumentString(`
       pushPermissionStatus
       publicRole
       driverType
+      driverProfileId
+      driverOnboardingStatus
+      driverCapabilities
       onboardingStep
       onboardingCompleted
       profileImageUrl
@@ -2747,6 +2957,10 @@ export const SignInWithGoogleDocument = new TypedDocumentString(`
       primaryAddress
       city
       activeAddressId
+      walletBalanceMinor
+      walletEscrowMinor
+      walletCurrency
+      unreadNotificationCount
       preferredLanguage
       status
       lastLoginAt
@@ -2799,17 +3013,9 @@ export const SignInDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<SignInMutation, SignInMutationVariables>;
-export const SignUpDriverDocument = new TypedDocumentString(`
-    mutation SignUpDriver($input: SignUpDriverInput!) {
-  signUpDriver(input: $input) {
-    message
-    success
-  }
-}
-    `) as unknown as TypedDocumentString<SignUpDriverMutation, SignUpDriverMutationVariables>;
-export const VerifyOtpDocument = new TypedDocumentString(`
-    mutation VerifyOtp($input: VerifyOtpInput!) {
-  verifyOtp(input: $input) {
+export const VerifyPhoneOtpAndAuthenticateDocument = new TypedDocumentString(`
+    mutation VerifyPhoneOtpAndAuthenticate($input: VerifyPhoneOtpAndAuthenticateInput!) {
+  verifyPhoneOtpAndAuthenticate(input: $input) {
     accessToken
     refreshToken
     user {
@@ -2818,6 +3024,9 @@ export const VerifyOtpDocument = new TypedDocumentString(`
       emailVerified
       emailVerifiedAt
       role
+      accountRole
+      availableModes
+      currentMode
       firstName
       lastName
       phoneE164
@@ -2830,6 +3039,9 @@ export const VerifyOtpDocument = new TypedDocumentString(`
       pushPermissionStatus
       publicRole
       driverType
+      driverProfileId
+      driverOnboardingStatus
+      driverCapabilities
       onboardingStep
       onboardingCompleted
       state
@@ -2841,6 +3053,10 @@ export const VerifyOtpDocument = new TypedDocumentString(`
       primaryAddress
       city
       activeAddressId
+      walletBalanceMinor
+      walletEscrowMinor
+      walletCurrency
+      unreadNotificationCount
       preferredLanguage
       status
       lastLoginAt
@@ -2849,15 +3065,7 @@ export const VerifyOtpDocument = new TypedDocumentString(`
     }
   }
 }
-    `) as unknown as TypedDocumentString<VerifyOtpMutation, VerifyOtpMutationVariables>;
-export const VerifyPhoneOtpDocument = new TypedDocumentString(`
-    mutation VerifyPhoneOtp($input: VerifyPhoneOtpInput!) {
-  verifyPhoneOtp(input: $input) {
-    message
-    success
-  }
-}
-    `) as unknown as TypedDocumentString<VerifyPhoneOtpMutation, VerifyPhoneOtpMutationVariables>;
+    `) as unknown as TypedDocumentString<VerifyPhoneOtpAndAuthenticateMutation, VerifyPhoneOtpAndAuthenticateMutationVariables>;
 export const ConfirmDropoffDocument = new TypedDocumentString(`
     mutation ConfirmDropoff($shipmentId: String!) {
   confirmDropoff(shipmentId: $shipmentId) {
@@ -3008,122 +3216,6 @@ export const WithdrawBidDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<WithdrawBidMutation, WithdrawBidMutationVariables>;
-export const CreateKycUploadUrlDocument = new TypedDocumentString(`
-    mutation CreateKycUploadUrl($input: CreateKycUploadUrlDto!) {
-  createKycUploadUrl(input: $input) {
-    mediaId
-    storageBucket
-    storagePath
-    uploadUrl
-    expiresAt
-  }
-}
-    `) as unknown as TypedDocumentString<CreateKycUploadUrlMutation, CreateKycUploadUrlMutationVariables>;
-export const CreateVehicleDocument = new TypedDocumentString(`
-    mutation CreateVehicle($input: CreateVehicleDto!) {
-  createVehicle(input: $input) {
-    id
-    providerId
-    category
-    plateNumber
-    vin
-    make
-    model
-    color
-    capacityKg
-    capacityVolumeCm3
-    plateVerificationStatus
-    vinVerificationStatus
-    lastVerificationAt
-    verificationFailureReason
-    status
-    createdAt
-    updatedAt
-  }
-}
-    `) as unknown as TypedDocumentString<CreateVehicleMutation, CreateVehicleMutationVariables>;
-export const StartNinFaceVerificationDocument = new TypedDocumentString(`
-    mutation StartNinFaceVerification($input: StartNinFaceVerificationDto!) {
-  startNinFaceVerification(input: $input) {
-    id
-    checkType
-    status
-    vendor
-    vendorReference
-    responseCode
-    confidence
-    message
-    maskedIdentifier
-    createdAt
-    verifiedAt
-    failedAt
-  }
-}
-    `) as unknown as TypedDocumentString<StartNinFaceVerificationMutation, StartNinFaceVerificationMutationVariables>;
-export const StartPhoneVerificationDocument = new TypedDocumentString(`
-    mutation StartPhoneVerification($input: StartPhoneVerificationDto!) {
-  startPhoneVerification(input: $input) {
-    id
-    checkType
-    status
-    vendorReference
-    responseCode
-    message
-    maskedIdentifier
-    createdAt
-    verifiedAt
-    failedAt
-  }
-}
-    `) as unknown as TypedDocumentString<StartPhoneVerificationMutation, StartPhoneVerificationMutationVariables>;
-export const StartVehiclePlateVerificationDocument = new TypedDocumentString(`
-    mutation StartVehiclePlateVerification($input: StartVehiclePlateVerificationDto!) {
-  startVehiclePlateVerification(input: $input) {
-    id
-    checkType
-    status
-    vendorReference
-    responseCode
-    message
-    maskedIdentifier
-    createdAt
-    verifiedAt
-    failedAt
-  }
-}
-    `) as unknown as TypedDocumentString<StartVehiclePlateVerificationMutation, StartVehiclePlateVerificationMutationVariables>;
-export const StartVehicleVinVerificationDocument = new TypedDocumentString(`
-    mutation StartVehicleVinVerification($input: StartVehicleVinVerificationDto!) {
-  startVehicleVinVerification(input: $input) {
-    id
-    checkType
-    status
-    vendorReference
-    responseCode
-    message
-    maskedIdentifier
-    createdAt
-    verifiedAt
-    failedAt
-  }
-}
-    `) as unknown as TypedDocumentString<StartVehicleVinVerificationMutation, StartVehicleVinVerificationMutationVariables>;
-export const SyncKycStatusDocument = new TypedDocumentString(`
-    mutation SyncKycStatus($input: SyncKycStatusDto!) {
-  syncKycStatus(input: $input) {
-    id
-    checkType
-    status
-    vendorReference
-    responseCode
-    message
-    maskedIdentifier
-    createdAt
-    verifiedAt
-    failedAt
-  }
-}
-    `) as unknown as TypedDocumentString<SyncKycStatusMutation, SyncKycStatusMutationVariables>;
 export const AddShipmentItemDocument = new TypedDocumentString(`
     mutation AddShipmentItem($input: AddShipmentItemDto!) {
   addShipmentItem(input: $input) {
@@ -3264,45 +3356,89 @@ export const UpdateShipmentDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<UpdateShipmentMutation, UpdateShipmentMutationVariables>;
-export const CompleteDriverRegistrationDocument = new TypedDocumentString(`
-    mutation CompleteDriverRegistration($input: CompleteDriverRegistrationInput!) {
-  completeDriverRegistration(input: $input) {
+export const AddDriverComplianceDocumentDocument = new TypedDocumentString(`
+    mutation AddDriverComplianceDocument($input: AddDriverComplianceDocumentInput!) {
+  addDriverComplianceDocument(input: $input) {
     id
-    email
-    emailVerified
-    emailVerifiedAt
-    role
-    profileImageUrl
-    firstName
-    lastName
-    phoneE164
-    phoneVerified
-    phoneVerifiedAt
-    notificationsEnabled
-    notificationPromptedAt
-    pushPermissionGranted
-    pushPermissionStatus
-    publicRole
+    onboardingStatus
     driverType
-    onboardingStep
-    onboardingCompleted
-    state
-    referralCode
-    businessName
-    providerId
-    providerIsAvailable
-    providerAvailabilityUpdatedAt
-    primaryAddress
-    city
-    activeAddressId
-    preferredLanguage
-    status
-    lastLoginAt
+    legalFirstName
+    legalLastName
+    dateOfBirth
+    selfieStorageBucket
+    selfieStoragePath
+    licenseNumber
+    licenseExpiryAt
+    identityType
+    identityNumber
+    insurancePolicyNumber
+    rejectionReason
+    capabilities
+    canDispatch
+    canFreight
+    submittedAt
+    reviewedAt
+    approvedAt
+    vehicle {
+      id
+      category
+      plateNumber
+      vin
+      make
+      model
+      color
+      capacityKg
+      capacityVolumeCm3
+      createdAt
+      updatedAt
+    }
+    complianceDocuments {
+      id
+      type
+      status
+      storageBucket
+      storagePath
+      mimeType
+      notes
+      uploadedAt
+      reviewedAt
+    }
+    submissions {
+      id
+      status
+      rejectionReason
+      reviewerId
+      snapshot
+      submittedAt
+      reviewedAt
+    }
+    presence {
+      id
+      isOnline
+      lat
+      lng
+      accuracyMeters
+      heading
+      speedKph
+      recordedAt
+      lastHeartbeatAt
+      updatedAt
+    }
     createdAt
     updatedAt
   }
 }
-    `) as unknown as TypedDocumentString<CompleteDriverRegistrationMutation, CompleteDriverRegistrationMutationVariables>;
+    `) as unknown as TypedDocumentString<AddDriverComplianceDocumentMutation, AddDriverComplianceDocumentMutationVariables>;
+export const CreateDriverDocumentUploadUrlDocument = new TypedDocumentString(`
+    mutation CreateDriverDocumentUploadUrl($input: CreateDriverDocumentUploadUrlInput!) {
+  createDriverDocumentUploadUrl(input: $input) {
+    storageBucket
+    storagePath
+    uploadUrl
+    expiresAt
+  }
+}
+    `) as unknown as TypedDocumentString<CreateDriverDocumentUploadUrlMutation, CreateDriverDocumentUploadUrlMutationVariables>;
 export const CreateProfileImageUploadUrlDocument = new TypedDocumentString(`
     mutation CreateProfileImageUploadUrl($input: CreateProfileImageUploadUrlInput!) {
   createProfileImageUploadUrl(input: $input) {
@@ -3313,6 +3449,246 @@ export const CreateProfileImageUploadUrlDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<CreateProfileImageUploadUrlMutation, CreateProfileImageUploadUrlMutationVariables>;
+export const MarkAllNotificationsReadDocument = new TypedDocumentString(`
+    mutation MarkAllNotificationsRead {
+  markAllNotificationsRead
+}
+    `) as unknown as TypedDocumentString<MarkAllNotificationsReadMutation, MarkAllNotificationsReadMutationVariables>;
+export const MarkNotificationReadDocument = new TypedDocumentString(`
+    mutation MarkNotificationRead($notificationId: String!) {
+  markNotificationRead(notificationId: $notificationId) {
+    id
+    category
+    title
+    body
+    entityType
+    entityId
+    metadata
+    isRead
+    readAt
+    createdAt
+  }
+}
+    `) as unknown as TypedDocumentString<MarkNotificationReadMutation, MarkNotificationReadMutationVariables>;
+export const SaveDriverIdentityInfoDocument = new TypedDocumentString(`
+    mutation SaveDriverIdentityInfo($input: SaveDriverIdentityInfoInput!) {
+  saveDriverIdentityInfo(input: $input) {
+    id
+    onboardingStatus
+    driverType
+    legalFirstName
+    legalLastName
+    dateOfBirth
+    selfieStorageBucket
+    selfieStoragePath
+    licenseNumber
+    licenseExpiryAt
+    identityType
+    identityNumber
+    insurancePolicyNumber
+    rejectionReason
+    capabilities
+    canDispatch
+    canFreight
+    submittedAt
+    reviewedAt
+    approvedAt
+    vehicle {
+      id
+      category
+      plateNumber
+      vin
+      make
+      model
+      color
+      capacityKg
+      capacityVolumeCm3
+      createdAt
+      updatedAt
+    }
+    complianceDocuments {
+      id
+      type
+      status
+      storageBucket
+      storagePath
+      mimeType
+      notes
+      uploadedAt
+      reviewedAt
+    }
+    submissions {
+      id
+      status
+      rejectionReason
+      reviewerId
+      snapshot
+      submittedAt
+      reviewedAt
+    }
+    presence {
+      id
+      isOnline
+      lat
+      lng
+      accuracyMeters
+      heading
+      speedKph
+      recordedAt
+      lastHeartbeatAt
+      updatedAt
+    }
+    createdAt
+    updatedAt
+  }
+}
+    `) as unknown as TypedDocumentString<SaveDriverIdentityInfoMutation, SaveDriverIdentityInfoMutationVariables>;
+export const SaveDriverPersonalInfoDocument = new TypedDocumentString(`
+    mutation SaveDriverPersonalInfo($input: SaveDriverPersonalInfoInput!) {
+  saveDriverPersonalInfo(input: $input) {
+    id
+    onboardingStatus
+    driverType
+    legalFirstName
+    legalLastName
+    dateOfBirth
+    selfieStorageBucket
+    selfieStoragePath
+    licenseNumber
+    licenseExpiryAt
+    identityType
+    identityNumber
+    insurancePolicyNumber
+    rejectionReason
+    capabilities
+    canDispatch
+    canFreight
+    submittedAt
+    reviewedAt
+    approvedAt
+    vehicle {
+      id
+      category
+      plateNumber
+      vin
+      make
+      model
+      color
+      capacityKg
+      capacityVolumeCm3
+      createdAt
+      updatedAt
+    }
+    complianceDocuments {
+      id
+      type
+      status
+      storageBucket
+      storagePath
+      mimeType
+      notes
+      uploadedAt
+      reviewedAt
+    }
+    submissions {
+      id
+      status
+      rejectionReason
+      reviewerId
+      snapshot
+      submittedAt
+      reviewedAt
+    }
+    presence {
+      id
+      isOnline
+      lat
+      lng
+      accuracyMeters
+      heading
+      speedKph
+      recordedAt
+      lastHeartbeatAt
+      updatedAt
+    }
+    createdAt
+    updatedAt
+  }
+}
+    `) as unknown as TypedDocumentString<SaveDriverPersonalInfoMutation, SaveDriverPersonalInfoMutationVariables>;
+export const SaveDriverVehicleDocument = new TypedDocumentString(`
+    mutation SaveDriverVehicle($input: SaveDriverVehicleInput!) {
+  saveDriverVehicle(input: $input) {
+    id
+    onboardingStatus
+    driverType
+    legalFirstName
+    legalLastName
+    dateOfBirth
+    selfieStorageBucket
+    selfieStoragePath
+    licenseNumber
+    licenseExpiryAt
+    identityType
+    identityNumber
+    insurancePolicyNumber
+    rejectionReason
+    capabilities
+    canDispatch
+    canFreight
+    submittedAt
+    reviewedAt
+    approvedAt
+    vehicle {
+      id
+      category
+      plateNumber
+      vin
+      make
+      model
+      color
+      capacityKg
+      capacityVolumeCm3
+      createdAt
+      updatedAt
+    }
+    complianceDocuments {
+      id
+      type
+      status
+      storageBucket
+      storagePath
+      mimeType
+      notes
+      uploadedAt
+      reviewedAt
+    }
+    submissions {
+      id
+      status
+      rejectionReason
+      reviewerId
+      snapshot
+      submittedAt
+      reviewedAt
+    }
+    presence {
+      id
+      isOnline
+      lat
+      lng
+      accuracyMeters
+      heading
+      speedKph
+      recordedAt
+      lastHeartbeatAt
+      updatedAt
+    }
+    createdAt
+    updatedAt
+  }
+}
+    `) as unknown as TypedDocumentString<SaveDriverVehicleMutation, SaveDriverVehicleMutationVariables>;
 export const SetProfileImageDocument = new TypedDocumentString(`
     mutation SetProfileImage($input: SetProfileImageInput!) {
   setProfileImage(input: $input) {
@@ -3321,6 +3697,9 @@ export const SetProfileImageDocument = new TypedDocumentString(`
     emailVerified
     emailVerifiedAt
     role
+    accountRole
+    availableModes
+    currentMode
     firstName
     lastName
     phoneE164
@@ -3333,6 +3712,13 @@ export const SetProfileImageDocument = new TypedDocumentString(`
     pushPermissionStatus
     publicRole
     driverType
+    driverProfileId
+    driverOnboardingStatus
+    driverCapabilities
+    walletBalanceMinor
+    walletEscrowMinor
+    walletCurrency
+    unreadNotificationCount
     onboardingStep
     onboardingCompleted
     state
@@ -3352,18 +3738,94 @@ export const SetProfileImageDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<SetProfileImageMutation, SetProfileImageMutationVariables>;
-export const SetProviderAvailabilityDocument = new TypedDocumentString(`
-    mutation SetProviderAvailability($input: SetProviderAvailabilityInput!) {
-  setProviderAvailability(input: $input) {
+export const SubmitDriverOnboardingDocument = new TypedDocumentString(`
+    mutation SubmitDriverOnboarding($input: SubmitDriverOnboardingInput!) {
+  submitDriverOnboarding(input: $input) {
+    id
+    onboardingStatus
+    driverType
+    legalFirstName
+    legalLastName
+    dateOfBirth
+    selfieStorageBucket
+    selfieStoragePath
+    licenseNumber
+    licenseExpiryAt
+    identityType
+    identityNumber
+    insurancePolicyNumber
+    rejectionReason
+    capabilities
+    canDispatch
+    canFreight
+    submittedAt
+    reviewedAt
+    approvedAt
+    vehicle {
+      id
+      category
+      plateNumber
+      vin
+      make
+      model
+      color
+      capacityKg
+      capacityVolumeCm3
+      createdAt
+      updatedAt
+    }
+    complianceDocuments {
+      id
+      type
+      status
+      storageBucket
+      storagePath
+      mimeType
+      notes
+      uploadedAt
+      reviewedAt
+    }
+    submissions {
+      id
+      status
+      rejectionReason
+      reviewerId
+      snapshot
+      submittedAt
+      reviewedAt
+    }
+    presence {
+      id
+      isOnline
+      lat
+      lng
+      accuracyMeters
+      heading
+      speedKph
+      recordedAt
+      lastHeartbeatAt
+      updatedAt
+    }
+    createdAt
+    updatedAt
+  }
+}
+    `) as unknown as TypedDocumentString<SubmitDriverOnboardingMutation, SubmitDriverOnboardingMutationVariables>;
+export const SwitchAppModeDocument = new TypedDocumentString(`
+    mutation SwitchAppMode($input: SwitchAppModeInput!) {
+  switchAppMode(input: $input) {
     id
     email
     emailVerified
     emailVerifiedAt
     role
-    profileImageUrl
+    accountRole
+    availableModes
+    currentMode
     firstName
     lastName
     phoneE164
+    profileImageUrl
     phoneVerified
     phoneVerifiedAt
     notificationsEnabled
@@ -3372,6 +3834,9 @@ export const SetProviderAvailabilityDocument = new TypedDocumentString(`
     pushPermissionStatus
     publicRole
     driverType
+    driverProfileId
+    driverOnboardingStatus
+    driverCapabilities
     onboardingStep
     onboardingCompleted
     state
@@ -3383,6 +3848,10 @@ export const SetProviderAvailabilityDocument = new TypedDocumentString(`
     primaryAddress
     city
     activeAddressId
+    walletBalanceMinor
+    walletEscrowMinor
+    walletCurrency
+    unreadNotificationCount
     preferredLanguage
     status
     lastLoginAt
@@ -3390,7 +3859,23 @@ export const SetProviderAvailabilityDocument = new TypedDocumentString(`
     updatedAt
   }
 }
-    `) as unknown as TypedDocumentString<SetProviderAvailabilityMutation, SetProviderAvailabilityMutationVariables>;
+    `) as unknown as TypedDocumentString<SwitchAppModeMutation, SwitchAppModeMutationVariables>;
+export const UpdateDriverPresenceDocument = new TypedDocumentString(`
+    mutation UpdateDriverPresence($input: UpdateDriverPresenceInput!) {
+  updateDriverPresence(input: $input) {
+    id
+    isOnline
+    lat
+    lng
+    accuracyMeters
+    heading
+    speedKph
+    recordedAt
+    lastHeartbeatAt
+    updatedAt
+  }
+}
+    `) as unknown as TypedDocumentString<UpdateDriverPresenceMutation, UpdateDriverPresenceMutationVariables>;
 export const UpdateNotificationSettingsDocument = new TypedDocumentString(`
     mutation UpdateNotificationSettings($input: UpdateNotificationSettingsInput!) {
   updateNotificationSettings(input: $input) {
@@ -3411,6 +3896,9 @@ export const UpdateProfileDocument = new TypedDocumentString(`
     emailVerified
     emailVerifiedAt
     role
+    accountRole
+    availableModes
+    currentMode
     firstName
     lastName
     phoneE164
@@ -3423,6 +3911,13 @@ export const UpdateProfileDocument = new TypedDocumentString(`
     pushPermissionStatus
     publicRole
     driverType
+    driverProfileId
+    driverOnboardingStatus
+    driverCapabilities
+    walletBalanceMinor
+    walletEscrowMinor
+    walletCurrency
+    unreadNotificationCount
     onboardingStep
     onboardingCompleted
     state
@@ -3712,46 +4207,6 @@ export const GetProviderDashboardQuaryDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<GetProviderDashboardQuaryQuery, GetProviderDashboardQuaryQueryVariables>;
-export const MyKycStatusDocument = new TypedDocumentString(`
-    query MyKycStatus {
-  myKycStatus {
-    id
-    providerId
-    overallStatus
-    kycLevel
-    ninStatus
-    phoneStatus
-    faceStatus
-    vehiclePlateStatus
-    vehicleVinStatus
-    maskedNin
-    maskedPhone
-    failureSummary
-    lastVendorSyncAt
-    lastCheckAt
-    createdAt
-    updatedAt
-  }
-}
-    `) as unknown as TypedDocumentString<MyKycStatusQuery, MyKycStatusQueryVariables>;
-export const MyKycChecksDocument = new TypedDocumentString(`
-    query MyKycChecks($filter: MyKycChecksFilterDto) {
-  myKycChecks(filter: $filter) {
-    id
-    checkType
-    status
-    vendor
-    vendorReference
-    responseCode
-    confidence
-    message
-    maskedIdentifier
-    createdAt
-    verifiedAt
-    failedAt
-  }
-}
-    `) as unknown as TypedDocumentString<MyKycChecksQuery, MyKycChecksQueryVariables>;
 export const CurrentAddressDocument = new TypedDocumentString(`
     query CurrentAddress($lat: Float!, $lng: Float!) {
   currentAddress(lat: $lat, lng: $lng) {
@@ -3936,7 +4391,9 @@ export const ShipmentsDocument = new TypedDocumentString(`
     scheduleType
     status
     pickupAddressId
+    pickupAddressSummary
     dropoffAddressId
+    dropoffAddressSummary
     scheduledAt
     packageDescription
     packageValueMinor
@@ -3963,6 +4420,9 @@ export const MeDocument = new TypedDocumentString(`
     emailVerified
     emailVerifiedAt
     role
+    accountRole
+    availableModes
+    currentMode
     profileImageUrl
     firstName
     lastName
@@ -3975,6 +4435,13 @@ export const MeDocument = new TypedDocumentString(`
     pushPermissionStatus
     publicRole
     driverType
+    driverProfileId
+    driverOnboardingStatus
+    driverCapabilities
+    walletBalanceMinor
+    walletEscrowMinor
+    walletCurrency
+    unreadNotificationCount
     onboardingStep
     onboardingCompleted
     state
@@ -3994,6 +4461,96 @@ export const MeDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<MeQuery, MeQueryVariables>;
+export const MyDriverProfileDocument = new TypedDocumentString(`
+    query MyDriverProfile {
+  myDriverProfile {
+    id
+    providerId
+    onboardingStatus
+    driverType
+    legalFirstName
+    legalLastName
+    dateOfBirth
+    selfieStorageBucket
+    selfieStoragePath
+    licenseNumber
+    licenseExpiryAt
+    identityType
+    identityNumber
+    insurancePolicyNumber
+    rejectionReason
+    capabilities
+    canDispatch
+    canFreight
+    submittedAt
+    reviewedAt
+    approvedAt
+    vehicle {
+      id
+      category
+      plateNumber
+      vin
+      make
+      model
+      color
+      capacityKg
+      capacityVolumeCm3
+      createdAt
+      updatedAt
+    }
+    complianceDocuments {
+      id
+      type
+      status
+      storageBucket
+      storagePath
+      mimeType
+      notes
+      uploadedAt
+      reviewedAt
+    }
+    submissions {
+      id
+      status
+      rejectionReason
+      reviewerId
+      snapshot
+      submittedAt
+      reviewedAt
+    }
+    presence {
+      id
+      isOnline
+      lat
+      lng
+      accuracyMeters
+      heading
+      speedKph
+      recordedAt
+      lastHeartbeatAt
+      updatedAt
+    }
+    createdAt
+    updatedAt
+  }
+}
+    `) as unknown as TypedDocumentString<MyDriverProfileQuery, MyDriverProfileQueryVariables>;
+export const MyNotificationInboxDocument = new TypedDocumentString(`
+    query MyNotificationInbox($take: Int) {
+  myNotificationInbox(take: $take) {
+    id
+    category
+    title
+    body
+    entityType
+    entityId
+    metadata
+    isRead
+    readAt
+    createdAt
+  }
+}
+    `) as unknown as TypedDocumentString<MyNotificationInboxQuery, MyNotificationInboxQueryVariables>;
 export const MyNotificationSettingsDocument = new TypedDocumentString(`
     query MyNotificationSettings {
   myNotificationSettings {

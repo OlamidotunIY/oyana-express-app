@@ -35,9 +35,9 @@ export default function OnboardingLanding() {
             variant="default"
             fullWidth
             size="lg"
-            onPress={() => router.push("/(auth)/register")}
+            onPress={() => router.push("/(auth)/onboarding/phone" as never)}
           >
-            Register as a Driver
+            Continue with Phone
           </Button>
           <Button
             variant="outline"
@@ -46,19 +46,14 @@ export default function OnboardingLanding() {
             onPress={() => void promptGoogleAuth()}
             disabled={googleLoading}
           >
-            {googleLoading ? "Connecting to Google…" : "Continue with Google"}
+            {googleLoading ? "Connecting to Google..." : "Continue with Google"}
           </Button>
         </OnboardingButtonGroup>
 
         <OnboardingFooter>
-          <OnboardingFooterText>Already have an account? </OnboardingFooterText>
-          <Button
-            variant="link"
-            style={{ paddingHorizontal: 0, paddingVertical: 0, minHeight: 0 }}
-            onPress={() => router.push("/(auth)/login-with-password")}
-          >
-            Sign in
-          </Button>
+          <OnboardingFooterText>
+            New mobile accounts start as shippers. Driver mode becomes available from your account after onboarding.
+          </OnboardingFooterText>
         </OnboardingFooter>
       </OnboardingSheet>
     </OnboardingBackground>

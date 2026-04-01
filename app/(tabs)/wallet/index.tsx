@@ -156,7 +156,7 @@ export default function WalletScreen()
                         <Button
                             fullWidth
                             variant="secondary"
-                            onPress={() => router.push("/")}
+                            onPress={() => router.push("/(tabs)/accounts/verify-phone")}
                         >
                             Verify phone
                         </Button>

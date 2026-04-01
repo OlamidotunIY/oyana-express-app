@@ -6,7 +6,12 @@ import
     TabHeader,
     resolveHeaderTitle,
 } from "@/components/NavigationHeader";
-import { isProviderUser, resolveAuthenticatedRoute } from "@/lib/session";
+import {
+    canAccessFreight,
+    hasDriverMode,
+    isDriverMode,
+    resolveAuthenticatedRoute,
+} from "@/lib/session";
 import { useUserStore } from "@/store/userStore";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs, useRouter } from "expo-router";
@@ -18,18 +23,17 @@ export default function TabsLayout()
     const router = useRouter();
     const theme = useTheme();
     const user = useUserStore((state) => state.user);
-    const showFreightTab = isProviderUser(user);
+    const driverModeEnabled = isDriverMode(user);
+    const showFreightTab = driverModeEnabled && canAccessFreight(user);
+    const notificationCount = user?.unreadNotificationCount ?? 0;
 
     React.useEffect(() =>
     {
-        if (user !== null && !isProviderUser(user))
-        {
-            router.replace("/(auth)/customer-not-supported");
-        } else if (user !== null && !user.onboardingCompleted)
+        if (user !== null && !hasDriverMode(user) && driverModeEnabled)
         {
             router.replace(resolveAuthenticatedRoute(user) as never);
         }
-    }, [router, user]);
+    }, [driverModeEnabled, router, user]);
 
     const getTabMenuItems = React.useCallback((routeName: string): HeaderMenuItem[] =>
     {
@@ -38,19 +42,24 @@ export default function TabsLayout()
             return [
                 {
                     id: "kyc-status",
-                    label: "KYC status",
+                    label: driverModeEnabled ? "Driver setup" : "Driver mode",
                     iconName: "verified-user" as const,
-                    onPress: () => router.push("/accounts/kyc-status" as never),
+                    onPress: () => router.push("/accounts/driver-mode" as never),
                 },
             ];
         }
 
         return [];
-    }, [router]);
+    }, [driverModeEnabled, router]);
 
     const handleHomeRefresh = React.useCallback(() =>
     {
         router.replace("/(tabs)");
+    }, [router]);
+
+    const handleNotificationsPress = React.useCallback(() =>
+    {
+        router.push("/(tabs)/notifications" as never);
     }, [router]);
 
     return (
@@ -69,6 +78,8 @@ export default function TabsLayout()
                                 title={title}
                                 showProfileCard={route.name === "index"}
                                 menuItems={getTabMenuItems(route.name)}
+                                notificationCount={route.name === "index" ? notificationCount : undefined}
+                                onNotificationsPress={route.name === "index" ? handleNotificationsPress : undefined}
                                 onRefresh={route.name === "index" ? handleHomeRefresh : undefined}
                                 backgroundColor={heroBg}
                             />
@@ -103,10 +114,22 @@ export default function TabsLayout()
                 <Tabs.Screen
                     name="dispatch"
                     options={{
-                        title: "Shipments",
+                        title: "Dispatch",
                         headerShown: false,
+                        href: driverModeEnabled ? undefined : null,
                         tabBarIcon: ({ color, size }) => (
                             <MaterialIcons name="inventory-2" color={color} size={size} />
+                        ),
+                    }}
+                />
+
+                <Tabs.Screen
+                    name="shipments"
+                    options={{
+                        title: "Shipments",
+                        href: driverModeEnabled ? null : undefined,
+                        tabBarIcon: ({ color, size }) => (
+                            <MaterialIcons name="local-shipping" color={color} size={size} />
                         ),
                     }}
                 />
@@ -120,6 +143,17 @@ export default function TabsLayout()
                         popToTopOnBlur: true,
                         tabBarIcon: ({ color, size }) => (
                             <MaterialIcons name="local-shipping" color={color} size={size} />
+                        ),
+                    }}
+                />
+
+                <Tabs.Screen
+                    name="notifications"
+                    options={{
+                        title: "Notifications",
+                        href: driverModeEnabled ? null : undefined,
+                        tabBarIcon: ({ color, size }) => (
+                            <MaterialIcons name="notifications" color={color} size={size} />
                         ),
                     }}
                 />
@@ -146,7 +180,7 @@ export default function TabsLayout()
                     }}
                 />
             </Tabs>
-            <IncomingDispatchOffersOverlay />
+            {driverModeEnabled ? <IncomingDispatchOffersOverlay /> : null}
         </>
     );
 }

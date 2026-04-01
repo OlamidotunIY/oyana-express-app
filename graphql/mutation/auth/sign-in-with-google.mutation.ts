@@ -11,6 +11,9 @@ export const SIGN_IN_WITH_GOOGLE_MUTATION = gql`
         emailVerified
         emailVerifiedAt
         role
+        accountRole
+        availableModes
+        currentMode
         firstName
         lastName
         phoneE164
@@ -22,6 +25,9 @@ export const SIGN_IN_WITH_GOOGLE_MUTATION = gql`
         pushPermissionStatus
         publicRole
         driverType
+        driverProfileId
+        driverOnboardingStatus
+        driverCapabilities
         onboardingStep
         onboardingCompleted
         profileImageUrl
@@ -34,6 +40,10 @@ export const SIGN_IN_WITH_GOOGLE_MUTATION = gql`
         primaryAddress
         city
         activeAddressId
+        walletBalanceMinor
+        walletEscrowMinor
+        walletCurrency
+        unreadNotificationCount
         preferredLanguage
         status
         lastLoginAt

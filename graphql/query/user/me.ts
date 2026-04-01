@@ -8,6 +8,9 @@ export const ME_QUERY = gql`
       emailVerified
       emailVerifiedAt
       role
+      accountRole
+      availableModes
+      currentMode
       profileImageUrl
       firstName
       lastName
@@ -20,6 +23,13 @@ export const ME_QUERY = gql`
       pushPermissionStatus
       publicRole
       driverType
+      driverProfileId
+      driverOnboardingStatus
+      driverCapabilities
+      walletBalanceMinor
+      walletEscrowMinor
+      walletCurrency
+      unreadNotificationCount
       onboardingStep
       onboardingCompleted
       state

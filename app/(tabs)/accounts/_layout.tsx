@@ -26,12 +26,6 @@ export default function AccountLayout()
             iconName: "edit",
             onPress: () => router.push("/accounts/edit-profile" as never),
         },
-        {
-            id: "account-upload-profile-image",
-            label: "Upload profile image",
-            iconName: "add-a-photo",
-            onPress: () => router.push("/accounts/upload-profile-image" as never),
-        },
     ];
 
     return (
@@ -60,12 +54,10 @@ export default function AccountLayout()
                 }}
             />
             <Stack.Screen name="edit-profile" options={{ title: "Edit Profile" }} />
+            <Stack.Screen name="driver-mode" options={{ title: "Driver Mode" }} />
+            <Stack.Screen name="manage-addresses" options={{ title: "Manage Addresses" }} />
             <Stack.Screen name="verify-phone" options={{ title: "Verify Phone" }} />
             <Stack.Screen name="settings" options={{ title: "Settings" }} />
-            <Stack.Screen name="upload-profile-image" options={{ title: "Upload Profile Image" }} />
-            <Stack.Screen name="manage-vehicles" options={{ title: "Manage Vehicles" }} />
-            <Stack.Screen name="create-vehicle" options={{ title: "Create Vehicle" }} />
-            <Stack.Screen name="kyc-upload" options={{ title: "KYC Upload" }} />
             <Stack.Screen name="support-stack" options={{ title: "Support" }} />
             <Stack.Screen name="legal" options={{ title: "Legal & Policies" }} />
         </Stack>

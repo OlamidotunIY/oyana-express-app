@@ -11,6 +11,9 @@ export const REFRESH_TOKEN_MUTATION = gql`
         emailVerified
         emailVerifiedAt
         role
+        accountRole
+        availableModes
+        currentMode
         firstName
         lastName
         phoneE164
@@ -23,6 +26,9 @@ export const REFRESH_TOKEN_MUTATION = gql`
         pushPermissionStatus
         publicRole
         driverType
+        driverProfileId
+        driverOnboardingStatus
+        driverCapabilities
         onboardingStep
         onboardingCompleted
         state
@@ -34,6 +40,10 @@ export const REFRESH_TOKEN_MUTATION = gql`
         primaryAddress
         city
         activeAddressId
+        walletBalanceMinor
+        walletEscrowMinor
+        walletCurrency
+        unreadNotificationCount
         preferredLanguage
         status
         lastLoginAt

@@ -18,6 +18,10 @@ const config: ExpoConfig = {
   newArchEnabled: true,
   ios: {
     supportsTablet: true,
+    infoPlist: {
+      NSLocationWhenInUseUsageDescription:
+        "Oyana uses your location to pin shipper addresses on the map and to share your live driver position while you are online for dispatch.",
+    },
     ...(googleMapsApiKey
       ? {
           config: {
@@ -37,6 +41,7 @@ const config: ExpoConfig = {
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: androidPackage,
+    permissions: ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"],
     ...(googleMapsApiKey
       ? {
           config: {
@@ -71,6 +76,13 @@ const config: ExpoConfig = {
       },
     ],
     "expo-notifications",
+    [
+      "expo-location",
+      {
+        locationWhenInUsePermission:
+          "Oyana uses your location to pin shipper addresses on the map and to keep your live driver presence up to date while you are online.",
+      },
+    ],
     "@react-native-community/datetimepicker",
     "expo-secure-store",
     [

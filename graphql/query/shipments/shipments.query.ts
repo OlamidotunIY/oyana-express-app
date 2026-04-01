@@ -11,7 +11,9 @@ export const SHIPMENTS_QUERY = gql`
       scheduleType
       status
       pickupAddressId
+      pickupAddressSummary
       dropoffAddressId
+      dropoffAddressSummary
       scheduledAt
       packageDescription
       packageValueMinor

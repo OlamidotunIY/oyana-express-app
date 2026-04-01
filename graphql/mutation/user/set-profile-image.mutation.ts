@@ -8,6 +8,9 @@ export const SET_PROFILE_IMAGE_MUTATION = gql`
       emailVerified
       emailVerifiedAt
       role
+      accountRole
+      availableModes
+      currentMode
       firstName
       lastName
       phoneE164
@@ -20,6 +23,13 @@ export const SET_PROFILE_IMAGE_MUTATION = gql`
       pushPermissionStatus
       publicRole
       driverType
+      driverProfileId
+      driverOnboardingStatus
+      driverCapabilities
+      walletBalanceMinor
+      walletEscrowMinor
+      walletCurrency
+      unreadNotificationCount
       onboardingStep
       onboardingCompleted
       state

@@ -91,14 +91,13 @@ export default function OnboardingPhoneScreen() {
           <OnboardingProgress currentStep="phone" />
 
           <BackButton onPress={() => router.back()}>
-            <BackButtonText>← Back</BackButtonText>
+            <BackButtonText>Back</BackButtonText>
           </BackButton>
 
           <AuthHeader>
-            <AuthTitle>Add your phone number</AuthTitle>
+            <AuthTitle>Continue with your phone</AuthTitle>
             <AuthSubtitle>
-              We’ll send a verification code before your driver profile is set
-              up.
+              Enter your phone number in international format. We&apos;ll text you a 6-digit code to sign in or create your shipper account.
             </AuthSubtitle>
           </AuthHeader>
 
@@ -116,12 +115,12 @@ export default function OnboardingPhoneScreen() {
           </AuthForm>
 
           <Button onPress={() => void handleContinue()} disabled={loading} fullWidth>
-            {loading ? "Sending code…" : "Send verification code"}
+            {loading ? "Sending code..." : "Send verification code"}
           </Button>
 
           <AuthFooter>
-            <AuthFooterLink onPress={() => router.replace("/(auth)/login-with-password")}>
-              Use a different account
+            <AuthFooterLink onPress={() => router.replace("/(auth)/onboarding")}>
+              Back to sign-in options
             </AuthFooterLink>
           </AuthFooter>
         </AuthContent>

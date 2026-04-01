@@ -6,8 +6,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   RequestPhoneOtpMutation,
   RequestPhoneOtpMutationVariables,
-  VerifyPhoneOtpMutation,
-  VerifyPhoneOtpMutationVariables,
+  VerifyPhoneOtpAndAuthenticateMutation,
+  VerifyPhoneOtpAndAuthenticateMutationVariables,
 } from "@/gql/graphql";
 import {
   REQUEST_PHONE_OTP_MUTATION,
@@ -20,11 +20,12 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/InputOtp";
+import { persistAuthTokens } from "@/lib/auth-cookies";
 import {
   parseAuthError,
-  refetchCurrentUser,
   resolveAuthenticatedRoute,
 } from "@/lib/session";
+import { useUserStore } from "@/store/userStore";
 import { useToastStore } from "@/store/toastStore";
 import {
   AuthContent,
@@ -48,12 +49,13 @@ export default function OnboardingVerifyPhoneScreen() {
   const insets = useSafeAreaInsets();
   const { phone } = useLocalSearchParams<{ phone?: string }>();
   const showToast = useToastStore((state) => state.showToast);
+  const setUser = useUserStore((state) => state.setUser);
   const [otp, setOtp] = React.useState("");
   const [resending, setResending] = React.useState(false);
 
-  const [verifyPhoneOtp, { loading }] = useMutation<
-    VerifyPhoneOtpMutation,
-    VerifyPhoneOtpMutationVariables
+  const [verifyPhoneOtpAndAuthenticate, { loading }] = useMutation<
+    VerifyPhoneOtpAndAuthenticateMutation,
+    VerifyPhoneOtpAndAuthenticateMutationVariables
   >(VERIFY_PHONE_OTP_MUTATION);
   const [requestPhoneOtp] = useMutation<
     RequestPhoneOtpMutation,
@@ -78,7 +80,7 @@ export default function OnboardingVerifyPhoneScreen() {
     }
 
     try {
-      await verifyPhoneOtp({
+      const { data } = await verifyPhoneOtpAndAuthenticate({
         variables: {
           input: {
             phoneE164: phone.trim(),
@@ -87,16 +89,18 @@ export default function OnboardingVerifyPhoneScreen() {
         },
       });
 
-      const user = await refetchCurrentUser();
-      if (!user) {
-        throw new Error("Unable to refresh your account after phone verification.");
+      const payload = data?.verifyPhoneOtpAndAuthenticate;
+      if (!payload?.accessToken || !payload.refreshToken || !payload.user) {
+        throw new Error("Unable to create your mobile session.");
       }
 
+      persistAuthTokens(payload.accessToken, payload.refreshToken);
+      setUser(payload.user);
       showToast({
-        message: "Phone number verified successfully.",
+        message: "Phone number verified successfully. Your mobile account is ready.",
         tone: "success",
       });
-      router.replace(resolveAuthenticatedRoute(user) as never);
+      router.replace(resolveAuthenticatedRoute(payload.user) as never);
     } catch (error) {
       showToast({
         message: parseAuthError(
@@ -160,7 +164,7 @@ export default function OnboardingVerifyPhoneScreen() {
           <OnboardingProgress currentStep="verify-phone" />
 
           <BackButton onPress={() => router.back()}>
-            <BackButtonText>← Back</BackButtonText>
+            <BackButtonText>Back</BackButtonText>
           </BackButton>
 
           <AuthHeader>
@@ -186,12 +190,12 @@ export default function OnboardingVerifyPhoneScreen() {
             disabled={loading || otp.length < OTP_LENGTH}
             fullWidth
           >
-            {loading ? "Verifying…" : "Verify phone number"}
+            {loading ? "Verifying..." : "Verify and continue"}
           </Button>
 
           <AuthFooter>
             <AuthFooterLink onPress={() => void handleResend()}>
-              {resending ? "Sending…" : "Resend code"}
+              {resending ? "Sending..." : "Resend code"}
             </AuthFooterLink>
           </AuthFooter>
         </AuthContent>

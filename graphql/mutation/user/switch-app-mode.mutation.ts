@@ -1,17 +1,20 @@
 import { gql } from "@apollo/client";
 
-export const SET_PROVIDER_AVAILABILITY_MUTATION = gql`
-  mutation SetProviderAvailability($input: SetProviderAvailabilityInput!) {
-    setProviderAvailability(input: $input) {
+export const SWITCH_APP_MODE_MUTATION = gql`
+  mutation SwitchAppMode($input: SwitchAppModeInput!) {
+    switchAppMode(input: $input) {
       id
       email
       emailVerified
       emailVerifiedAt
       role
-      profileImageUrl
+      accountRole
+      availableModes
+      currentMode
       firstName
       lastName
       phoneE164
+      profileImageUrl
       phoneVerified
       phoneVerifiedAt
       notificationsEnabled
@@ -20,6 +23,9 @@ export const SET_PROVIDER_AVAILABILITY_MUTATION = gql`
       pushPermissionStatus
       publicRole
       driverType
+      driverProfileId
+      driverOnboardingStatus
+      driverCapabilities
       onboardingStep
       onboardingCompleted
       state
@@ -31,6 +37,10 @@ export const SET_PROVIDER_AVAILABILITY_MUTATION = gql`
       primaryAddress
       city
       activeAddressId
+      walletBalanceMinor
+      walletEscrowMinor
+      walletCurrency
+      unreadNotificationCount
       preferredLanguage
       status
       lastLoginAt

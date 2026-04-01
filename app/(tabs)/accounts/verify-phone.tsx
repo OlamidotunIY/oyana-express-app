@@ -8,16 +8,19 @@ import {
   MeQueryVariables,
   RequestPhoneOtpMutation,
   RequestPhoneOtpMutationVariables,
-  VerifyPhoneOtpMutation,
-  VerifyPhoneOtpMutationVariables,
+  UpdateProfileMutation,
+  UpdateProfileMutationVariables,
+  VerifyPhoneOtpAndAuthenticateMutation,
+  VerifyPhoneOtpAndAuthenticateMutationVariables,
 } from "@/gql/graphql";
 import {
   ME_QUERY,
   REQUEST_PHONE_OTP_MUTATION,
+  UPDATE_PROFILE_MUTATION,
   VERIFY_PHONE_OTP_MUTATION,
 } from "@/graphql";
 import { useBackendErrorToast } from "@/hooks/use-backend-error-toast";
-import { client } from "@/lib/apolloClient";
+import { persistAuthTokens } from "@/lib/auth-cookies";
 import { parseAuthError } from "@/lib/session";
 import { showToast } from "@/lib/toast";
 import { useUserStore } from "@/store/userStore";
@@ -46,9 +49,14 @@ export default function VerifyPhoneScreen() {
     RequestPhoneOtpMutationVariables
   >(REQUEST_PHONE_OTP_MUTATION);
 
-  const [verifyPhoneOtp, { loading: verifyingOtp }] = useMutation<
-    VerifyPhoneOtpMutation,
-    VerifyPhoneOtpMutationVariables
+  const [updateProfile] = useMutation<
+    UpdateProfileMutation,
+    UpdateProfileMutationVariables
+  >(UPDATE_PROFILE_MUTATION);
+
+  const [verifyPhoneOtpAndAuthenticate, { loading: verifyingOtp }] = useMutation<
+    VerifyPhoneOtpAndAuthenticateMutation,
+    VerifyPhoneOtpAndAuthenticateMutationVariables
   >(VERIFY_PHONE_OTP_MUTATION);
 
   useBackendErrorToast(error, "Unable to load your phone verification state.", {
@@ -63,26 +71,29 @@ export default function VerifyPhoneScreen() {
     }
   }, [data?.me?.phoneE164]);
 
-  async function refreshProfile() {
-    const { data: nextProfile } = await client.query<MeQuery>({
-      query: ME_QUERY,
-      fetchPolicy: "no-cache",
-    });
-
-    if (nextProfile?.me) {
-      setUser(nextProfile.me);
-    }
-
-    await refetch();
-  }
-
   async function handleRequestOtp() {
     if (!phoneE164.trim()) {
-      showToast({ title: "Phone Verification", message: "Enter a phone number in E.164 format.", tone: "error" });
+      showToast({
+        title: "Phone Verification",
+        message: "Enter a phone number in E.164 format.",
+        tone: "error",
+      });
       return;
     }
 
     try {
+      const updatedProfile = await updateProfile({
+        variables: {
+          input: {
+            phoneE164: phoneE164.trim(),
+          },
+        },
+      });
+
+      if (updatedProfile.data?.updateProfile) {
+        setUser(updatedProfile.data.updateProfile);
+      }
+
       const { data: response } = await requestPhoneOtp({
         variables: {
           input: {
@@ -93,7 +104,11 @@ export default function VerifyPhoneScreen() {
 
       if (response?.requestPhoneOtp.success) {
         setOtpRequested(true);
-        showToast({ title: "Phone Verification", message: response.requestPhoneOtp.message, tone: "success" });
+        showToast({
+          title: "Phone Verification",
+          message: response.requestPhoneOtp.message,
+          tone: "success",
+        });
       }
     } catch (mutationError) {
       showToast({
@@ -106,12 +121,16 @@ export default function VerifyPhoneScreen() {
 
   async function handleVerifyOtp() {
     if (otp.trim().length !== OTP_LENGTH) {
-      showToast({ title: "Phone Verification", message: "Enter the full 6-digit code.", tone: "error" });
+      showToast({
+        title: "Phone Verification",
+        message: "Enter the full 6-digit code.",
+        tone: "error",
+      });
       return;
     }
 
     try {
-      const { data: response } = await verifyPhoneOtp({
+      const { data: response } = await verifyPhoneOtpAndAuthenticate({
         variables: {
           input: {
             phoneE164: phoneE164.trim(),
@@ -120,11 +139,18 @@ export default function VerifyPhoneScreen() {
         },
       });
 
-      if (response?.verifyPhoneOtp.success) {
+      const authResponse = response?.verifyPhoneOtpAndAuthenticate ?? null;
+      if (authResponse) {
+        persistAuthTokens(authResponse.accessToken, authResponse.refreshToken);
+        setUser(authResponse.user);
         setOtp("");
         setOtpRequested(false);
-        await refreshProfile();
-        showToast({ title: "Phone Verification", message: response.verifyPhoneOtp.message, tone: "success" });
+        await refetch();
+        showToast({
+          title: "Phone Verification",
+          message: "Your phone number has been verified successfully.",
+          tone: "success",
+        });
       }
     } catch (mutationError) {
       showToast({
@@ -165,7 +191,7 @@ export default function VerifyPhoneScreen() {
               />
 
               <Button fullWidth onPress={() => void handleRequestOtp()} disabled={sendingOtp || verifyingOtp}>
-                {sendingOtp ? "Sending code…" : otpRequested ? "Resend code" : "Send verification code"}
+                {sendingOtp ? "Sending code..." : otpRequested ? "Resend code" : "Send verification code"}
               </Button>
 
               {otpRequested || profile?.phoneVerified === false ? (
@@ -180,7 +206,7 @@ export default function VerifyPhoneScreen() {
                   />
 
                   <Button fullWidth variant="secondary" onPress={() => void handleVerifyOtp()} disabled={verifyingOtp || sendingOtp}>
-                    {verifyingOtp ? "Verifying…" : "Verify phone"}
+                    {verifyingOtp ? "Verifying..." : "Verify phone"}
                   </Button>
                 </>
               ) : null}
